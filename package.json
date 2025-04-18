@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@9.10.0",
   "scripts": {
-    "build": "tinacms build && next build",
+    "build": "tinacms build -v && next build",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
     "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
     "deploy": "opennextjs-cloudflare build && wrangler deploy",
