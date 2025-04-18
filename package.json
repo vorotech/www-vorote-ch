@@ -3,16 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "tinacms dev -c \"next dev --turbopack\"",
     "build": "tinacms build && next build",
     "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
+    "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
+    "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "dev": "tinacms dev -c \"next dev --turbopack\"",
+    "dev:build": "next build",
+    "lint": "biome lint",
+    "preview": "opennextjs-cloudflare build && wrangler dev",
     "start": "tinacms build && next start",
     "export": "npm run build && next export",
-    "lint": "biome lint",
-    "dev:build": "next build"
+    "types": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@opennextjs/cloudflare": "1.0.0-beta.3",
     "@svgr/webpack": "^8.1.0",
     "@tinacms/cli": "^1.9.5",
     "@types/js-cookie": "^3.0.6",
@@ -23,7 +28,8 @@
     "postcss": "^8.5.3",
     "postcss-import": "^16.1.0",
     "postcss-nesting": "^13.0.1",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "wrangler": "^4.12.0"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.1",
