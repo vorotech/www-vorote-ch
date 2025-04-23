@@ -18,7 +18,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: latest
+          version: 9.10.0
       # Install deps, update Tina packages, update schema
       - name: Install dependencies
         run: pnpm install
