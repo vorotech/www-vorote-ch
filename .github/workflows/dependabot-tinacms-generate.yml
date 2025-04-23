@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - name: Setup node
         uses: actions/setup-node@v4
         with:
@@ -48,6 +50,4 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: "chore(deps): update TinaCMS generated files"
-          branch: ${{ github.ref }}
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
+          default_author: github_actions
