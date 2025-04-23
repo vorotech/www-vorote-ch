@@ -1,15 +1,12 @@
-name: Build Pull request
+name: Update TinaCMS Dependencies
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-env:
-  NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
-  TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-  NEXT_PUBLIC_TINA_BRANCH: ${{ github.head_ref }}
+  push:
+    branches:
+      - dependabot/npm_and_yarn/**
+
 jobs:
-  build:
+  update-tinacms:
     runs-on: ubuntu-latest
-    name: Build sample
     steps:
       - uses: actions/checkout@v4
       - name: Setup node
@@ -40,6 +37,17 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: Build
-        run: pnpm build
+      
+      - name: Update Tina packages
+        run: pnpm add tinacms@latest @tinacms/cli@latest
+      
+      - name: Update Schema
+        run: pnpm tinacms audit
+            
+      - name: Commit changes back to branch
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Update TinaCMS generated files"
+          branch: ${{ github.ref }}
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
