@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.PAT_DEPENDABOT_PUSH }}
+      
       - name: Setup node
         uses: actions/setup-node@v4
         with:
