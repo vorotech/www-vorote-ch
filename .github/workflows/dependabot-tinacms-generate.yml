@@ -39,7 +39,7 @@ jobs:
         run: pnpm install
       
       - name: Update Tina packages
-        run: pnpm add tinacms@latest @tinacms/cli@latest
+        run: pnpm add tinacms@latest @tinacms/cli@latest -w
       
       - name: Update Schema
         run: pnpm tinacms audit
@@ -47,7 +47,7 @@ jobs:
       - name: Commit changes back to branch
         uses: EndBug/add-and-commit@v9
         with:
-          message: "Update TinaCMS generated files"
+          message: "chore(deps): update TinaCMS generated files"
           branch: ${{ github.ref }}
           committer_name: GitHub Actions
           committer_email: actions@github.com
