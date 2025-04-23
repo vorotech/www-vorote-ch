@@ -4,20 +4,21 @@
   "private": true,
   "packageManager": "pnpm@9.10.0",
   "scripts": {
-    "build": "tinacms build -v && next build",
-    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
-    "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy",
     "dev": "tinacms dev -c \"next dev --turbopack\"",
     "dev:build": "next build",
-    "lint": "biome lint",
-    "preview": "opennextjs-cloudflare build && wrangler dev",
+    "build": "tinacms build && next build",
+    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
     "start": "tinacms build && next start",
+    "lint": "biome lint",
     "export": "npm run build && next export",
-    "types": "wrangler types --env-interface CloudflareEnv env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@cloudflare/workers-types": "^4.20250423.0",
     "@opennextjs/cloudflare": "1.0.0-beta.3",
     "@svgr/webpack": "^8.1.0",
     "@tinacms/cli": "^1.9.5",

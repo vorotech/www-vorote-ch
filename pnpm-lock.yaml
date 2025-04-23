@@ -87,9 +87,12 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
+      '@cloudflare/workers-types':
+        specifier: ^4.20250423.0
+        version: 4.20250423.0
       '@opennextjs/cloudflare':
         specifier: 1.0.0-beta.3
-        version: 1.0.0-beta.3(wrangler@4.12.0)
+        version: 1.0.0-beta.3(wrangler@4.12.0(@cloudflare/workers-types@4.20250423.0))
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.8.2)
@@ -125,7 +128,7 @@ importers:
         version: 5.8.2
       wrangler:
         specifier: ^4.12.0
-        version: 4.12.0
+        version: 4.12.0(@cloudflare/workers-types@4.20250423.0)
 
 packages:
 
@@ -1289,6 +1292,9 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
+
+  '@cloudflare/workers-types@4.20250423.0':
+    resolution: {integrity: sha512-uzy7fvgYIs9YCEaPScC+RnZvd+yJJCqLCEe/n/6p2PZTxWbDmiZjtJQiP5Zx6G0p64ZD/0ZRmtALfDZDNYBDHg==}
 
   '@codemirror/language@6.0.0':
     resolution: {integrity: sha512-rtjk5ifyMzOna1c7PBu7J1VCt0PvA5wy3o8eMVnxMKb7z8KA7JFecvD04dSn14vj/bBaAbqRsGed5OjtofEnLA==}
@@ -10374,6 +10380,8 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20250416.0':
     optional: true
 
+  '@cloudflare/workers-types@4.20250423.0': {}
+
   '@codemirror/language@6.0.0':
     dependencies:
       '@codemirror/state': 6.5.2
@@ -11376,14 +11384,14 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/cloudflare@1.0.0-beta.3(wrangler@4.12.0)':
+  '@opennextjs/cloudflare@1.0.0-beta.3(wrangler@4.12.0(@cloudflare/workers-types@4.20250423.0))':
     dependencies:
       '@dotenvx/dotenvx': 1.31.0
       '@opennextjs/aws': 3.5.7
       enquirer: 2.4.1
       glob: 11.0.1
       ts-tqdm: 0.8.6
-      wrangler: 4.12.0
+      wrangler: 4.12.0(@cloudflare/workers-types@4.20250423.0)
     transitivePeerDependencies:
       - aws-crt
       - supports-color
@@ -18440,7 +18448,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250416.0
       '@cloudflare/workerd-windows-64': 1.20250416.0
 
-  wrangler@4.12.0:
+  wrangler@4.12.0(@cloudflare/workers-types@4.20250423.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.3.1(unenv@2.0.0-rc.15)(workerd@1.20250416.0)
@@ -18451,6 +18459,7 @@ snapshots:
       unenv: 2.0.0-rc.15
       workerd: 1.20250416.0
     optionalDependencies:
+      '@cloudflare/workers-types': 4.20250423.0
       fsevents: 2.3.3
       sharp: 0.33.5
     transitivePeerDependencies:
