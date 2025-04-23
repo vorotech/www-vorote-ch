@@ -1,13 +1,13 @@
 
 # dependencies
+/.pnpm-store
 /node_modules
-/.pnp
-.pnp.js
 
 # testing
 /coverage
 
 # next.js
+/.open-next/
 /.next/
 /out/
 next-env.d.ts
