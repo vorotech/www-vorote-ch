@@ -48,9 +48,10 @@ jobs:
         run: pnpm install
 
       - name: Build
-        if: !startsWith(github.head_ref, 'dependabot/npm_and_yarn/')
+        if: ${{ !contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
         run: pnpm build
 
       - name: Build Local
-        if: startsWith(github.head_ref, 'dependabot/npm_and_yarn/')
+        if: ${{ contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
         run: pnpm run build-local
+
