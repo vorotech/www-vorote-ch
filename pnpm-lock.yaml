@@ -8203,8 +8203,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vite@4.5.9:
-    resolution: {integrity: sha512-qK9W4xjgD3gXbC0NmdNFFnVFLMWSNiR3swj957yutwzzN16xF/E7nmtAyp1rT9hviDroQANjE4HK3H4WqWdFtw==}
+  vite@4.5.13:
+    resolution: {integrity: sha512-Hgp8IF/yZDzKsN1hQWOuQZbrKiaFsbQud+07jJ8h9m9PaHWkpvZ5u55Xw5yYjWRXwRQ4jwFlJvY7T7FUJG9MCA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -12754,7 +12754,7 @@ snapshots:
       '@tinacms/metrics': 1.0.9(fs-extra@11.3.0)
       '@tinacms/schema-tools': 1.7.3(react@18.3.1)(yup@1.6.1)
       '@tinacms/search': 1.0.43(abstract-level@1.0.4)(react@18.3.1)(sucrase@3.35.0)(typescript@5.8.2)(yup@1.6.1)
-      '@vitejs/plugin-react': 3.1.0(vite@4.5.9(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9))
+      '@vitejs/plugin-react': 3.1.0(vite@4.5.13(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9))
       altair-express-middleware: 7.3.6
       async-lock: 1.4.1
       auto-bind: 4.0.0
@@ -12784,7 +12784,7 @@ snapshots:
       tinacms: 2.7.5(@types/react@18.3.20)(abstract-level@1.0.4)(immer@10.1.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(scheduler@0.26.0)(sucrase@3.35.0)(typescript@5.8.2)
       typanion: 3.13.0
       typescript: 5.8.2
-      vite: 4.5.9(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9)
+      vite: 4.5.13(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9)
       yup: 1.6.1
       zod: 3.24.2
     transitivePeerDependencies:
@@ -13822,14 +13822,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@3.1.0(vite@4.5.9(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9))':
+  '@vitejs/plugin-react@3.1.0(vite@4.5.13(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.25.2)
       magic-string: 0.27.0
       react-refresh: 0.14.2
-      vite: 4.5.9(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9)
+      vite: 4.5.13(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9)
     transitivePeerDependencies:
       - supports-color
 
@@ -18421,7 +18421,7 @@ snapshots:
       '@types/unist': 3.0.2
       vfile-message: 4.0.2
 
-  vite@4.5.9(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9):
+  vite@4.5.13(@types/node@22.13.10)(lightningcss@1.29.2)(terser@5.16.9):
     dependencies:
       esbuild: 0.18.20
       postcss: 8.5.3
