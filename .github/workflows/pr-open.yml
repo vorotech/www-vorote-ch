@@ -2,6 +2,8 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches-ignore:
+      - dependabot/npm_and_yarn/**
 env:
   NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
   TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
@@ -42,9 +44,4 @@ jobs:
         run: pnpm install
 
       - name: Build
-        if: ${{ !contains(github.ref, 'dependabot/npm_and_yarn/') }}
         run: pnpm build
-
-      - name: Build Local
-        if: ${{ contains(github.ref, 'dependabot/npm_and_yarn/') }}
-        run: pnpm run build-local
