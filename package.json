@@ -62,7 +62,7 @@
   },
   "pnpm":{
     "overrides": {
-      "jsonpath-plus": "10.2.0",
+      "jsonpath-plus": "10.3.0",
       "mermaid@9.3.0>dompurify": "2.5.0"
     }
   }
