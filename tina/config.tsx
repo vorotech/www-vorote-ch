@@ -30,6 +30,7 @@ const config = defineConfig({
     publicFolder: "public", // The public asset folder for your framework
     outputFolder: "admin", // within the public folder
     basePath: nextConfig.basePath?.replace(/^\//, '') || '', // The base path of the app (could be /blog)
+    host: process.env.NEXT_PUBLIC_TINA_HOST || 'localhost', // The host of the app
   },
   schema: {
     collections: [Page, Post, Author, Tag, Global],
