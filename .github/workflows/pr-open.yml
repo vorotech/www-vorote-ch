@@ -2,8 +2,6 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches-ignore:
-      - dependabot/npm_and_yarn/**
 
 permissions:
   contents: read
@@ -50,4 +48,9 @@ jobs:
         run: pnpm install
 
       - name: Build
+        if: !startsWith(github.head_ref, 'dependabot/npm_and_yarn/')
         run: pnpm build
+
+      - name: Build Local
+        if: startsWith(github.head_ref, 'dependabot/npm_and_yarn/')
+        run: pnpm run build-local
