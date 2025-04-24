@@ -1,4 +1,4 @@
-name: Build Pull request
+name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -9,7 +9,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build sample
+    name: Build
     steps:
       - uses: actions/checkout@v4
       - name: Setup node
@@ -42,4 +42,9 @@ jobs:
         run: pnpm install
 
       - name: Build
+        if: ${{ github.actor != 'dependabot[bot]' }}
         run: pnpm build
+
+      - name: Build Local
+        if: ${{ github.actor == 'dependabot[bot]' }}
+        run: pnpm run build-local
