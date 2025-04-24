@@ -51,7 +51,6 @@ jobs:
         if: ${{ !contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
         run: pnpm build
 
-      - name: Build Local
+      - name: Build skipping Tina cloud checks
         if: ${{ contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
-        run: pnpm run build-local
-
+        run: pnpm run build:ci
