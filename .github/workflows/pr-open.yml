@@ -1,4 +1,4 @@
-name: Build Pull request
+name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -9,7 +9,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build sample
+    name: build
     steps:
       - uses: actions/checkout@v4
       - name: Setup node
