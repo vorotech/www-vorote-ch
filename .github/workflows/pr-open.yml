@@ -42,9 +42,9 @@ jobs:
         run: pnpm install
 
       - name: Build
-        if: ${{ github.actor != 'dependabot[bot]' }}
+        if: ${{ !startsWith(github.ref, 'refs/heads/dependabot/npm_and_yarn/') }}
         run: pnpm build
 
       - name: Build Local
-        if: ${{ github.actor == 'dependabot[bot]' }}
+        if: ${{ startsWith(github.ref, 'refs/heads/dependabot/npm_and_yarn/') }}
         run: pnpm run build-local
