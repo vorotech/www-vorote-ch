@@ -11,6 +11,7 @@
     "build:ci": "tinacms build --skip-indexing --skip-cloud-checks && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
     "start": "tinacms build && next start",
     "lint": "biome lint",
@@ -62,8 +63,11 @@
   },
   "pnpm":{
     "overrides": {
+      "esbuild": "0.25.2",
+      "@opennextjs/aws>esbuild": "0.25.0",
       "jsonpath-plus": "10.3.0",
-      "mermaid@9.3.0>dompurify": "2.5.0"
+      "mermaid": "11.6.0",
+      "react-router": "7.5.2"
     }
   }
 }
