@@ -11,6 +11,7 @@
     "build:ci": "tinacms build --skip-indexing --skip-cloud-checks && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
     "start": "tinacms build && next start",
     "lint": "biome lint",
