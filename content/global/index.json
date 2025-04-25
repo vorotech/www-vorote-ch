@@ -28,25 +28,19 @@
         "icon": {
           "name": "FaLinkedin"
         },
-        "url": "https://www.linkedin.com/company/tinacms"
+        "url": "https://www.linkedin.com/in/dmytro-vorotyntsev/"
       },
       {
         "icon": {
           "name": "FaGithub"
         },
-        "url": "https://github.com/tinacms/tinacms"
-      },
-      {
-        "icon": {
-          "name": "FaYoutube"
-        },
-        "url": "https://www.youtube.com/@TinaCMS"
+        "url": "https://github.com/vorotech"
       },
       {
         "icon": {
           "name": "FaXTwitter"
         },
-        "url": "https://x.com/TinaCMS"
+        "url": "https://x.com/vorotech"
       }
     ]
   },
