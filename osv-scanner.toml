@@ -1,0 +1,3 @@
+[[IgnoredVulns]]
+id = "CVE-2020-8203"
+reason = "Package 'lodash.set@4.3.2' was fixed in another package (lodash), only version cannot be updated inside dependencies."
