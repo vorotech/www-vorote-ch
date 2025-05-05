@@ -2,7 +2,7 @@ name: Update TinaCMS Dependencies
 on:
   push:
     branches:
-      - dependabot/**
+      - dependabot/npm_and_yarn/**
 
 permissions:
   contents: read
