@@ -47,15 +47,16 @@ jobs:
         run: pnpm install
 
       - name: Build
-        if: ${{ !contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
+        if: ${{ !contains(github.head_ref, 'dependabot/') }}
         run: pnpm build
 
       - name: Build skipping Tina cloud checks
-        if: ${{ contains(github.head_ref, 'dependabot/npm_and_yarn/') }}
+        if: ${{ contains(github.head_ref, 'dependabot/') }}
         run: pnpm run build:ci
 
   preview:
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.head_ref, 'dependabot/') }}
     name: Preview
     needs: build
     steps:
