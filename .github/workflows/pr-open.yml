@@ -56,6 +56,7 @@ jobs:
 
   preview:
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.head_ref, 'dependabot/') }}
     name: Preview
     needs: build
     steps:
