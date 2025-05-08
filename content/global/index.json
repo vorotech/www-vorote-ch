@@ -26,6 +26,13 @@
     "social": [
       {
         "icon": {
+          "name": "BiMailSend",
+          "color": "teal",
+          "style": "circle"
+        }
+      },
+      {
+        "icon": {
           "name": "FaLinkedin"
         },
         "url": "https://www.linkedin.com/in/dmytro-vorotyntsev/"
