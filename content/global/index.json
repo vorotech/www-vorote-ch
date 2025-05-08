@@ -29,7 +29,8 @@
           "name": "BiMailSend",
           "color": "teal",
           "style": "circle"
-        }
+        },
+        "url": "mailto:hello@vorote.ch"
       },
       {
         "icon": {
