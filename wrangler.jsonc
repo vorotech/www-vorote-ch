@@ -35,7 +35,10 @@
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
-	"vars": { "NODE_OPTIONS": "--max-old-space-size=4096" }
+	"vars": {
+		// Prevent JavaScript heap out of memory errors by allocate enough memory to the old space heap
+		"NODE_OPTIONS": "--max-old-space-size=4096"
+	}
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
