@@ -75,6 +75,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Font family variables */
+  --font-sans: var(--font-source-code-pro), ui-monospace, monospace;
+  --font-mono: var(--font-source-code-pro), ui-monospace, monospace;
+  --font-heading: var(--font-abel), system-ui, sans-serif;
 }
 
 .dark {
