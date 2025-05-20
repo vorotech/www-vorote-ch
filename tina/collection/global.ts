@@ -107,16 +107,12 @@ const Global: Collection = {
           label: "Font Family",
           options: [
             {
-              label: "System Sans",
-              value: "sans",
+              label: "Abel",
+              value: "abel",
             },
             {
-              label: "Nunito",
-              value: "nunito",
-            },
-            {
-              label: "Lato",
-              value: "lato",
+              label: "Source Code Pro",
+              value: "source-code-pro",
             },
           ],
         },
