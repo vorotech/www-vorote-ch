@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import type { Template } from 'tinacms';
 import { tinaField } from 'tinacms/dist/react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import { Section, sectionBlockSchemaField } from '../layout/section';
 import { Card } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -19,7 +19,7 @@ interface ProcessedPost {
   title: string;
   tags: (string | undefined)[];
   url: string;
-  excerpt: any;
+  excerpt: TinaMarkdownContent;
   heroImg?: string | null;
   author: {
     name: string;
@@ -27,7 +27,7 @@ interface ProcessedPost {
   };
 }
 
-export const RecentPosts = ({ data }: { data: any }) => {
+export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
   const [posts, setPosts] = React.useState<ProcessedPost[]>([]);
   const [loading, setLoading] = React.useState(true);
 
