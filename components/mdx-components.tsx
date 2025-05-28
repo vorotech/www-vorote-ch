@@ -4,7 +4,8 @@ import { Components, TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich
 import Image from 'next/image';
 import { Prism } from 'tinacms/dist/rich-text/prism';
 import { Video } from './blocks/video';
-import { PageBlocksVideo } from '@/tina/__generated__/types';
+import { RecentPosts } from './blocks/recent-posts';
+import { PageBlocksVideo, PageBlocksRecentPosts } from '@/tina/__generated__/types';
 import { mermaid } from './blocks/mermaid';
 
 export const components: Components<{
@@ -22,6 +23,7 @@ export const components: Components<{
     disclaimer?: TinaMarkdownContent;
   };
   video: PageBlocksVideo;
+  recentPosts: PageBlocksRecentPosts;
 }> = {
   code_block: (props) => {
     if (!props) {
@@ -111,5 +113,8 @@ export const components: Components<{
   mermaid,
   video: (props) => {
     return <Video data={props} />;
+  },
+  recentPosts: (props) => {
+    return <RecentPosts data={props} />;
   },
 };
