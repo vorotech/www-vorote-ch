@@ -35,8 +35,8 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
     const fetchPosts = async () => {
       try {
         const response = await client.queries.postConnection({
-          sort: '-date', // Sort by date descending (newest first)
-          first: data.postsCount || 4,
+          sort: 'date',
+          last: data.postsCount || 4,
         });
 
         if (response.data?.postConnection.edges) {
@@ -62,7 +62,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
                   avatar: post.author?.avatar,
                 }
               };
-            }); // No need to reverse since we're already getting newest first
+            });
 
           setPosts(processedPosts);
         }
