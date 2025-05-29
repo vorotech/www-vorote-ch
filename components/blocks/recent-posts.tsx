@@ -35,7 +35,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
     const fetchPosts = async () => {
       try {
         const response = await client.queries.postConnection({
-          sort: 'date',
+          sort: '-date', // Sort by date descending (newest first)
           first: data.postsCount || 4,
         });
 
@@ -62,8 +62,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
                   avatar: post.author?.avatar,
                 }
               };
-            })
-            .reverse(); // Most recent first
+            }); // No need to reverse since we're already getting newest first
 
           setPosts(processedPosts);
         }
@@ -171,12 +170,11 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 text-sm">
-                    <Avatar>
+                    <Avatar className="h-10 w-10">
                       {featuredPost.author.avatar && (
                         <AvatarImage
                           src={featuredPost.author.avatar}
                           alt={featuredPost.author.name}
-                          className="h-10 w-10"
                         />
                       )}
                       <AvatarFallback>
