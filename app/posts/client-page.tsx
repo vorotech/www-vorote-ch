@@ -58,7 +58,7 @@ export default function PostsClientPage(props: ClientPostProps) {
             {posts.map((post) => (
               <Card
                 key={post.id}
-                className="order-last border-0 bg-transparent shadow-none sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2"
+                className="order-last border-0 bg-transparent shadow-none py-0 sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2"
               >
                 <div className="grid gap-y-6 sm:grid-cols-10 sm:gap-x-5 sm:gap-y-0 md:items-center md:gap-x-8 lg:gap-x-12">
                   <div className="sm:col-span-5">
