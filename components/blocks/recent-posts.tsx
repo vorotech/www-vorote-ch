@@ -103,179 +103,182 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
   const [featuredPost, ...otherPosts] = posts;
 
   return (
-    <Section>
-      <div className="container">
-        {/* Section Header */}
-        {(data.title || data.description) && (
-          <div className="text-center mb-12 lg:mb-16">
-            {data.title && (
-              <h2 
-                data-tina-field={tinaField(data, 'title')} 
-                className="text-3xl font-semibold md:text-4xl lg:text-5xl mb-4"
-              >
-                {data.title}
-              </h2>
-            )}
-            {data.description && (
-              <p 
-                data-tina-field={tinaField(data, 'description')} 
-                className="text-muted-foreground md:text-lg max-w-2xl mx-auto"
-              >
-                {data.description}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Featured Post - Full Width */}
-        <div className="mb-12 lg:mb-16">
-          <Card className="overflow-hidden border-0 bg-transparent shadow-none">
-            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-              {/* Featured Post Image */}
-              {featuredPost.heroImg && (
-                <div className="order-last lg:order-first">
-                  <Link href={featuredPost.url} className="block">
-                    <div className="aspect-[16/10] overflow-clip rounded-lg border border-border">
-                      <Image
-                        width={600}
-                        height={375}
-                        src={featuredPost.heroImg}
-                        alt={featuredPost.title}
-                        className="h-full w-full object-cover transition-opacity duration-200 hover:opacity-90"
-                      />
-                    </div>
-                  </Link>
-                </div>
+    // Added negative margins to compensate for prose spacing
+    <div className="-mx-6 my-8">
+      <Section>
+        <div className="container">
+          {/* Section Header */}
+          {(data.title || data.description) && (
+            <div className="text-center mb-12 lg:mb-16">
+              {data.title && (
+                <h2 
+                  data-tina-field={tinaField(data, 'title')} 
+                  className="text-3xl font-semibold md:text-4xl lg:text-5xl mb-4"
+                >
+                  {data.title}
+                </h2>
               )}
-
-              {/* Featured Post Content */}
-              <div className="flex flex-col justify-center">
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground">
-                    {featuredPost.tags.map((tag, index) => (
-                      <span key={index}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <h3 className="text-2xl font-semibold md:text-3xl lg:text-4xl mb-4">
-                  <Link href={featuredPost.url} className="hover:underline">
-                    {featuredPost.title}
-                  </Link>
-                </h3>
-
-                <div className="text-muted-foreground mb-6 text-lg">
-                  <TinaMarkdown content={featuredPost.excerpt} />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 text-sm">
-                    <Avatar className="h-10 w-10">
-                      {featuredPost.author.avatar && (
-                        <AvatarImage
-                          src={featuredPost.author.avatar}
-                          alt={featuredPost.author.name}
-                        />
-                      )}
-                      <AvatarFallback>
-                        <UserRound size={20} strokeWidth={2} className="opacity-60" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <span className="font-medium">{featuredPost.author.name}</span>
-                      <span className="text-muted-foreground"> • {featuredPost.published}</span>
-                    </div>
-                  </div>
-
-                  <Link
-                    href={featuredPost.url}
-                    className="inline-flex items-center font-semibold hover:underline"
-                  >
-                    <span>Read more</span>
-                    <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              </div>
+              {data.description && (
+                <p 
+                  data-tina-field={tinaField(data, 'description')} 
+                  className="text-muted-foreground md:text-lg max-w-2xl mx-auto"
+                >
+                  {data.description}
+                </p>
+              )}
             </div>
-          </Card>
-        </div>
+          )}
 
-        {/* Other Posts - 3 Column Grid */}
-        {otherPosts.length > 0 && (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {otherPosts.map((post) => (
-              <Card key={post.id} className="group overflow-hidden border-0 bg-transparent shadow-none">
-                {/* Post Image */}
-                {post.heroImg && (
-                  <div className="mb-4">
-                    <Link href={post.url} className="block">
+          {/* Featured Post - Full Width */}
+          <div className="mb-12 lg:mb-16">
+            <Card className="overflow-hidden border-0 bg-transparent shadow-none py-0">
+              <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+                {/* Featured Post Image */}
+                {featuredPost.heroImg && (
+                  <div className="order-last lg:order-first">
+                    <Link href={featuredPost.url} className="block">
                       <div className="aspect-[16/10] overflow-clip rounded-lg border border-border">
                         <Image
-                          width={400}
-                          height={250}
-                          src={post.heroImg}
-                          alt={post.title}
-                          className="h-full w-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+                          width={600}
+                          height={375}
+                          src={featuredPost.heroImg}
+                          alt={featuredPost.title}
+                          className="h-full w-full object-cover transition-opacity duration-200 hover:opacity-90"
                         />
                       </div>
                     </Link>
                   </div>
                 )}
 
-                {/* Post Content */}
-                <div>
-                  <div className="mb-3">
-                    <div className="flex flex-wrap gap-2 text-xs uppercase tracking-wider text-muted-foreground">
-                      {post.tags.slice(0, 2).map((tag, index) => (
+                {/* Featured Post Content */}
+                <div className="flex flex-col justify-center">
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground">
+                      {featuredPost.tags.map((tag, index) => (
                         <span key={index}>{tag}</span>
                       ))}
                     </div>
                   </div>
 
-                  <h4 className="text-lg font-semibold md:text-xl mb-3">
-                    <Link href={post.url} className="hover:underline">
-                      {post.title}
+                  <h3 className="text-2xl font-semibold md:text-3xl lg:text-4xl mb-4">
+                    <Link href={featuredPost.url} className="hover:underline">
+                      {featuredPost.title}
                     </Link>
-                  </h4>
+                  </h3>
 
-                  <div className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                    <TinaMarkdown content={post.excerpt} />
+                  <div className="text-muted-foreground mb-6 text-lg">
+                    <TinaMarkdown content={featuredPost.excerpt} />
                   </div>
 
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center space-x-3">
-                      <Avatar className="h-8 w-8">
-                        {post.author.avatar && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 text-sm">
+                      <Avatar className="h-10 w-10">
+                        {featuredPost.author.avatar && (
                           <AvatarImage
-                            src={post.author.avatar}
-                            alt={post.author.name}
+                            src={featuredPost.author.avatar}
+                            alt={featuredPost.author.name}
                           />
                         )}
                         <AvatarFallback>
-                          <UserRound size={14} strokeWidth={2} className="opacity-60" />
+                          <UserRound size={20} strokeWidth={2} className="opacity-60" />
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <span className="text-muted-foreground">{post.author.name}</span>
-                        <span className="text-muted-foreground"> • {post.published}</span>
+                        <span className="font-medium">{featuredPost.author.name}</span>
+                        <span className="text-muted-foreground"> • {featuredPost.published}</span>
                       </div>
                     </div>
 
                     <Link
-                      href={post.url}
-                      className="inline-flex items-center text-sm font-medium hover:underline"
+                      href={featuredPost.url}
+                      className="inline-flex items-center font-semibold hover:underline"
                     >
-                      Read
-                      <ArrowRight className="ml-1 size-3 transition-transform group-hover:translate-x-1" />
+                      <span>Read more</span>
+                      <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </div>
-              </Card>
-            ))}
+              </div>
+            </Card>
           </div>
-        )}
-      </div>
-    </Section>
+
+          {/* Other Posts - 3 Column Grid */}
+          {otherPosts.length > 0 && (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {otherPosts.map((post) => (
+                <Card key={post.id} className="group overflow-hidden border-0 bg-transparent shadow-none py-0">
+                  {/* Post Image */}
+                  {post.heroImg && (
+                    <div className="mb-4">
+                      <Link href={post.url} className="block">
+                        <div className="aspect-[16/10] overflow-clip rounded-lg border border-border">
+                          <Image
+                            width={400}
+                            height={250}
+                            src={post.heroImg}
+                            alt={post.title}
+                            className="h-full w-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+                          />
+                        </div>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Post Content */}
+                  <div>
+                    <div className="mb-3">
+                      <div className="flex flex-wrap gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                        {post.tags.slice(0, 2).map((tag, index) => (
+                          <span key={index}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-semibold md:text-xl mb-3">
+                      <Link href={post.url} className="hover:underline">
+                        {post.title}
+                      </Link>
+                    </h4>
+
+                    <div className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                      <TinaMarkdown content={post.excerpt} />
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-8 w-8">
+                          {post.author.avatar && (
+                            <AvatarImage
+                              src={post.author.avatar}
+                              alt={post.author.name}
+                            />
+                          )}
+                          <AvatarFallback>
+                            <UserRound size={14} strokeWidth={2} className="opacity-60" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <span className="text-muted-foreground">{post.author.name}</span>
+                          <span className="text-muted-foreground"> • {post.published}</span>
+                        </div>
+                      </div>
+
+                      <Link
+                        href={post.url}
+                        className="inline-flex items-center text-sm font-medium hover:underline mr-1"
+                      >
+                        Read
+                        <ArrowRight className="ml-1 size-3 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </Section>
+    </div> 
   );
 };
 
