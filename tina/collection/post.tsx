@@ -210,8 +210,7 @@ const Post: Collection = {
               name: 'bannerImage',
               label: 'Banner Image',
               type: 'image',
-              // @ts-ignore
-              uploadDir: () => "posts",
+              uploadDir: (): string => "posts",
             },
             {
               name: 'backgroundColor',
