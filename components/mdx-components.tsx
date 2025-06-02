@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Prism } from 'tinacms/dist/rich-text/prism';
 import { Video } from './blocks/video';
 import { RecentPosts } from './blocks/recent-posts';
+import { FeaturedLink } from './blocks/featured-link';
 import { PageBlocksVideo, PageBlocksRecentPosts } from '@/tina/__generated__/types';
 import { mermaid } from './blocks/mermaid';
 
@@ -21,6 +22,15 @@ export const components: Components<{
     buttonText: string;
     children: TinaMarkdownContent;
     disclaimer?: TinaMarkdownContent;
+  };
+  FeaturedLink: {
+    title: string;
+    description?: TinaMarkdownContent;
+    url: string;
+    bannerImage?: string;
+    backgroundColor?: 'blue' | 'teal' | 'green' | 'yellow' | 'orange' | 'red' | 'pink' | 'purple' | 'gray' | 'white';
+    textColor?: 'blue' | 'teal' | 'green' | 'yellow' | 'orange' | 'red' | 'pink' | 'purple' | 'gray' | 'white' | 'black';
+    openInNewTab?: boolean;
   };
   video: PageBlocksVideo;
   recentPosts: PageBlocksRecentPosts;
@@ -109,6 +119,9 @@ export const components: Components<{
         <Image src={props.url} alt={props.alt || ''} width={500} height={500} />
       </span>
     );
+  },
+  FeaturedLink: (props) => {
+    return <FeaturedLink {...props} />;
   },
   mermaid,
   video: (props) => {
