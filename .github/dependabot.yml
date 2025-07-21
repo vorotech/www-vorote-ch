@@ -12,6 +12,11 @@ updates:
     allow:
       - dependency-name: "tinacms"
       - dependency-name: "@tinacms*"
+    groups:
+      tinacms:
+        patterns:
+          - "tinacms"
+          - "@tinacms*"
     commit-message:
       # Prefix all commit messages with "chore(deps): "
       prefix: "chore(deps)"
