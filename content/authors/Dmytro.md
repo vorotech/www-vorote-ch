@@ -1,5 +1,5 @@
 ---
 name: Dmytro
-avatar: /uploads/authors/NBP_8409_square_600px_icon.jpg
+avatar: /uploads/authors/1749114494959.jpeg
 ---
 
