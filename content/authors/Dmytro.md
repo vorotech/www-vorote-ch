@@ -1,5 +1,5 @@
 ---
 name: Dmytro
-avatar: /uploads/authors/dmytro.jpg
+avatar: /uploads/authors/1749114494959.jpeg
 ---
 
