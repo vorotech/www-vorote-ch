@@ -15,17 +15,16 @@ jobs:
         with:
           token: ${{ secrets.PAT_DEPENDABOT_PUSH }}
       
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
       - uses: pnpm/action-setup@v4
         name: Install pnpm
-        id: pnpm-install
         with:
           version: 9.10.0
           run_install: false
+      
+      - name: Setup node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
 
       - name: Get pnpm store directory
         id: pnpm-cache
