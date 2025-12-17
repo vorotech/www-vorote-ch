@@ -6,8 +6,9 @@ import { Prism } from 'tinacms/dist/rich-text/prism';
 import { Video } from './blocks/video';
 import { RecentPosts } from './blocks/recent-posts';
 import { FeaturedLink } from './blocks/featured-link';
-import { PageBlocksVideo, PageBlocksRecentPosts } from '@/tina/__generated__/types';
-import { mermaid } from './blocks/mermaid';
+import { PageBlocksVideo } from '@/tina/__generated__/types';
+import { Mermaid } from './blocks/mermaid';
+import { PageBlocksRecent } from '@/tina/__generated__/types';
 
 export const components: Components<{
   BlockQuote: {
@@ -33,12 +34,17 @@ export const components: Components<{
     openInNewTab?: boolean;
   };
   video: PageBlocksVideo;
-  recentPosts: PageBlocksRecentPosts;
+  recentPosts: PageBlocksRecent;
 }> = {
   code_block: (props) => {
     if (!props) {
       return <></>;
     }
+    
+    if (props.lang === 'mermaid') {
+      return <Mermaid value={props.value} />
+    }
+
     return <Prism lang={props.lang} value={props.value} />;
   },
   BlockQuote: (props: {
@@ -100,11 +106,7 @@ export const components: Components<{
                 </button>
               </div>
             </form>
-            <div className='mt-3 text-sm text-gray-500'>
-              {props.disclaimer && (
-                <TinaMarkdown content={props.disclaimer} />
-              )}
-            </div>
+            <div className='mt-3 text-sm text-gray-500'>{props.disclaimer && <TinaMarkdown content={props.disclaimer} />}</div>
           </div>
         </div>
       </div>
@@ -123,7 +125,7 @@ export const components: Components<{
   FeaturedLink: (props) => {
     return <FeaturedLink {...props} />;
   },
-  mermaid,
+  mermaid: (props: any) => <Mermaid {...props} />,
   video: (props) => {
     return <Video data={props} />;
   },
