@@ -8,7 +8,7 @@ import { RecentPosts } from './blocks/recent-posts';
 import { FeaturedLink } from './blocks/featured-link';
 import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Mermaid } from './blocks/mermaid';
-import { PageBlocksRecentPosts } from '@/tina/__generated__/types';
+import { PageBlocksRecent } from '@/tina/__generated__/types';
 
 export const components: Components<{
   BlockQuote: {
@@ -34,7 +34,7 @@ export const components: Components<{
     openInNewTab?: boolean;
   };
   video: PageBlocksVideo;
-  recentPosts: PageBlocksRecentPosts;
+  recentPosts: PageBlocksRecent;
 }> = {
   code_block: (props) => {
     if (!props) {
