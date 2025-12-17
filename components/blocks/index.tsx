@@ -43,7 +43,7 @@ const Block = (block: PageBlocks) => {
       return <Testimonial data={block} />;
     case "PageBlocksCta":
       return <CallToAction data={block} />;
-    case "PageBlocksRecentPosts":
+    case "PageBlocksRecent":
       return <RecentPosts data={block} />;
     default:
       return null;
