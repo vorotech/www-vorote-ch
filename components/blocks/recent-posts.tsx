@@ -283,7 +283,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
 };
 
 export const recentPostsBlockSchema: Template = {
-  name: 'RecentPosts',
+  name: 'recent-posts',
   label: 'Recent Posts',
   ui: {
     previewSrc: '/blocks/recent-posts.png',
