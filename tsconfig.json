@@ -28,9 +28,7 @@
         "./*"
       ]
     },
-    "types": [
-      "@cloudflare/workers-types/2023-07-01"
-    ],
+    "types": ["./cloudflare-env.d.ts", "node"],
     "strictNullChecks": true
   },
   "exclude": [
