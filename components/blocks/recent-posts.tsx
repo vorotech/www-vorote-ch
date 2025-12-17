@@ -10,7 +10,7 @@ import { Section, sectionBlockSchemaField } from '../layout/section';
 import { Card } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ArrowRight, UserRound } from 'lucide-react';
-import { PageBlocksRecentPosts } from '@/tina/__generated__/types';
+import { PageBlocksRecent } from '@/tina/__generated__/types';
 import client from '@/tina/__generated__/client';
 
 interface ProcessedPost {
@@ -27,7 +27,7 @@ interface ProcessedPost {
   };
 }
 
-export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
+export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
   const [posts, setPosts] = React.useState<ProcessedPost[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -283,7 +283,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecentPosts }) => {
 };
 
 export const recentPostsBlockSchema: Template = {
-  name: 'RecentPosts',
+  name: 'recent',
   label: 'Recent Posts',
   ui: {
     previewSrc: '/blocks/recent-posts.png',

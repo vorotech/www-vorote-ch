@@ -72,7 +72,7 @@
 		"ignore": [
 			"**/.vscode/**",
             "**/.open-next/**",
-			"**/__generated__/**",
+            "**/__generated__/**",
 			"**/node_modules",
 			"**/build",
 			"**/.next/**",
