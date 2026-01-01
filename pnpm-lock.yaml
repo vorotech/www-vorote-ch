@@ -47,7 +47,7 @@ importers:
         version: 12.6.3(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next:
         specifier: 16.0.10
-        version: 16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -71,7 +71,7 @@ importers:
         version: 3.2.2
       styled-jsx:
         specifier: ^5.1.6
-        version: 5.1.6(@babel/core@7.25.2)(react@18.3.1)
+        version: 5.1.6(@babel/core@7.28.5)(react@18.3.1)
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
@@ -93,7 +93,7 @@ importers:
         version: 1.9.4
       '@opennextjs/cloudflare':
         specifier: 1.14.6
-        version: 1.14.6(next@16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(wrangler@4.55.0)
+        version: 1.14.6(next@16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(wrangler@4.55.0)
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.8.2)
@@ -11055,7 +11055,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@opennextjs/aws@3.9.6(next@16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+  '@opennextjs/aws@3.9.6(next@16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@ast-grep/napi': 0.40.0
       '@aws-sdk/client-cloudfront': 3.398.0
@@ -11071,7 +11071,7 @@ snapshots:
       cookie: 1.1.1
       esbuild: 0.25.0
       express: 5.2.1
-      next: 16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       path-to-regexp: 6.3.0
       urlpattern-polyfill: 10.1.0
       yaml: 2.8.2
@@ -11079,15 +11079,15 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/cloudflare@1.14.6(next@16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(wrangler@4.55.0)':
+  '@opennextjs/cloudflare@1.14.6(next@16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(wrangler@4.55.0)':
     dependencies:
       '@ast-grep/napi': 0.40.0
       '@dotenvx/dotenvx': 1.31.0
-      '@opennextjs/aws': 3.9.6(next@16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      '@opennextjs/aws': 3.9.6(next@16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       cloudflare: 4.5.0
       enquirer: 2.4.1
       glob: 12.0.0
-      next: 16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next: 16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ts-tqdm: 0.8.6
       wrangler: 4.55.0
       yargs: 18.0.0
@@ -15961,7 +15961,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  next@16.0.10(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@16.0.10(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@next/env': 16.0.10
       '@swc/helpers': 0.5.15
@@ -15969,7 +15969,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.6(@babel/core@7.25.2)(react@18.3.1)
+      styled-jsx: 5.1.6(@babel/core@7.28.5)(react@18.3.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.0.10
       '@next/swc-darwin-x64': 16.0.10
@@ -17142,12 +17142,12 @@ snapshots:
       hey-listen: 1.0.8
       tslib: 2.8.1
 
-  styled-jsx@5.1.6(@babel/core@7.25.2)(react@18.3.1):
+  styled-jsx@5.1.6(@babel/core@7.28.5)(react@18.3.1):
     dependencies:
       client-only: 0.0.1
       react: 18.3.1
     optionalDependencies:
-      '@babel/core': 7.25.2
+      '@babel/core': 7.28.5
 
   stylis@4.3.6: {}
 
