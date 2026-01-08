@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck
-import React, { useState } from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2 } from 'lucide-react';
 
 
 interface Vacation {
@@ -24,6 +24,7 @@ interface ScheduleSlot {
 }
 
 const MAX_MEMBERS = 10;
+const STORAGE_KEY = 'vorotech-scheduler-settings';
 
 const OnCallScheduler = () => {
     const [numMembers, setNumMembers] = useState<any>(3);
@@ -38,6 +39,46 @@ const OnCallScheduler = () => {
         { id: 3, name: 'Person 3', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
     ]);
     const [showSettings, setShowSettings] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    // Load settings from local storage on mount
+    useEffect(() => {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                const { numMembers: storedNum, members: storedMembers } = JSON.parse(stored);
+                if (storedNum) setNumMembers(storedNum);
+                if (storedMembers) setMembers(storedMembers);
+            } catch (e) {
+                console.error('Failed to load scheduler settings', e);
+            }
+        }
+        setIsLoaded(true);
+    }, []);
+
+    // Save settings to local storage whenever they change
+    useEffect(() => {
+        if (!isLoaded) return; // Don't overwrite with default state before loading
+        const settings = {
+            numMembers,
+            members
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    }, [numMembers, members, isLoaded]);
+
+    const clearSettings = () => {
+        if (confirm('Are you sure you want to clear all saved settings? This will reset names, vacations, and preferences.')) {
+            localStorage.removeItem(STORAGE_KEY);
+            setNumMembers(3);
+            setMembers([
+                { id: 1, name: 'Person 1', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+                { id: 2, name: 'Person 2', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+                { id: 3, name: 'Person 3', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
+            ]);
+            setSchedule(null);
+            setStats(null);
+        }
+    };
 
     const getDaysInMonth = (m: any, y: any) => new Date(y, m + 1, 0).getDate();
 
@@ -310,6 +351,14 @@ const OnCallScheduler = () => {
                             <Settings className="w-5 h-5" />
                             {showSettings ? 'Hide' : 'Show'} Settings
                         </button>
+                        <button
+                            onClick={clearSettings}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200"
+                            title="Clear browser cache"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                            Clear cache
+                        </button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -431,33 +480,28 @@ const OnCallScheduler = () => {
 
                                     <div className="mb-2">
                                         <h4 className="text-sm font-medium text-gray-700 mb-2">Vacations</h4>
-                                        {members[0].vacations && member.vacations.map((vacation, idx) => (
-                                            <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
-                                                <span className="text-gray-600">
-                                                    {new Date(vacation.start).toLocaleDateString()} - {new Date(vacation.end).toLocaleDateString()}
-                                                </span>
-                                                <button
-                                                    onClick={() => removeVacation(member.id, idx)}
-                                                    className="text-red-500 hover:text-red-700"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {/* Fixed map above: members[0] check was not intended, removed it in final output below */}
-                                        {member.vacations.map((vacation, idx) => (
-                                            <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
-                                                <span className="text-gray-600">
-                                                    {new Date(vacation.start).toLocaleDateString()} - {new Date(vacation.end).toLocaleDateString()}
-                                                </span>
-                                                <button
-                                                    onClick={() => removeVacation(member.id, idx)}
-                                                    className="text-red-500 hover:text-red-700"
-                                                >
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        ))}
+                                        {member.vacations
+                                            .filter(vacation => {
+                                                const vacStart = new Date(vacation.start);
+                                                const vacEnd = new Date(vacation.end);
+                                                const monthStart = new Date(year, month, 1);
+                                                const monthEnd = new Date(year, month + 1, 0);
+
+                                                return vacStart <= monthEnd && vacEnd >= monthStart;
+                                            })
+                                            .map((vacation, idx) => (
+                                                <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
+                                                    <span className="text-gray-600">
+                                                        {new Date(vacation.start).toLocaleDateString()} - {new Date(vacation.end).toLocaleDateString()}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => removeVacation(member.id, idx)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            ))}
                                         <div className="flex gap-2 mt-2">
                                             <input
                                                 type="date"
