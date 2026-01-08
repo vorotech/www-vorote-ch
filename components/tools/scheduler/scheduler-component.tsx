@@ -27,6 +27,21 @@ const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.le
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';
 
+const MEMBER_COLORS = [
+    { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-200', ring: 'focus:ring-blue-500' },
+    { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-200', ring: 'focus:ring-emerald-500' },
+    { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-200', ring: 'focus:ring-amber-500' },
+    { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-200', ring: 'focus:ring-rose-500' },
+    { bg: 'bg-violet-100', text: 'text-violet-800', border: 'border-violet-200', ring: 'focus:ring-violet-500' },
+    { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-200', ring: 'focus:ring-cyan-500' },
+    { bg: 'bg-fuchsia-100', text: 'text-fuchsia-800', border: 'border-fuchsia-200', ring: 'focus:ring-fuchsia-500' },
+    { bg: 'bg-lime-100', text: 'text-lime-800', border: 'border-lime-200', ring: 'focus:ring-lime-500' },
+    { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-200', ring: 'focus:ring-orange-500' },
+    { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-200', ring: 'focus:ring-teal-500' },
+];
+
+const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
+
 const OnCallScheduler = () => {
     const [numMembers, setNumMembers] = useState<any>(3);
     const [month, setMonth] = useState<any>(new Date().getMonth());
