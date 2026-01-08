@@ -23,6 +23,8 @@ interface ScheduleSlot {
     engineer: Engineer | null;
 }
 
+const MAX_ENGINEERS = 10;
+
 const OnCallScheduler = () => {
     const [numEngineers, setNumEngineers] = useState<any>(3);
     const [month, setMonth] = useState<any>(new Date().getMonth());
@@ -245,7 +247,20 @@ const OnCallScheduler = () => {
     };
 
     const updateNumEngineers = (num: any) => {
-        const n = parseInt(num);
+        if (num === '') {
+            setNumEngineers('');
+            return;
+        }
+        let n = parseInt(num);
+        if (isNaN(n)) return;
+
+        if (n < 1) n = 1;
+        if (n > MAX_ENGINEERS) n = MAX_ENGINEERS;
+
+        // Reset schedule and stats as parameters have changed
+        setSchedule(null);
+        setStats(null);
+
         if (n < engineers.length) {
             setEngineers(engineers.slice(0, n));
         } else if (n > engineers.length) {
@@ -305,7 +320,7 @@ const OnCallScheduler = () => {
                             <input
                                 type="number"
                                 min="1"
-                                max="10"
+                                max="{MAX_ENGINEERS}"
                                 value={numEngineers}
                                 onChange={(e) => updateNumEngineers(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -333,8 +348,14 @@ const OnCallScheduler = () => {
                             </label>
                             <input
                                 type="number"
+                                min="2000"
+                                max="2100"
                                 value={year}
-                                onChange={(e) => setYear(parseInt(e.target.value))}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === '') setYear('');
+                                    else setYear(parseInt(val));
+                                }}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             />
                         </div>
