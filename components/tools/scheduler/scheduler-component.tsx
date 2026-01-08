@@ -25,6 +25,7 @@ const MEMBER_COLORS = [
 const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
 
 const MAX_MEMBERS = 10;
+const STORAGE_KEY = 'vorotech-scheduler-settings';
 
 const OnCallScheduler = () => {
     const [numMembers, setNumMembers] = useState<any>(3);
