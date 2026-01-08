@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2 } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock } from 'lucide-react';
 
 
 interface Vacation {
@@ -26,6 +26,21 @@ interface ScheduleSlot {
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';
 
+const MEMBER_COLORS = [
+    { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-200', ring: 'focus:ring-blue-500' },
+    { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-200', ring: 'focus:ring-emerald-500' },
+    { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-200', ring: 'focus:ring-amber-500' },
+    { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-200', ring: 'focus:ring-rose-500' },
+    { bg: 'bg-violet-100', text: 'text-violet-800', border: 'border-violet-200', ring: 'focus:ring-violet-500' },
+    { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-200', ring: 'focus:ring-cyan-500' },
+    { bg: 'bg-fuchsia-100', text: 'text-fuchsia-800', border: 'border-fuchsia-200', ring: 'focus:ring-fuchsia-500' },
+    { bg: 'bg-lime-100', text: 'text-lime-800', border: 'border-lime-200', ring: 'focus:ring-lime-500' },
+    { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-200', ring: 'focus:ring-orange-500' },
+    { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-200', ring: 'focus:ring-teal-500' },
+];
+
+const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
+
 const OnCallScheduler = () => {
     const [numMembers, setNumMembers] = useState<any>(3);
     const [month, setMonth] = useState<any>(new Date().getMonth());
@@ -38,6 +53,9 @@ const OnCallScheduler = () => {
         { id: 2, name: 'Person 2', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
         { id: 3, name: 'Person 3', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
     ]);
+    const [startOfWeek, setStartOfWeek] = useState<number>(1); // 0 = Sunday, 1 = Monday, etc.
+    const [shiftStartHour, setShiftStartHour] = useState<number>(8); // 0-23
+    const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
     const [showSettings, setShowSettings] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -46,9 +64,11 @@ const OnCallScheduler = () => {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             try {
-                const { numMembers: storedNum, members: storedMembers } = JSON.parse(stored);
+                const { numMembers: storedNum, members: storedMembers, startOfWeek: storedStartOfWeek, shiftStartHour: storedShiftStartHour } = JSON.parse(stored);
                 if (storedNum) setNumMembers(storedNum);
                 if (storedMembers) setMembers(storedMembers);
+                if (storedStartOfWeek !== undefined) setStartOfWeek(storedStartOfWeek);
+                if (storedShiftStartHour !== undefined) setShiftStartHour(storedShiftStartHour);
             } catch (e) {
                 console.error('Failed to load scheduler settings', e);
             }
@@ -61,15 +81,19 @@ const OnCallScheduler = () => {
         if (!isLoaded) return; // Don't overwrite with default state before loading
         const settings = {
             numMembers,
-            members
+            members,
+            startOfWeek,
+            shiftStartHour
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    }, [numMembers, members, isLoaded]);
+    }, [numMembers, members, startOfWeek, shiftStartHour, isLoaded]);
 
     const clearSettings = () => {
         if (confirm('Are you sure you want to clear all saved settings? This will reset names, vacations, and preferences.')) {
             localStorage.removeItem(STORAGE_KEY);
             setNumMembers(3);
+            setStartOfWeek(1);
+            setShiftStartHour(8);
             setMembers([
                 { id: 1, name: 'Person 1', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
                 { id: 2, name: 'Person 2', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
@@ -401,6 +425,55 @@ const OnCallScheduler = () => {
                                 <Users className="w-5 h-5" />
                                 Team Member Configuration
                             </h2>
+
+                            <div className="mb-8 p-4 bg-white rounded-lg border border-gray-200">
+                                <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
+                                    <Clock className="w-5 h-5 text-indigo-600" />
+                                    Generator Settings
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Start of Week
+                                        </label>
+                                        <select
+                                            value={startOfWeek}
+                                            onChange={(e) => setStartOfWeek(parseInt(e.target.value))}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        >
+                                            <option value={0}>Sunday</option>
+                                            <option value={1}>Monday</option>
+                                            <option value={6}>Saturday</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Shift Start Hour (24h)
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="23"
+                                            value={shiftStartHour}
+                                            onChange={(e) => setShiftStartHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Shift Length
+                                        </label>
+                                        <div className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded text-gray-500">
+                                            24 Hours (Fixed)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 border-t border-gray-200 pt-6">
+                                <Users className="w-5 h-5" />
+                                Member Configuration
+                            </h2>
                             {members.map((member) => (
                                 <div key={member.id} className="mb-6 p-4 bg-white rounded-lg border border-gray-200">
                                     <div className="mb-3">
@@ -554,22 +627,25 @@ const OnCallScheduler = () => {
                     <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">Distribution Statistics</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {members.map((member) => (
-                                <div key={member.id} className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg">
-                                    <h3 className="font-semibold text-lg text-gray-800 mb-2">{member.name}</h3>
-                                    <div className="space-y-1 text-sm">
-                                        <p className="text-gray-700">
-                                            <span className="font-medium">Total shifts:</span> {stats[member.id].total}
-                                        </p>
-                                        <p className="text-gray-700">
-                                            <span className="font-medium">Weekdays:</span> {stats[member.id].weekday}
-                                        </p>
-                                        <p className="text-gray-700">
-                                            <span className="font-medium">Weekends:</span> {stats[member.id].weekend}
-                                        </p>
+                            {members.map((member) => {
+                                const color = getMemberColor(member.id);
+                                return (
+                                    <div key={member.id} className={`p-4 rounded-lg border ${color.bg} ${color.border}`}>
+                                        <h3 className={`font-semibold text-lg ${color.text} mb-2`}>{member.name}</h3>
+                                        <div className="space-y-1 text-sm text-gray-700">
+                                            <p>
+                                                <span className="font-medium">Total shifts:</span> {stats[member.id].total}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">Weekdays:</span> {stats[member.id].weekday}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium">Weekends:</span> {stats[member.id].weekend}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}
@@ -579,36 +655,129 @@ const OnCallScheduler = () => {
                         <h2 className="text-2xl font-bold text-gray-800 mb-4">
                             Schedule for {new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                         </h2>
-                        <div className="space-y-2">
-                            {schedule.map((slot, idx) => (
-                                <div
-                                    key={idx}
-                                    className={`flex items-center justify-between p-3 rounded-lg ${isWeekend(slot.date)
-                                        ? 'bg-amber-50 border border-amber-200'
-                                        : 'bg-gray-50 border border-gray-200'
-                                        }`}
+
+                        <div className="flex justify-end mb-4">
+                            <div className="flex bg-gray-100 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    title="List View"
                                 >
-                                    <div className="flex items-center gap-4">
-                                        <span className="font-medium text-gray-700 w-32">
-                                            {formatDate(slot.date)}
-                                        </span>
-                                        <span className="text-sm text-gray-500">08:00 - 08:00 next day</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {slot.member ? (
-                                            <span className="px-4 py-1 bg-indigo-100 text-indigo-800 rounded-full font-medium">
-                                                {slot.member.name}
-                                            </span>
-                                        ) : (
-                                            <span className="px-4 py-1 bg-red-100 text-red-800 rounded-full font-medium flex items-center gap-2">
-                                                <AlertCircle className="w-4 h-4" />
-                                                No available person
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
+                                    <ListIcon className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('calendar')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    title="Calendar View"
+                                >
+                                    <LayoutGrid className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
+
+                        {viewMode === 'list' ? (
+                            <div className="space-y-2">
+                                {schedule.map((slot, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`flex items-center justify-between p-3 rounded-lg ${isWeekend(slot.date)
+                                            ? 'bg-amber-50 border border-amber-200'
+                                            : 'bg-gray-50 border border-gray-200'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <span className="font-medium text-gray-700 w-32">
+                                                {formatDate(slot.date)}
+                                            </span>
+                                            <span className="text-sm text-gray-500">
+                                                {shiftStartHour.toString().padStart(2, '0')}:00 - {shiftStartHour.toString().padStart(2, '0')}:00 next day
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {slot.member ? (
+                                                <span className={`px-4 py-1 rounded-full font-medium ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text}`}>
+                                                    {slot.member.name}
+                                                </span>
+                                            ) : (
+                                                <span className="px-4 py-1 bg-red-100 text-red-800 rounded-full font-medium flex items-center gap-2">
+                                                    <AlertCircle className="w-4 h-4" />
+                                                    No available person
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+                                    {Array.from({ length: 7 }).map((_, i) => {
+                                        const dayIndex = (startOfWeek + i) % 7;
+                                        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                        return (
+                                            <div key={i} className="py-2 text-center text-sm font-semibold text-gray-600">
+                                                {days[dayIndex]}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className="grid grid-cols-7 bg-white">
+                                    {(() => {
+                                        const firstDay = new Date(year, month, 1);
+                                        const totalDays = new Date(year, month + 1, 0).getDate();
+                                        const firstDayIndex = firstDay.getDay();
+                                        const offset = (firstDayIndex - startOfWeek + 7) % 7;
+
+                                        const cells = [];
+
+                                        // Empty cells before start of month
+                                        for (let i = 0; i < offset; i++) {
+                                            cells.push(<div key={`empty-${i}`} className="h-32 border-b border-r border-gray-100 bg-gray-50/30" />);
+                                        }
+
+                                        // Day cells
+                                        for (let d = 1; d <= totalDays; d++) {
+                                            const date = new Date(year, month, d);
+                                            const slot = schedule.find(s => s.date.getDate() === d);
+                                            const isToday = new Date().toDateString() === date.toDateString();
+
+                                            cells.push(
+                                                <div key={d} className={`h-32 border-b border-r border-gray-100 p-2 hover:bg-gray-50 transition-colors ${isWeekend(date) ? 'bg-amber-50/30' : ''
+                                                    }`}>
+                                                    <div className={`text-sm font-medium mb-2 ${isToday ? 'bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-gray-700'
+                                                        }`}>
+                                                        {d}
+                                                    </div>
+                                                    {slot && slot.member ? (
+                                                        <div className={`text-xs p-2 rounded border font-medium ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text} ${getMemberColor(slot.member.id).border}`}>
+                                                            {slot.member.name}
+                                                            <div className={`text-[10px] mt-1 opacity-75`}>
+                                                                {shiftStartHour}:00
+                                                            </div>
+                                                        </div>
+                                                    ) : slot ? (
+                                                        <div className="text-xs p-2 bg-red-100 text-red-800 rounded border border-red-200 font-medium flex items-center gap-1">
+                                                            <AlertCircle className="w-3 h-3" />
+                                                            Unassigned
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            );
+                                        }
+
+                                        // Empty cells after end of month
+                                        const remainingCells = 7 - (cells.length % 7);
+                                        if (remainingCells < 7) {
+                                            for (let i = 0; i < remainingCells; i++) {
+                                                cells.push(<div key={`empty-end-${i}`} className="h-32 border-b border-r border-gray-100 bg-gray-50/30" />);
+                                            }
+                                        }
+
+                                        return cells;
+                                    })()}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
