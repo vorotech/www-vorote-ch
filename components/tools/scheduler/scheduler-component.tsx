@@ -344,21 +344,6 @@ const OnCallScheduler = () => {
                             <Calendar className="w-8 h-8 text-indigo-600" />
                             <h1 className="text-3xl font-bold text-gray-800">On-Call Shift Scheduler</h1>
                         </div>
-                        <button
-                            onClick={() => setShowSettings(!showSettings)}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                        >
-                            <Settings className="w-5 h-5" />
-                            {showSettings ? 'Hide' : 'Show'} Settings
-                        </button>
-                        <button
-                            onClick={clearSettings}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200"
-                            title="Clear browser cache"
-                        >
-                            <Trash2 className="w-5 h-5" />
-                            Clear cache
-                        </button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -539,13 +524,30 @@ const OnCallScheduler = () => {
                         </div>
                     )}
 
-                    <button
-                        onClick={generateSchedule}
-                        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-                    >
-                        <RefreshCw className="w-5 h-5" />
-                        Generate Schedule
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => setShowSettings(!showSettings)}
+                            className="flex items-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors whitespace-nowrap"
+                        >
+                            <Settings className="w-5 h-5" />
+                            {showSettings ? 'Hide' : 'Show'} Settings
+                        </button>
+                        <button
+                            onClick={clearSettings}
+                            className="flex items-center gap-2 px-4 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200 whitespace-nowrap"
+                            title="Clear browser cache"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                            Clear cache
+                        </button>
+                        <button
+                            onClick={generateSchedule}
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                        >
+                            <RefreshCw className="w-5 h-5" />
+                            Generate Schedule
+                        </button>
+                    </div>
                 </div>
 
                 {stats && (
