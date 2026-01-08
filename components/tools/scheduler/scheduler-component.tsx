@@ -519,6 +519,10 @@ const OnCallScheduler = () => {
                                                 onClick={() => {
                                                     const { start, end } = vacationInputs[member.id] || {};
                                                     if (start && end) {
+                                                        if (new Date(start) > new Date(end)) {
+                                                            alert('Start date must be before or equal to end date');
+                                                            return;
+                                                        }
                                                         addVacation(member.id, start, end);
                                                         updateVacationInput(member.id, 'start', '');
                                                         updateVacationInput(member.id, 'end', '');
