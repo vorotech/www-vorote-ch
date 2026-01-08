@@ -24,6 +24,8 @@ const MEMBER_COLORS = [
 
 const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
 
+const MAX_ENGINEERS = 10;
+
 const OnCallScheduler = () => {
     const [numMembers, setNumMembers] = useState<any>(3);
     const [month, setMonth] = useState<any>(new Date().getMonth());
