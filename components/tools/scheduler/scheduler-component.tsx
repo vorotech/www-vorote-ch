@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices } from 'lucide-react';
 
 
 interface Vacation {
@@ -225,6 +225,12 @@ const OnCallScheduler = () => {
             if (available.length === 0) {
                 newSchedule.push({ date, member: null });
                 continue;
+            }
+
+            // Shuffle available members to randomize tie-breaking
+            for (let i = available.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [available[i], available[j]] = [available[j], available[i]];
             }
 
             // Sort by current workload (least loaded first)
@@ -653,9 +659,19 @@ const OnCallScheduler = () => {
 
                 {schedule && (
                     <div className="bg-white rounded-lg shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                            Schedule for {new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                        </h2>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                Schedule for {new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                            </h2>
+                            <button
+                                onClick={generateSchedule}
+                                className="flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg transition-colors text-sm font-medium"
+                                title="Regenerate Schedule"
+                            >
+                                <Dices className="w-4 h-4" />
+                                Randomize
+                            </button>
+                        </div>
 
                         <div className="flex justify-end mb-4">
                             <div className="flex items-center gap-2">
