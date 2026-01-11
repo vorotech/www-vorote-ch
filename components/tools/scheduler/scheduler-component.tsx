@@ -4,24 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices } from 'lucide-react';
 
 
-interface Vacation {
-    start: string | Date;
-    end: string | Date;
-}
-
-interface Member {
-    id: number;
-    name: string;
-    vacations: Vacation[];
-    weekendOnly: boolean;
-    maxWeekendSlots: number | null;
-    allowedWeekdays: number[];
-}
-
-interface ScheduleSlot {
-    date: Date;
-    member: Member | null;
-}
+import { Member, ScheduleSlot, generateScheduleData, isOnTimeOff, isWeekend, getDaysInMonth } from './scheduler';
 
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';
@@ -47,16 +30,16 @@ const OnCallScheduler = () => {
     const [year, setYear] = useState<any>(new Date().getFullYear());
     const [schedule, setSchedule] = useState<ScheduleSlot[] | null>(null);
     const [stats, setStats] = useState<any>(null);
-    const [vacationInputs, setVacationInputs] = useState<Record<number, { start: string; end: string }>>({});
+    const [timeOffInputs, setTimeOffInputs] = useState<Record<number, { start: string; end: string }>>({});
     const [members, setMembers] = useState<Member[]>([
-        { id: 1, name: 'Person 1', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
-        { id: 2, name: 'Person 2', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
-        { id: 3, name: 'Person 3', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
+        { id: 1, name: 'Person 1', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 2, name: 'Person 2', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 3, name: 'Person 3', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
     ]);
     const [startOfWeek, setStartOfWeek] = useState<number>(1); // 0 = Sunday, 1 = Monday, etc.
     const [shiftStartHour, setShiftStartHour] = useState<number>(8); // 0-23
     const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
-    const [showVacations, setShowVacations] = useState(true);
+    const [showTimeOff, setShowTimeOff] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -67,7 +50,14 @@ const OnCallScheduler = () => {
             try {
                 const { numMembers: storedNum, members: storedMembers, startOfWeek: storedStartOfWeek, shiftStartHour: storedShiftStartHour } = JSON.parse(stored);
                 if (storedNum) setNumMembers(storedNum);
-                if (storedMembers) setMembers(storedMembers);
+                if (storedMembers) {
+                    // Migrate vacations to timeOffs if needed
+                    const migratedMembers = storedMembers.map((m: any) => ({
+                        ...m,
+                        timeOffs: m.timeOffs || m.vacations || []
+                    }));
+                    setMembers(migratedMembers);
+                }
                 if (storedStartOfWeek !== undefined) setStartOfWeek(storedStartOfWeek);
                 if (storedShiftStartHour !== undefined) setShiftStartHour(storedShiftStartHour);
             } catch (e) {
@@ -90,171 +80,23 @@ const OnCallScheduler = () => {
     }, [numMembers, members, startOfWeek, shiftStartHour, isLoaded]);
 
     const clearSettings = () => {
-        if (confirm('Are you sure you want to clear all saved settings? This will reset names, vacations, and preferences.')) {
+        if (confirm('Are you sure you want to clear all saved settings? This will reset names, time off, and preferences.')) {
             localStorage.removeItem(STORAGE_KEY);
             setNumMembers(3);
             setStartOfWeek(1);
             setShiftStartHour(8);
             setMembers([
-                { id: 1, name: 'Person 1', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
-                { id: 2, name: 'Person 2', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
-                { id: 3, name: 'Person 3', vacations: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
+                { id: 1, name: 'Person 1', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+                { id: 2, name: 'Person 2', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+                { id: 3, name: 'Person 3', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] }
             ]);
             setSchedule(null);
             setStats(null);
         }
     };
 
-    const getDaysInMonth = (m: any, y: any) => new Date(y, m + 1, 0).getDate();
-
-    const isWeekend = (date: any) => {
-        const day = date.getDay();
-        return day === 0 || day === 6;
-    };
-
-    const isOnVacation = (memberId: any, date: any) => {
-        const member = members.find(e => e.id === memberId);
-        if (!member) return false;
-
-        return member.vacations.some(vacation => {
-            const start = new Date(vacation.start);
-            const end = new Date(vacation.end);
-            return date >= start && date <= end;
-        });
-    };
-
     const generateSchedule = () => {
-        const days = getDaysInMonth(month, year);
-        const newSchedule: ScheduleSlot[] = [];
-        const memberSlots: Record<number, { total: number; weekday: number; weekend: number }> = {};
-        const memberWeekendSlots: Record<number, number> = {};
-        const lastShiftDate: Record<number, Date | null> = {};
-        const weekdayAssignments: Record<number, Set<number>> = {}; // Track which weekday each member was assigned (0=Sun, 1=Mon, etc)
-
-        members.forEach(m => {
-            memberSlots[m.id] = { total: 0, weekday: 0, weekend: 0 };
-            memberWeekendSlots[m.id] = 0;
-            lastShiftDate[m.id] = null;
-            weekdayAssignments[m.id] = new Set<number>();
-        });
-
-        // Calculate total available days for each member
-        const availableDays: Record<number, number> = {};
-        members.forEach(m => {
-            let count = 0;
-            for (let d = 1; d <= days; d++) {
-                const date = new Date(year, month, d);
-                if (!isOnVacation(m.id, date)) {
-                    if (m.weekendOnly) {
-                        if (isWeekend(date)) count++;
-                    } else {
-                        count++;
-                    }
-                }
-            }
-            availableDays[m.id] = count;
-        });
-
-        // Calculate minimum days between shifts
-        const countAvailableMembers = () => {
-            return members.filter(m => !m.weekendOnly).length;
-        };
-        const minDaysBetweenShifts = Math.floor(countAvailableMembers() / 2);
-
-        // Assign shifts
-        for (let d = 1; d <= days; d++) {
-            const date = new Date(year, month, d);
-            const isWeekendDay = isWeekend(date);
-            const currentWeekday = date.getDay();
-
-            // Filter available members
-            let available = members.filter(m => {
-                if (isOnVacation(m.id, date)) return false;
-                if (m.weekendOnly && !isWeekendDay) return false;
-                if (m.maxWeekendSlots && isWeekendDay && memberWeekendSlots[m.id] >= m.maxWeekendSlots) return false;
-
-                // Check allowed weekdays constraint
-                if (m.allowedWeekdays.length > 0 && !m.allowedWeekdays.includes(currentWeekday)) {
-                    return false;
-                }
-
-                // Only check minimum days between shifts if no specific weekday constraint
-                const lastShift = lastShiftDate[m.id];
-                if (m.allowedWeekdays.length === 0 && lastShift !== null) {
-                    const daysSinceLastShift = Math.floor((date.getTime() - lastShift.getTime()) / (1000 * 60 * 60 * 24));
-                    if (daysSinceLastShift < minDaysBetweenShifts) return false;
-                }
-
-                // Check same weekday in different weeks constraint
-                if (m.allowedWeekdays.length === 0 && weekdayAssignments[m.id].has(currentWeekday)) {
-                    const prevAssignments = newSchedule.filter(s => s.member && s.member.id === m.id);
-                    const sameWeekdayPrev = prevAssignments.filter(s => s.date.getDay() === currentWeekday);
-                    if (sameWeekdayPrev.length > 0) {
-                        const lastSameWeekday = sameWeekdayPrev[sameWeekdayPrev.length - 1]!.date;
-                        const weeksDiff = Math.floor((date.getTime() - lastSameWeekday.getTime()) / (1000 * 60 * 60 * 24 * 7));
-                        if (weeksDiff < 2) return false;
-                    }
-                }
-
-                return true;
-            });
-
-            if (available.length === 0) {
-                // If no one is available due to constraints, relax constraints gradually
-                available = members.filter(m => {
-                    if (isOnVacation(m.id, date)) return false;
-                    if (m.weekendOnly && !isWeekendDay) return false;
-                    if (m.maxWeekendSlots && isWeekendDay && memberWeekendSlots[m.id] >= m.maxWeekendSlots) return false;
-
-                    // Still respect allowed weekdays if specified
-                    if (m.allowedWeekdays.length > 0 && !m.allowedWeekdays.includes(currentWeekday)) {
-                        return false;
-                    }
-
-                    // Relax minimum days constraint
-                    const lastShift = lastShiftDate[m.id];
-                    if (m.allowedWeekdays.length === 0 && lastShift !== null) {
-                        const daysSinceLastShift = Math.floor((date.getTime() - lastShift.getTime()) / (1000 * 60 * 60 * 24));
-                        if (daysSinceLastShift < minDaysBetweenShifts) return false;
-                    }
-
-                    return true;
-                });
-            }
-
-            if (available.length === 0) {
-                newSchedule.push({ date, member: null });
-                continue;
-            }
-
-            // Shuffle available members to randomize tie-breaking
-            for (let i = available.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [available[i], available[j]] = [available[j], available[i]];
-            }
-
-            // Sort by current workload (least loaded first)
-            available.sort((a, b) => {
-                const ratioA = availableDays[a.id] > 0 ? memberSlots[a.id]!.total / availableDays[a.id] : 0;
-                const ratioB = availableDays[b.id] > 0 ? memberSlots[b.id]!.total / availableDays[b.id] : 0;
-                return ratioA - ratioB;
-            });
-
-            const selected = available[0];
-            newSchedule.push({ date, member: selected });
-
-            memberSlots[selected.id].total++;
-            if (isWeekendDay) {
-                memberSlots[selected.id].weekend++;
-                memberWeekendSlots[selected.id]++;
-            } else {
-                memberSlots[selected.id].weekday++;
-            }
-
-            lastShiftDate[selected.id] = date;
-            weekdayAssignments[selected.id].add(currentWeekday);
-        }
-
+        const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members);
         setSchedule(newSchedule);
         setStats(memberSlots);
     };
@@ -263,18 +105,18 @@ const OnCallScheduler = () => {
         setMembers(members.map(m => m.id === id ? { ...m, name } : m));
     };
 
-    const addVacation = (memberId: any, start: any, end: any) => {
+    const addTimeOff = (memberId: any, start: any, end: any) => {
         setMembers(members.map(m =>
             m.id === memberId
-                ? { ...m, vacations: [...m.vacations, { start, end }] }
+                ? { ...m, timeOffs: [...m.timeOffs, { start, end }] }
                 : m
         ));
     };
 
-    const removeVacation = (memberId: any, index: any) => {
+    const removeTimeOff = (memberId: any, index: any) => {
         setMembers(members.map(m =>
             m.id === memberId
-                ? { ...m, vacations: m.vacations.filter((_, i) => i !== index) }
+                ? { ...m, timeOffs: m.timeOffs.filter((_, i) => i !== index) }
                 : m
         ));
     };
@@ -341,7 +183,7 @@ const OnCallScheduler = () => {
                 newMembers.push({
                     id: i + 1,
                     name: `Person ${i + 1}`,
-                    vacations: [],
+                    timeOffs: [],
                     weekendOnly: false,
                     maxWeekendSlots: null,
                     allowedWeekdays: []
@@ -356,8 +198,8 @@ const OnCallScheduler = () => {
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
     };
 
-    const updateVacationInput = (id: number, field: 'start' | 'end', value: string) => {
-        setVacationInputs(prev => ({
+    const updateTimeOffInput = (id: number, field: 'start' | 'end', value: string) => {
+        setTimeOffInputs(prev => ({
             ...prev,
             [id]: {
                 ...prev[id],
@@ -544,23 +386,23 @@ const OnCallScheduler = () => {
                                     </div>
 
                                     <div className="mb-2">
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Vacations</h4>
-                                        {member.vacations
-                                            .filter(vacation => {
-                                                const vacStart = new Date(vacation.start);
-                                                const vacEnd = new Date(vacation.end);
+                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Time Off</h4>
+                                        {member.timeOffs
+                                            .filter(timeOff => {
+                                                const vacStart = new Date(timeOff.start);
+                                                const vacEnd = new Date(timeOff.end);
                                                 const monthStart = new Date(year, month, 1);
                                                 const monthEnd = new Date(year, month + 1, 0);
 
                                                 return vacStart <= monthEnd && vacEnd >= monthStart;
                                             })
-                                            .map((vacation, idx) => (
+                                            .map((timeOff, idx) => (
                                                 <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
                                                     <span className="text-gray-600">
-                                                        {new Date(vacation.start).toLocaleDateString()} - {new Date(vacation.end).toLocaleDateString()}
+                                                        {new Date(timeOff.start).toLocaleDateString()} - {new Date(timeOff.end).toLocaleDateString()}
                                                     </span>
                                                     <button
-                                                        onClick={() => removeVacation(member.id, idx)}
+                                                        onClick={() => removeTimeOff(member.id, idx)}
                                                         className="text-red-500 hover:text-red-700"
                                                     >
                                                         Remove
@@ -570,32 +412,32 @@ const OnCallScheduler = () => {
                                         <div className="flex gap-2 mt-2">
                                             <input
                                                 type="date"
-                                                value={vacationInputs[member.id]?.start || ''}
-                                                onChange={(e) => updateVacationInput(member.id, 'start', e.target.value)}
+                                                value={timeOffInputs[member.id]?.start || ''}
+                                                onChange={(e) => updateTimeOffInput(member.id, 'start', e.target.value)}
                                                 className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                             />
                                             <input
                                                 type="date"
-                                                value={vacationInputs[member.id]?.end || ''}
-                                                onChange={(e) => updateVacationInput(member.id, 'end', e.target.value)}
+                                                value={timeOffInputs[member.id]?.end || ''}
+                                                onChange={(e) => updateTimeOffInput(member.id, 'end', e.target.value)}
                                                 className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                             />
                                             <button
                                                 onClick={() => {
-                                                    const { start, end } = vacationInputs[member.id] || {};
+                                                    const { start, end } = timeOffInputs[member.id] || {};
                                                     if (start && end) {
                                                         if (new Date(start) > new Date(end)) {
                                                             alert('Start date must be before or equal to end date');
                                                             return;
                                                         }
-                                                        addVacation(member.id, start, end);
-                                                        updateVacationInput(member.id, 'start', '');
-                                                        updateVacationInput(member.id, 'end', '');
+                                                        addTimeOff(member.id, start, end);
+                                                        updateTimeOffInput(member.id, 'start', '');
+                                                        updateTimeOffInput(member.id, 'end', '');
                                                     }
                                                 }}
                                                 className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
                                             >
-                                                Add Vacation
+                                                Add Time Off
                                             </button>
                                         </div>
                                     </div>
@@ -677,12 +519,12 @@ const OnCallScheduler = () => {
                             <div className="flex items-center gap-2">
                                 {viewMode === 'calendar' && (
                                     <button
-                                        onClick={() => setShowVacations(!showVacations)}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showVacations ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        onClick={() => setShowTimeOff(!showTimeOff)}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showTimeOff ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                             }`}
                                     >
-                                        {showVacations ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                        Vacations
+                                        {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                        Time Off
                                     </button>
                                 )}
                                 <div className="flex bg-gray-100 p-1 rounded-lg">
@@ -791,16 +633,16 @@ const OnCallScheduler = () => {
                                                         </div>
                                                     ) : null}
 
-                                                    {showVacations && (() => {
-                                                        const vacationMembers = members.filter(m => isOnVacation(m.id, date));
-                                                        if (vacationMembers.length === 0) return null;
+                                                    {showTimeOff && (() => {
+                                                        const timeOffMembers = members.filter(m => isOnTimeOff(m, date));
+                                                        if (timeOffMembers.length === 0) return null;
 
-                                                        if (vacationMembers.length === 1) {
+                                                        if (timeOffMembers.length === 1) {
                                                             return (
                                                                 <div className="mt-1">
                                                                     <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
                                                                         <Plane className="w-3 h-3" />
-                                                                        <span className="truncate max-w-[80px]">{vacationMembers[0].name}</span>
+                                                                        <span className="truncate max-w-[80px]">{timeOffMembers[0].name}</span>
                                                                     </div>
                                                                 </div>
                                                             );
@@ -810,12 +652,12 @@ const OnCallScheduler = () => {
                                                             <div className="mt-1 relative group">
                                                                 <div className="flex items-center gap-1 text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded cursor-help">
                                                                     <Plane className="w-3 h-3" />
-                                                                    <span>{vacationMembers.length} on vacation</span>
+                                                                    <span>{timeOffMembers.length} on time off</span>
                                                                 </div>
                                                                 <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-10 w-max max-w-[150px] bg-gray-800 text-white text-xs rounded p-2 shadow-lg pointer-events-none">
-                                                                    <div className="font-semibold mb-1 border-b border-gray-600 pb-1">On Vacation:</div>
+                                                                    <div className="font-semibold mb-1 border-b border-gray-600 pb-1">Time Off:</div>
                                                                     <div className="space-y-0.5">
-                                                                        {vacationMembers.map(m => (
+                                                                        {timeOffMembers.map(m => (
                                                                             <div key={m.id}>{m.name}</div>
                                                                         ))}
                                                                     </div>
