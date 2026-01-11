@@ -337,18 +337,22 @@ const OnCallScheduler = () => {
                                     <div className="mb-4">
                                         <h4 className="text-sm font-medium text-gray-700 mb-2">Available Days</h4>
                                         <div className="flex flex-wrap gap-2">
-                                            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, idx) => (
-                                                <button
-                                                    key={idx}
-                                                    onClick={() => toggleWeekday(member.id, idx)}
-                                                    className={`px-3 py-1 text-sm rounded transition-colors ${member.allowedWeekdays.length === 0 || member.allowedWeekdays.includes(idx)
-                                                        ? 'bg-indigo-600 text-white'
-                                                        : 'bg-gray-200 text-gray-500'
-                                                        }`}
-                                                >
-                                                    {day}
-                                                </button>
-                                            ))}
+                                            {Array.from({ length: 7 }).map((_, i) => {
+                                                const dayIndex = (startOfWeek + i) % 7;
+                                                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                                return (
+                                                    <button
+                                                        key={dayIndex}
+                                                        onClick={() => toggleWeekday(member.id, dayIndex)}
+                                                        className={`px-3 py-1 text-sm rounded transition-colors ${member.allowedWeekdays.length === 0 || member.allowedWeekdays.includes(dayIndex)
+                                                            ? 'bg-indigo-600 text-white'
+                                                            : 'bg-gray-200 text-gray-500'
+                                                            }`}
+                                                    >
+                                                        {days[dayIndex]}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                         <p className="text-xs text-gray-500 mt-1">
                                             {member.allowedWeekdays.length === 0
