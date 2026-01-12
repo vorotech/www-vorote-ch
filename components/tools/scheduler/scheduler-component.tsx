@@ -5,6 +5,7 @@ import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, 
 
 
 import { Member, ScheduleSlot, generateScheduleData, isOnTimeOff, isWeekend, getDaysInMonth } from './scheduler';
+import { FeedbackForm } from '../../feedback-form';
 
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';
@@ -697,6 +698,12 @@ const OnCallScheduler = () => {
                     </div>
                 )}
             </div>
+            
+            {schedule && (
+                <div className="max-w-md mx-auto mt-16 pb-12">
+                    <FeedbackForm />
+                </div>
+            )}
         </div>
     );
 };
