@@ -1,4 +1,4 @@
-import React from "react";
+import Layout from "@/components/layout/layout";
 import OnCallScheduler from "@/components/tools/scheduler/scheduler-component";
 
 export const metadata = {
@@ -8,8 +8,8 @@ export const metadata = {
 
 export default function SchedulerPage() {
     return (
-        <div className="pt-6">
+        <Layout>
             <OnCallScheduler />
-        </div>
+        </Layout>
     );
 }
