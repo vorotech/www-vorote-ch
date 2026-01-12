@@ -118,7 +118,7 @@ const testCases: TestCase[] = [
       members: [
         {
           id: 1,
-          name: 'Dmytro',
+          name: 'Person 1',
           weekendOnly: true,
           maxWeekendSlots: null,
           allowedWeekdays: [0, 6],
@@ -131,7 +131,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 2,
-          name: 'Yaroslav',
+          name: 'Person 2',
           weekendOnly: false,
           maxWeekendSlots: null,
           allowedWeekdays: [],
@@ -144,7 +144,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 3,
-          name: 'Lev',
+          name: 'Person 3',
           weekendOnly: false,
           maxWeekendSlots: null,
           allowedWeekdays: [2, 1, 0, 4, 5],
@@ -157,7 +157,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 4,
-          name: 'Vadym',
+          name: 'Person 4',
           weekendOnly: false,
           maxWeekendSlots: null,
           allowedWeekdays: [],
@@ -170,7 +170,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 5,
-          name: 'Serhii',
+          name: 'Person 5',
           weekendOnly: true,
           maxWeekendSlots: 3,
           allowedWeekdays: [0, 6],
@@ -183,7 +183,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 6,
-          name: 'Oleksandr',
+          name: 'Person 6',
           weekendOnly: false,
           maxWeekendSlots: null,
           allowedWeekdays: [],
@@ -196,7 +196,7 @@ const testCases: TestCase[] = [
         },
         {
           id: 7,
-          name: 'Oleksii',
+          name: 'Person 7',
           weekendOnly: false,
           maxWeekendSlots: null,
           allowedWeekdays: [],
