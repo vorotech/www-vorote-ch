@@ -15,6 +15,10 @@ export default async function Page({
   const resolvedParams = await params;
   const filepath = resolvedParams.urlSegments.join('/');
 
+  if (filepath.includes('socket.io')) {
+    notFound();
+  }
+
   let data;
   try {
     data = await client.queries.page({
