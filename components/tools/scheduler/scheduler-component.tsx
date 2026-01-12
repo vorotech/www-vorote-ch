@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices, Download } from 'lucide-react';
 
 
 import { Member, ScheduleSlot, generateScheduleData, isOnTimeOff, isWeekend, getDaysInMonth } from './scheduler';
@@ -51,10 +51,9 @@ const OnCallScheduler = () => {
                 const { numMembers: storedNum, members: storedMembers, startOfWeek: storedStartOfWeek, shiftStartHour: storedShiftStartHour } = JSON.parse(stored);
                 if (storedNum) setNumMembers(storedNum);
                 if (storedMembers) {
-                    // Migrate vacations to timeOffs if needed
                     const migratedMembers = storedMembers.map((m: any) => ({
                         ...m,
-                        timeOffs: m.timeOffs || m.vacations || []
+                        timeOffs: m.timeOffs  || []
                     }));
                     setMembers(migratedMembers);
                 }
@@ -99,6 +98,23 @@ const OnCallScheduler = () => {
         const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members);
         setSchedule(newSchedule);
         setStats(memberSlots);
+    };
+
+    const exportConfiguration = () => {
+        const config = {
+            month,
+            year,
+            members: members.map(m => ({
+                ...m,
+                // Ensure dates are strings for JSON export if they aren't already
+                timeOffs: m.timeOffs.map(t => ({
+                    start: new Date(t.start).toISOString(),
+                    end: new Date(t.end).toISOString()
+                }))
+            }))
+        };
+        navigator.clipboard.writeText(JSON.stringify(config, null, 2));
+        alert('Configuration copied to clipboard! You can paste this into the test file.');
     };
 
     const updateMemberName = (id: any, name: any) => {
@@ -275,6 +291,8 @@ const OnCallScheduler = () => {
                                 Team Member Configuration
                             </h2>
 
+
+
                             <div className="mb-8 p-4 bg-white rounded-lg border border-gray-200">
                                 <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
                                     <Clock className="w-5 h-5 text-indigo-600" />
@@ -447,8 +465,25 @@ const OnCallScheduler = () => {
                                     </div>
                                 </div>
                             ))}
+
+                        <div className="flex gap-2 mt-6 justify-end border-t border-gray-200 pt-4">
+                             <button
+                                 onClick={exportConfiguration}
+                                 className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                                 title="Export Config for Testing"
+                             >
+                                 <Download className="w-5 h-5" />
+                             </button>
+                             <button
+                                 onClick={clearSettings}
+                                 className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200"
+                                 title="Clear Cache"
+                             >
+                                 <Trash2 className="w-5 h-5" />
+                             </button>
                         </div>
-                    )}
+                    </div>
+                )}
 
                     <div className="flex gap-4">
                         <button
@@ -458,14 +493,7 @@ const OnCallScheduler = () => {
                             <Settings className="w-5 h-5" />
                             {showSettings ? 'Hide' : 'Show'} Settings
                         </button>
-                        <button
-                            onClick={clearSettings}
-                            className="flex items-center gap-2 px-4 py-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200 whitespace-nowrap"
-                            title="Clear browser cache"
-                        >
-                            <Trash2 className="w-5 h-5" />
-                            Clear cache
-                        </button>
+
                         <button
                             onClick={generateSchedule}
                             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"

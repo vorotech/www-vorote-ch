@@ -23,7 +23,7 @@ export default function ToolsPage() {
                         <h2 className="text-xl font-semibold">On-Call Scheduler</h2>
                     </div>
                     <p className="text-muted-foreground mb-4">
-                        Generate fair and optimized on-call shift schedules for your team, considering vacations and constraints.
+                        Generate fair and optimized on-call shift schedules for your team, considering time offs and constraints.
                     </p>
                     <div className="flex items-center text-sm font-medium text-primary group-hover:underline">
                         Open Tool <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
