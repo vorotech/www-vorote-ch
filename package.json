@@ -15,7 +15,8 @@
     "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
     "start": "tinacms build && next start",
     "lint": "biome lint",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "test:scheduler": "npx tsx components/tools/scheduler/scheduler.test.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
