@@ -431,18 +431,18 @@ const OnCallScheduler = () => {
                                                     </button>
                                                 </div>
                                             ))}
-                                        <div className="flex gap-2 mt-2">
+                                        <div className="flex flex-col md:flex-row gap-2 mt-2">
                                             <input
                                                 type="date"
                                                 value={timeOffInputs[member.id]?.start || ''}
                                                 onChange={(e) => updateTimeOffInput(member.id, 'start', e.target.value)}
-                                                className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full md:w-auto"
                                             />
                                             <input
                                                 type="date"
                                                 value={timeOffInputs[member.id]?.end || ''}
                                                 onChange={(e) => updateTimeOffInput(member.id, 'end', e.target.value)}
-                                                className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full md:w-auto"
                                             />
                                             <button
                                                 onClick={() => {
@@ -457,7 +457,7 @@ const OnCallScheduler = () => {
                                                         updateTimeOffInput(member.id, 'end', '');
                                                     }
                                                 }}
-                                                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
+                                                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors w-full md:w-auto"
                                             >
                                                 Add Time Off
                                             </button>
@@ -485,13 +485,14 @@ const OnCallScheduler = () => {
                     </div>
                 )}
 
-                    <div className="flex gap-4">
+                <div className="flex gap-4">
                         <button
                             onClick={() => setShowSettings(!showSettings)}
                             className="flex items-center gap-2 px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors whitespace-nowrap"
                         >
                             <Settings className="w-5 h-5" />
-                            {showSettings ? 'Hide' : 'Show'} Settings
+                            <span className="hidden md:inline">{showSettings ? 'Hide' : 'Show'} Settings</span>
+                            <span className="md:hidden">Settings</span>
                         </button>
 
                         <button
@@ -499,7 +500,8 @@ const OnCallScheduler = () => {
                             className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
                         >
                             <RefreshCw className="w-5 h-5" />
-                            Generate Schedule
+                            <span className="hidden md:inline">Generate Schedule</span>
+                            <span className="md:hidden">Generate</span>
                         </button>
                     </div>
                 </div>
@@ -534,21 +536,20 @@ const OnCallScheduler = () => {
                 {schedule && (
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-bold text-gray-800">
+                            <h2 className="text-xl md:text-2xl font-bold text-gray-800">
                                 Schedule for {new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                             </h2>
-                            <button
-                                onClick={generateSchedule}
-                                className="flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg transition-colors text-sm font-medium"
-                                title="Regenerate Schedule"
-                            >
-                                <Dices className="w-4 h-4" />
-                                Randomize
-                            </button>
                         </div>
 
-                        <div className="flex justify-end mb-4">
-                            <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap justify-end gap-2 mb-4">
+                                <button
+                                    onClick={generateSchedule}
+                                    className="flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg transition-colors text-sm font-medium"
+                                    title="Regenerate Schedule"
+                                >
+                                    <Dices className="w-4 h-4" />
+                                    <span className="hidden md:inline">Randomize</span>
+                                </button>
                                 {viewMode === 'calendar' && (
                                     <button
                                         onClick={() => setShowTimeOff(!showTimeOff)}
@@ -556,7 +557,7 @@ const OnCallScheduler = () => {
                                             }`}
                                     >
                                         {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                        Time Off
+                                        <span className="hidden md:inline">Time Off</span>
                                     </button>
                                 )}
                                 <div className="flex bg-gray-100 p-1 rounded-lg">
@@ -575,7 +576,6 @@ const OnCallScheduler = () => {
                                         <LayoutGrid className="w-5 h-5" />
                                     </button>
                                 </div>
-                            </div>
                         </div>
 
                         {viewMode === 'list' ? (
@@ -589,7 +589,7 @@ const OnCallScheduler = () => {
                                             }`}
                                     >
                                         <div className="flex items-center gap-4">
-                                            <span className="font-medium text-gray-700 w-32">
+                                            <span className="font-medium text-gray-700 w-24 md:w-32 truncate">
                                                 {formatDate(slot.date)}
                                             </span>
                                             <span className="text-sm text-gray-500">
@@ -598,7 +598,7 @@ const OnCallScheduler = () => {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             {slot.member ? (
-                                                <span className={`px-4 py-1 rounded-full font-medium ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text}`}>
+                                                <span className={`px-2 py-1 md:px-4 md:py-1 rounded-full font-medium text-sm md:text-base truncate max-w-[120px] md:max-w-none inline-block align-middle ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text}`}>
                                                     {slot.member.name}
                                                 </span>
                                             ) : (
@@ -612,105 +612,85 @@ const OnCallScheduler = () => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="border border-gray-200 rounded-lg overflow-hidden">
-                                <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
-                                    {Array.from({ length: 7 }).map((_, i) => {
-                                        const dayIndex = (startOfWeek + i) % 7;
-                                        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                                        return (
-                                            <div key={i} className="py-2 text-center text-sm font-semibold text-gray-600">
-                                                {days[dayIndex]}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                <div className="grid grid-cols-7 bg-white">
-                                    {(() => {
-                                        const firstDay = new Date(year, month, 1);
-                                        const totalDays = new Date(year, month + 1, 0).getDate();
-                                        const firstDayIndex = firstDay.getDay();
-                                        const offset = (firstDayIndex - startOfWeek + 7) % 7;
-
-                                        const cells = [];
-
-                                        // Empty cells before start of month
-                                        for (let i = 0; i < offset; i++) {
-                                            cells.push(<div key={`empty-${i}`} className="h-32 border-b border-r border-gray-100 bg-gray-50/30" />);
-                                        }
-
-                                        // Day cells
-                                        for (let d = 1; d <= totalDays; d++) {
-                                            const date = new Date(year, month, d);
-                                            const slot = schedule.find(s => s.date.getDate() === d);
-                                            const isToday = new Date().toDateString() === date.toDateString();
-
-                                            cells.push(
-                                                <div key={d} className={`h-32 border-b border-r border-gray-100 p-2 hover:bg-gray-50 transition-colors ${isWeekend(date) ? 'bg-amber-50/30' : ''
-                                                    }`}>
-                                                    <div className={`text-sm font-medium mb-2 ${isToday ? 'bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-gray-700'
-                                                        }`}>
-                                                        {d}
+                            <div className="overflow-x-auto pb-4">
+                                <div className="min-w-[800px]">
+                                    <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                        <div className="grid grid-cols-7 bg-gray-50 border-b border-gray-200">
+                                            {Array.from({ length: 7 }).map((_, i) => {
+                                                const dayIndex = (startOfWeek + i) % 7;
+                                                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                                return (
+                                                    <div key={i} className="py-2 text-center text-sm font-semibold text-gray-600">
+                                                        {days[dayIndex]}
                                                     </div>
-                                                    {slot && slot.member ? (
-                                                        <div className={`text-xs p-2 rounded border font-medium ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text} ${getMemberColor(slot.member.id).border}`}>
-                                                            {slot.member.name}
-                                                            <div className={`text-[10px] mt-1 opacity-75`}>
-                                                                {shiftStartHour}:00
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="grid grid-cols-7 bg-white">
+                                            {(() => {
+                                                const firstDay = new Date(year, month, 1);
+                                                const totalDays = new Date(year, month + 1, 0).getDate();
+                                                const firstDayIndex = firstDay.getDay();
+                                                const offset = (firstDayIndex - startOfWeek + 7) % 7;
+
+                                                const cells = [];
+
+                                                // Empty cells before start of month
+                                                for (let i = 0; i < offset; i++) {
+                                                    cells.push(<div key={`empty-${i}`} className="min-h-[8rem] border-b border-r border-gray-100 bg-gray-50/30" />);
+                                                }
+
+                                                // Day cells
+                                                for (let d = 1; d <= totalDays; d++) {
+                                                    const date = new Date(year, month, d);
+                                                    const slot = schedule.find(s => s.date.getDate() === d);
+                                                    const isToday = new Date().toDateString() === date.toDateString();
+
+                                                    cells.push(
+                                                        <div key={d} className={`min-h-[8rem] border-b border-r border-gray-100 p-2 hover:bg-gray-50 transition-colors ${isWeekend(date) ? 'bg-amber-50/30' : ''
+                                                            }`}>
+                                                            <div className={`text-sm font-medium mb-2 ${isToday ? 'bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center' : 'text-gray-700'
+                                                                }`}>
+                                                                {d}
                                                             </div>
-                                                        </div>
-                                                    ) : slot ? (
-                                                        <div className="text-xs p-2 bg-red-100 text-red-800 rounded border border-red-200 font-medium flex items-center gap-1">
-                                                            <AlertCircle className="w-3 h-3" />
-                                                            Unassigned
-                                                        </div>
-                                                    ) : null}
-
-                                                    {showTimeOff && (() => {
-                                                        const timeOffMembers = members.filter(m => isOnTimeOff(m, date));
-                                                        if (timeOffMembers.length === 0) return null;
-
-                                                        if (timeOffMembers.length === 1) {
-                                                            return (
-                                                                <div className="mt-1">
-                                                                    <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-gray-100 px-1 py-0.5 rounded">
-                                                                        <Plane className="w-3 h-3" />
-                                                                        <span className="truncate max-w-[80px]">{timeOffMembers[0].name}</span>
+                                                            {slot && slot.member ? (
+                                                                <div className={`text-xs p-2 rounded border font-medium ${getMemberColor(slot.member.id).bg} ${getMemberColor(slot.member.id).text} ${getMemberColor(slot.member.id).border}`}>
+                                                                    {slot.member.name}
+                                                                    <div className={`text-[10px] mt-1 opacity-75`}>
+                                                                        {shiftStartHour.toString().padStart(2, '0')}:00
                                                                     </div>
                                                                 </div>
-                                                            );
-                                                        }
-
-                                                        return (
-                                                            <div className="mt-1 relative group">
-                                                                <div className="flex items-center gap-1 text-[10px] text-gray-600 bg-gray-100 px-1 py-0.5 rounded cursor-help">
-                                                                    <Plane className="w-3 h-3" />
-                                                                    <span>{timeOffMembers.length} on time off</span>
+                                                            ) : (
+                                                                <div className="text-xs text-gray-400 italic p-2">
+                                                                    Unassigned
                                                                 </div>
-                                                                <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-10 w-max max-w-[150px] bg-gray-800 text-white text-xs rounded p-2 shadow-lg pointer-events-none">
-                                                                    <div className="font-semibold mb-1 border-b border-gray-600 pb-1">Time Off:</div>
-                                                                    <div className="space-y-0.5">
-                                                                        {timeOffMembers.map(m => (
-                                                                            <div key={m.id}>{m.name}</div>
+                                                            )}
+                                                            {showTimeOff && (
+                                                                <div className="mt-1 space-y-1">
+                                                                    {members
+                                                                        .filter(m => isOnTimeOff(m, date))
+                                                                        .map(m => (
+                                                                            <div key={m.id} className="flex items-center gap-1 text-[10px] text-amber-600 bg-amber-50 px-1 rounded border border-amber-100">
+                                                                                <Plane className="w-3 h-3" />
+                                                                                {m.name}
+                                                                            </div>
                                                                         ))}
-                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        );
-                                                    })()}
-                                                </div>
-                                            );
-                                        }
+                                                            )}
+                                                        </div>
+                                                    );
+                                                }
 
-                                        // Empty cells after end of month
-                                        const remainingCells = 7 - (cells.length % 7);
-                                        if (remainingCells < 7) {
-                                            for (let i = 0; i < remainingCells; i++) {
-                                                cells.push(<div key={`empty-end-${i}`} className="h-32 border-b border-r border-gray-100 bg-gray-50/30" />);
-                                            }
-                                        }
+                                                // Fill remaining cells
+                                                const remainingCells = (7 - ((offset + totalDays) % 7)) % 7;
+                                                for (let i = 0; i < remainingCells; i++) {
+                                                    cells.push(<div key={`empty-end-${i}`} className="min-h-[8rem] border-b border-r border-gray-100 bg-gray-50/30" />);
+                                                }
 
-                                        return cells;
-                                    })()}
+                                                return cells;
+                                            })()}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
