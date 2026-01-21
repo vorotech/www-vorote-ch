@@ -2,8 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import { Abel, Source_Code_Pro } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { VideoDialogProvider } from "@/components/ui/VideoDialogContext";
-import VideoDialog from "@/components/ui/VideoDialog";
+import { ClientProviders } from "@/components/layout/client-providers";
 
 import "@/styles.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
@@ -18,7 +17,7 @@ const sourceCodePro = Source_Code_Pro({
 
 // Abel for headings
 const abel = Abel({
-  subsets: ["latin"],
+  subsets: ["latin"], 
   variable: "--font-abel",
   weight: "400",
 });
@@ -36,10 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(sourceCodePro.variable, abel.variable)}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <VideoDialogProvider>
+        <ClientProviders>
           {children}
-          <VideoDialog />
-        </VideoDialogProvider>
+        </ClientProviders>
         <TailwindIndicator />
       </body>
     </html>
