@@ -5,7 +5,7 @@
   "packageManager": "pnpm@9.10.0",
   "scripts": {
     "dev": "tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build --partial-reindex --skip-cloud-checks && next build",
+    "build": "tinacms build --partial-reindex && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
