@@ -5,19 +5,15 @@
   "packageManager": "pnpm@9.10.0",
   "scripts": {
     "dev": "tinacms dev -c \"next dev --turbopack\"",
-    "dev:build": "next build",
-    "build": "tinacms build && next build",
-    "build:local": "NODE_OPTIONS=\"--max-old-space-size=4096\" tinacms build --local --skip-indexing --skip-cloud-checks && next build",
-    "build:ci": "NODE_OPTIONS=\"--max-old-space-size=4096\" tinacms build --skip-indexing --skip-cloud-checks && next build",
+    "build": "tinacms build --partial-reindex --skip-cloud-checks && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "check": "opennextjs-cloudflare build && tsc && wrangler deploy --dry-run",
-    "start": "tinacms build && next start",
+    "start": "next start",
     "lint": "biome lint",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "test:scheduler": "npx tsx components/tools/scheduler/scheduler.test.ts",
-    "clean": "rm -rf .next .open-next out .tina/__generated__ tsconfig.tsbuildinfo next-env.d.ts"
+    "test:scheduler": "npx tsx components/tools/scheduler/scheduler.test.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
