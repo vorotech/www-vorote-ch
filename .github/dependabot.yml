@@ -16,7 +16,7 @@ updates:
       tinacms:
         patterns:
           - "tinacms"
-          - "@tinacms*"
+          - "@tinacms/*"
     commit-message:
       # Prefix all commit messages with "chore(deps): "
       prefix: "chore(deps)"
