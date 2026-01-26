@@ -1,0 +1,92 @@
+---
+title: Why You Need Implement OWASP SAMM and DSOMM
+heroImg: /uploads/posts/paris-bilal-BCiInCgULB8-unsplash.jpg
+excerpt: >
+  Navigating the world of Application Security can feel like choosing between
+  rigid policies or chaotic automation. In this first part of our series, we
+  explore the two essential frameworks that bridge this gap: OWASP SAMM and
+  OWASP DSOMM. While SAMM provides the strategic "North Star" for leadership,
+  DSOMM offers a tactical "GPS" for DevOps engineers. By comparing how both
+  models handle critical issues like leaked credentials, you’ll learn how to
+  align organizational governance with technical execution to build a truly
+  resilient security program.
+author: content/authors/Dmytro.md
+tags:
+  - tag: content/tags/DevSecOps.mdx
+---
+
+If you’ve ever tried to "do" Application Security (AppSec) at scale, you know the frustration. You either have high-level policies that developers ignore, or a mess of automated tools that overwhelm everyone with false positives.
+
+To solve this, the OWASP Foundation provides two powerful maturity models: **SAMM** (Software Assurance Maturity Model) and **DSOMM** (DevSecOps Maturity Model). While they share the goal of improving security, they operate at different layers of the organization.
+
+## OWASP SAMM: The Strategic Blueprint
+
+SAMM is an OWASP Flagship project designed to provide a broad, organization-wide framework for software assurance. It is technology-agnostic and focuses on the "what" and the "why" of security processes.
+
+* **Structure**: It uses a rigid, symmetrical structure of 5 Business Functions (Governance, Design, Implementation, Verification, Operations), each containing 3 Security Practices.
+* **Target Audience**: Security leaders, CISOs, and architects.
+* **Approach**: Top-down. It is used to create a long-term strategy, benchmark performance, and justify security budgets to stakeholders.
+* **Maturity Levels**: 1 to 3 (Ad-hoc to Optimized).
+
+![](/uploads/posts/OWASP/OWASP-SAMM-Model.png)
+
+### References
+
+* [Software Assurance Maturity Model](https://owaspsamm.org/)
+* [OWASP Open SAMMY is an open-source Application Security Management tool](https://owasp.org/www-project-open-sammy/)
+
+## OWASP DSOMM: The Technical Roadmap
+
+DSOMM is an OWASP Hands-on project that focuses specifically on how security fits into the "trenches" of a DevOps environment. It is more granular and technical than SAMM, focusing on the "how."
+
+* **Structure**: Organized into dimensions such as Build & Deployment, Culture, and Implementation. It is asymmetrical – not every category has the same number of maturity levels.
+* **Target Audience**: DevOps engineers, SREs, and technical security architects.
+* **Approach**: Bottom-up. It provides a highly actionable roadmap for technical teams to automate security checks (e.g., secret scanning, IaC analysis) directly into CI/CD pipelines.
+* **Maturity Levels**: 1 to 5, mapping specifically to the depth of DevSecOps integration.
+
+![](/uploads/posts/OWASP/dsomm_matrix_example.png)
+
+### References
+
+* [OWASP Devsecops Maturity Model](https://owasp.org/www-project-devsecops-maturity-model/)
+* [OWASP DSOMM Matrix](https://dsomm.owasp.org/)
+
+## A Practical Example: Secret Scanning
+
+To see these differences in action, let’s look at a common nightmare for any business: **Leaked Credentials**.
+
+### The SAMM Approach: Governance and Process
+
+In SAMM, secret scanning is a core part of **Implementation** within the **Secret Management** stream. It is addressed as a mature process that an organization should aim for to prevent production leaks.
+
+* **When it applies**: When you are defining the organizational standard for how secrets should be handled across all stages of deployment.
+* **The Goal**: To ensure developers and deployers never handle sensitive values directly by using automated processes to inject credentials during deployment.
+* **The Requirement**: Implementing periodic checks to detect secrets in code repositories (including full history) and configuration files, ensuring that discovered secrets are revoked and refreshed.
+
+SAMM ensures that the organization has the policy and the mandate to stop credentials from leaking.
+
+### The DSOMM Approach: Technical Depth
+
+DSOMM focuses on the immediate technical risks within the **Test and Verification** dimension. Under the **Static Depth for Infrastructure** sub-dimension, it identifies secret scanning as a foundational "Level 1" requirement.
+
+* **When it applies**: During the setup of the CI/CD pipeline and containerization strategy. It is one of the first technical hurdles a team must clear.
+* **Test for stored secrets in code**: Focuses on the risk of secrets being exposed to unauthorized parties via git history or direct code.
+* **Test for stored secrets in build artifacts**: Focuses on the risk of secrets residing in container images or other artifacts. Even if the code is clean, the final build package must be scanned.
+
+## Which One Should You Start With?
+
+Choosing a starting point depends entirely on your role and the current maturity of your organization. Because these models solve different problems, the "right" choice is often driven by your immediate objectives.
+
+**Start with SAMM if: **
+
+* You are building a security program from the ground up and need a structured framework to show progress to stakeholders.
+* You need to align different departments (Legal, HR, Engineering) under a single security strategy.
+* You want to perform a high-level gap analysis to justify headcount or security tool spending.
+
+**Start with DSOMM if:**
+
+* You already have a fast-moving DevOps culture and need to "shift left" without slowing down the pipeline.
+* You are a technical lead looking for a specific, granular checklist of automation activities.
+* You need to improve technical depth in specific areas, such as container security or CI/CD hardening, where general policies aren't enough.
+
+In most successful organizations, the two models meet in the middle. SAMM provides the organizational "North Star," while DSOMM provides the tactical "GPS" for the teams doing the work.
