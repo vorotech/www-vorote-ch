@@ -1,20 +1,52 @@
-import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { createSimpleEmail, sendEmail } from '@/lib/email';
+import type { NextRequest } from 'next/server';
 
-// Initialize Resend with the API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const runtime = 'edge';
 
-export async function POST(request: Request) {
+// Email configuration for feedback form
+const FEEDBACK_EMAIL_CONFIG = {
+  bindingName: 'SEND_FEEDBACK',
+  fromAddress: 'noreply@vorote.ch',
+  toAddress: 'hello@vorote.ch',
+} as const;
+
+/**
+ * Creates a feedback notification email
+ * @param options - Feedback email options
+ * @returns EmailMessage instance ready to be sent
+ */
+function createFeedbackEmail(options: {
+  from: string;
+  to: string;
+  userEmail: string;
+  message: string;
+}) {
+  return createSimpleEmail({
+    from: options.from,
+    to: options.to,
+    subject: 'New Feedback Received',
+    replyTo: options.userEmail,
+    body: `New feedback from the website:\n\n` + `${options.message}\n\n` + `---\n` + `From: ${options.userEmail}`,
+  });
+}
+
+export async function POST(request: NextRequest) {
+  const env = process.env as any;
+
   try {
-    const { email, message, token } = (await request.json()) as { email: string; message: string; token: string };
+    const { email, message, token } = (await request.json()) as {
+      email: string;
+      message: string;
+      token: string;
+    };
 
     if (!email || !message || !token) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+      return new Response(JSON.stringify({ message: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
     // 1. Validate Turnstile token
     const formData = new FormData();
-    formData.append('secret', process.env.TURNSTILE_SECRET_KEY || '');
+    formData.append('secret', env?.TURNSTILE_SECRET_KEY || '');
     formData.append('response', token);
 
     const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
@@ -25,26 +57,39 @@ export async function POST(request: Request) {
     const turnstileData = (await turnstileRes.json()) as { success: boolean };
 
     if (!turnstileData.success) {
-      return NextResponse.json({ message: 'Invalid captcha' }, { status: 403 });
+      return new Response(JSON.stringify({ message: 'Invalid captcha' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // 2. Send email via Resend
-    const { data, error } = await resend.emails.send({
-      from: 'Feedback Form <onboarding@resend.dev>', // Update this if you have a verified domain
-      to: ['hello@vorote.ch'],
-      subject: 'New Feedback Received',
-      replyTo: email,
-      text: `Start of feedback message:\n\n${message}\n\n---\nFrom: ${email}`,
+    // 2. Get email sender using local configuration
+    const emailSender = env[FEEDBACK_EMAIL_CONFIG.bindingName];
+
+    if (!emailSender) {
+      console.warn(`${FEEDBACK_EMAIL_CONFIG.bindingName} binding not available - email not sent`);
+      console.log(`Feedback from ${email}: ${message}`);
+      return new Response(JSON.stringify({ message: 'Feedback received (email delivery unavailable)' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 3. Create and send feedback email
+    const emailMessage = createFeedbackEmail({
+      from: FEEDBACK_EMAIL_CONFIG.fromAddress,
+      to: FEEDBACK_EMAIL_CONFIG.toAddress,
+      userEmail: email,
+      message: message,
     });
 
-    if (error) {
-      console.error('Resend error:', error);
-      return NextResponse.json({ message: 'Failed to send email' }, { status: 500 });
+    try {
+      await sendEmail(emailSender, emailMessage);
+    } catch (emailError) {
+      console.error('Cloudflare Email error:', emailError);
+      return new Response(JSON.stringify({ message: 'Failed to send email' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
     }
 
-    return NextResponse.json({ message: 'Feedback sent successfully' }, { status: 200 });
+    return new Response(JSON.stringify({ message: 'Feedback sent successfully' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
     console.error('Feedback API error:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return new Response(JSON.stringify({ message: 'Internal server error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }

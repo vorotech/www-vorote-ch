@@ -25,45 +25,57 @@ export const FeedbackForm = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
 
-    // explicit rendering of turnstile
     useEffect(() => {
-        // Define callbacks globally
-        window.onTurnstileSuccess = (t: string) => setToken(t);
-        window.onTurnstileError = () => setErrorMessage('Turnstile verification failed');
-        window.onTurnstileExpire = () => setToken(null);
-
-        const renderTurnstile = () => {
-            if (window.turnstile && containerRef.current && !widgetIdRef.current) {
-                widgetIdRef.current = window.turnstile.render(containerRef.current, {
-                    sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA',
-                    theme: theme === 'dark' ? 'dark' : 'light',
-                    callback: 'onTurnstileSuccess',
-                    'error-callback': 'onTurnstileError',
-                    'expired-callback': 'onTurnstileExpire',
-                });
+        // Cleanup function to remove widget
+        return () => {
+            if (window.turnstile && widgetIdRef.current) {
+                window.turnstile.remove(widgetIdRef.current);
+                widgetIdRef.current = null;
             }
         };
-
-        // If turnstile is already loaded
-        if (window.turnstile) {
-            renderTurnstile();
-        } else {
-             // It will be handled by onLoad in Script
-        }
-
-        return () => {
-             // Cleanup if needed, though turnstile usually persists.
-             // We could potentially remove the widget but explicit removal isn't always clean.
-             if (window.turnstile && widgetIdRef.current) {
-                 window.turnstile.remove(widgetIdRef.current);
-                 widgetIdRef.current = null;
-             }
-             // Cleanup global callbacks to avoid memory leaks or conflicts
-             delete (window as any).onTurnstileSuccess;
-             delete (window as any).onTurnstileError;
-             delete (window as any).onTurnstileExpire;
-        };
     }, []);
+
+    const renderTurnstileWidget = () => {
+        if (window.turnstile && containerRef.current && !widgetIdRef.current) {
+            const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+            
+            console.log('Rendering Turnstile widget with sitekey:', siteKey);
+
+            try {
+                widgetIdRef.current = window.turnstile.render(containerRef.current, {
+                    sitekey: siteKey,
+                    theme: theme === 'dark' ? 'dark' : 'light',
+                    callback: (t: string) => {
+                        console.log('Turnstile success token:', t ? t.substring(0, 10) + '...' : 'null');
+                        setToken(t);
+                        setErrorMessage(''); // Clear potential previous errors
+                    },
+                    'error-callback': () => {
+                        console.error('Turnstile error');
+                        setErrorMessage('Turnstile verification failed. Please try again.');
+                    },
+                    'expired-callback': () => {
+                        console.warn('Turnstile expired');
+                        setToken(null);
+                        setErrorMessage('Turnstile expired. Please verify again.');
+                    },
+                });
+            } catch (err) {
+                console.error('Error rendering Turnstile:', err);
+            }
+        }
+    };
+
+    // Attempt to render if script is already loaded or when returning to form
+    useEffect(() => {
+        if (window.turnstile && status === 'idle') {
+            // Small delay to ensure DOM is ready after status change
+            const timeout = setTimeout(() => {
+                renderTurnstileWidget();
+            }, 100);
+            return () => clearTimeout(timeout);
+        }
+    }, [theme, status]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,13 +107,18 @@ export const FeedbackForm = () => {
             setEmail('');
             setMessage('');
             setToken(null);
+            
+            // Remove the widget on success
             if (window.turnstile && widgetIdRef.current) {
-                window.turnstile.reset(widgetIdRef.current);
+                window.turnstile.remove(widgetIdRef.current);
+                widgetIdRef.current = null;
             }
         } catch (error: any) {
             setStatus('error');
             setErrorMessage(error.message || 'Failed to send feedback');
-             if (window.turnstile && widgetIdRef.current) {
+            
+            // Reset the widget on error
+            if (window.turnstile && widgetIdRef.current) {
                 window.turnstile.reset(widgetIdRef.current);
             }
             setToken(null);
@@ -114,16 +131,8 @@ export const FeedbackForm = () => {
                 src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
                 strategy="lazyOnload"
                 onLoad={() => {
-                     // Trigger render if component is mounted and script just loaded
-                    if (window.turnstile && containerRef.current && !widgetIdRef.current) {
-                        widgetIdRef.current = window.turnstile.render(containerRef.current, {
-                            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA',
-                            theme: theme === 'dark' ? 'dark' : 'light',
-                            callback: 'onTurnstileSuccess',
-                            'error-callback': 'onTurnstileError',
-                            'expired-callback': 'onTurnstileExpire',
-                        });
-                    }
+                    console.log('Turnstile script loaded');
+                    renderTurnstileWidget();
                 }}
             />
             <h3 className="text-xl font-semibold mb-2 text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -174,6 +183,9 @@ export const FeedbackForm = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="your@email.com"
                                 required
+                                autoComplete="off"
+                                data-form-type="other"
+                                data-lpignore="true"
                                 className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
                             />
                         </div>

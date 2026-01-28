@@ -226,7 +226,7 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-6 px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
                     <div className="flex items-center justify-between mb-6">
@@ -700,7 +700,7 @@ const OnCallScheduler = () => {
             </div>
             
             {schedule && (
-                <div className="max-w-md mx-auto mt-16 pb-12">
+                <div className="max-w-md mx-auto mt-6 pb-12">
                     <FeedbackForm />
                 </div>
             )}
