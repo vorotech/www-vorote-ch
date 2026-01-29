@@ -39,9 +39,8 @@
 		// Prevent JavaScript heap out of memory errors by allocate enough memory to the old space heap
 		"NODE_OPTIONS": "--max-old-space-size=4096",
 		// Email Sending Feature Flag
-		// Uncomment and set to "false" to disable all email sending functionality
-		// "NEXT_PUBLIC_ENABLE_EMAIL_SENDING": "true",
-		// "ENABLE_EMAIL_SENDING": "true"
+		// Set to "false" to disable all email sending functionality
+		"ENABLE_EMAIL_SENDING": "true"
 	},
 	/**
 	 * Email Sending
