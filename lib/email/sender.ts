@@ -7,16 +7,7 @@
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-// Email message interface for compatibility with Cloudflare Email API
-export interface EmailMessage {
-  from: string;
-  to: string;
-  content: string;
-}
-
-export interface EmailSenderBinding {
-  send(message: EmailMessage): Promise<void>;
-}
+import { EmailMessage } from 'cloudflare:email';
 
 export interface SimpleEmailOptions {
   from: string;
@@ -71,7 +62,8 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
   content += '\r\n';
   content += body;
 
-  return { from, to, content };
+  // Use native Cloudflare EmailMessage constructor
+  return new EmailMessage(from, to, content);
 }
 
 /**
@@ -94,7 +86,7 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
  * await sendEmail(env.EMAIL_SENDER, message);
  * ```
  */
-export async function sendEmail(emailSender: EmailSenderBinding, message: EmailMessage): Promise<void> {
+export async function sendEmail(emailSender: SendEmail, message: EmailMessage): Promise<void> {
   try {
     await emailSender.send(message);
   } catch (error) {
@@ -122,7 +114,7 @@ export async function sendEmail(emailSender: EmailSenderBinding, message: EmailM
  * });
  * ```
  */
-export async function sendSimpleEmail(emailSender: EmailSenderBinding, options: SimpleEmailOptions): Promise<void> {
+export async function sendSimpleEmail(emailSender: SendEmail, options: SimpleEmailOptions): Promise<void> {
   const message = createSimpleEmail(options);
   await sendEmail(emailSender, message);
 }
