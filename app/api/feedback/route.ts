@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 // Email configuration for feedback form
 const FEEDBACK_EMAIL_CONFIG = {
