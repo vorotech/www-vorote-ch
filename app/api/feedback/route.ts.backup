@@ -1,3 +1,4 @@
+import { createSimpleEmail, sendEmail } from '@/lib/email/sender';
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -9,16 +10,24 @@ const FEEDBACK_EMAIL_CONFIG = {
   toAddress: 'hello@vorote.ch',
 } as const;
 
-// Email message type
-interface EmailMessage {
+/**
+ * Creates a feedback notification email
+ * @param options - Feedback email options
+ * @returns EmailMessage instance ready to be sent
+ */
+function createFeedbackEmail(options: {
   from: string;
   to: string;
-  content: string;
-}
-
-// Email sender binding type
-interface EmailSenderBinding {
-  send(message: EmailMessage): Promise<void>;
+  userEmail: string;
+  message: string;
+}) {
+  return createSimpleEmail({
+    from: options.from,
+    to: options.to,
+    subject: 'New Feedback Received',
+    replyTo: options.userEmail,
+    body: `New feedback from the website:\n\n` + `${options.message}\n\n` + `---\n` + `From: ${options.userEmail}`,
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -83,7 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Get email sender using local configuration
-    const emailSender = env[FEEDBACK_EMAIL_CONFIG.bindingName] as EmailSenderBinding | undefined;
+    const emailSender = env[FEEDBACK_EMAIL_CONFIG.bindingName];
 
     if (!emailSender) {
       console.warn(`${FEEDBACK_EMAIL_CONFIG.bindingName} binding not available - email not sent`);
@@ -91,19 +100,16 @@ export async function POST(request: NextRequest) {
       return Response.json({ message: 'Feedback received (email delivery unavailable)' }, { status: 200 });
     }
 
-    // 3. Create email message inline
-    const emailContent =
-      `Subject: New Feedback Received\r\n` + `Reply-To: ${email}\r\n` + `\r\n` + `New feedback from the website:\n\n${message}\n\n---\nFrom: ${email}`;
-
-    const emailMessage: EmailMessage = {
+    // 3. Create and send feedback email
+    const emailMessage = createFeedbackEmail({
       from: FEEDBACK_EMAIL_CONFIG.fromAddress,
       to: FEEDBACK_EMAIL_CONFIG.toAddress,
-      content: emailContent,
-    };
+      userEmail: email,
+      message: message,
+    });
 
-    // 4. Send email
     try {
-      await emailSender.send(emailMessage);
+      await sendEmail(emailSender, emailMessage);
     } catch (emailError) {
       console.error('Cloudflare Email error:', emailError);
       return Response.json({ message: 'Failed to send email' }, { status: 500 });
