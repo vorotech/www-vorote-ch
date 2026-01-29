@@ -1,4 +1,4 @@
-import { createSimpleEmail, sendEmail } from '@/lib/email';
+import { createSimpleEmail, sendEmail } from '@/lib/email/sender';
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
