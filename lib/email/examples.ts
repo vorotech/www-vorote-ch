@@ -7,10 +7,10 @@
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-import { createSimpleEmail, sendEmail, sendSimpleEmail, type EmailSenderBinding } from './sender';
+import { createSimpleEmail, sendEmail, sendSimpleEmail } from './sender';
 
 // Example 1: Simple email with all options manually specified
-export async function exampleSimpleEmail(env: { EMAIL_SENDER: EmailSenderBinding }) {
+export async function exampleSimpleEmail(env: { EMAIL_SENDER: SendEmail }) {
   const message = createSimpleEmail({
     from: 'noreply@example.com',
     to: 'user@example.com',
@@ -23,7 +23,7 @@ export async function exampleSimpleEmail(env: { EMAIL_SENDER: EmailSenderBinding
 }
 
 // Example 2: One-liner email sending
-export async function exampleQuickEmail(env: { EMAIL_SENDER: EmailSenderBinding }) {
+export async function exampleQuickEmail(env: { EMAIL_SENDER: SendEmail }) {
   await sendSimpleEmail(env.EMAIL_SENDER, {
     from: 'noreply@example.com',
     to: 'user@example.com',
@@ -33,7 +33,7 @@ export async function exampleQuickEmail(env: { EMAIL_SENDER: EmailSenderBinding 
 }
 
 // Example 3: Custom email with multiple headers
-export async function exampleCustomEmail(env: { EMAIL_SENDER: EmailSenderBinding }) {
+export async function exampleCustomEmail(env: { EMAIL_SENDER: SendEmail }) {
   const message = createSimpleEmail({
     from: 'newsletter@example.com',
     to: 'subscriber@example.com',
@@ -57,7 +57,7 @@ The Team
 }
 
 // Example 5: Error handling
-export async function exampleWithErrorHandling(env: { EMAIL_SENDER: EmailSenderBinding }) {
+export async function exampleWithErrorHandling(env: { EMAIL_SENDER: SendEmail }) {
   try {
     await sendSimpleEmail(env.EMAIL_SENDER, {
       from: 'noreply@example.com',
@@ -78,7 +78,7 @@ export async function exampleWithErrorHandling(env: { EMAIL_SENDER: EmailSenderB
 // This is similar to the Cloudflare example you provided
 
 interface Env {
-  EMAIL_SENDER: EmailSenderBinding;
+  EMAIL_SENDER: SendEmail;
 }
 
 export async function POST(request: Request, { env }: { env: Env }) {
@@ -113,7 +113,7 @@ export async function POST(request: Request, { env }: { env: Env }) {
 }
 
 // Example 7: Batch email sending (e.g., for notifications)
-export async function exampleBatchEmails(env: { EMAIL_SENDER: EmailSenderBinding }, recipients: string[]) {
+export async function exampleBatchEmails(env: { EMAIL_SENDER: SendEmail }, recipients: string[]) {
   const results = await Promise.allSettled(
     recipients.map((recipient) =>
       sendSimpleEmail(env.EMAIL_SENDER, {
