@@ -7,14 +7,11 @@
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-// Simple EmailMessage class for compatibility with Cloudflare Email API
-// This is used when the cloudflare:email module is not available (e.g., in local dev)
-class EmailMessage {
-  constructor(
-    public from: string,
-    public to: string,
-    public content: string
-  ) {}
+// Email message interface for compatibility with Cloudflare Email API
+export interface EmailMessage {
+  from: string;
+  to: string;
+  content: string;
 }
 
 export interface EmailSenderBinding {
@@ -74,7 +71,7 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
   content += '\r\n';
   content += body;
 
-  return new EmailMessage(from, to, content);
+  return { from, to, content };
 }
 
 /**
@@ -129,6 +126,3 @@ export async function sendSimpleEmail(emailSender: EmailSenderBinding, options: 
   const message = createSimpleEmail(options);
   await sendEmail(emailSender, message);
 }
-
-// Export the EmailMessage class for direct usage if needed
-export { EmailMessage };
