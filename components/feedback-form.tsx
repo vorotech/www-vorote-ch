@@ -125,6 +125,13 @@ export const FeedbackForm = () => {
         }
     };
 
+    // Check if email sending is enabled
+    const isEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_SENDING !== 'false';
+    
+    if (!isEnabled) {
+        return null;
+    }
+
     return (
         <div className="w-full max-w-md mx-auto bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800 p-6">
             <Script 
