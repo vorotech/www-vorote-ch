@@ -25,7 +25,6 @@ function createFeedbackEmail(options: {
       <h2 style="color: #333;">New Feedback Received</h2>
       <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${options.from}</p>
-        <p style="margin: 0 0 10px 0;"><strong>Subject:</strong> ${options.subject}</p>
         <div style="margin-top: 20px;">
           <strong>Message:</strong>
           <p style="white-space: pre-wrap; margin: 10px 0 0 0;">${options.message}</p>
@@ -48,16 +47,16 @@ function createFeedbackEmail(options: {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as { from?: string; subject?: string; message?: string; turnstileToken?: string };
-    const { from, subject, message, turnstileToken } = body;
+    const body = (await request.json()) as { email?: string; message?: string; token?: string };
+    const { email, message, token } = body;
 
     // Validate required fields
-    if (!from || !subject || !message) {
+    if (!email || !message) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate Turnstile token
-    if (!turnstileToken) {
+    if (!token) {
       return Response.json({ error: 'Missing Turnstile token' }, { status: 400 });
     }
 
@@ -68,7 +67,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         secret: process.env.TURNSTILE_SECRET_KEY,
-        response: turnstileToken,
+        response: token,
       }),
     });
 
@@ -79,7 +78,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Create and send email
-    const emailMessage = createFeedbackEmail({ from, subject, message });
+    const emailMessage = createFeedbackEmail({
+      from: email,
+      subject: 'Website Feedback',
+      message,
+    });
 
     // Get the email sender binding from process.env (available in nodejs runtime on Cloudflare)
     const env = process.env as Record<string, unknown>;
