@@ -48,16 +48,16 @@ function createFeedbackEmail(options: {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as { from?: string; subject?: string; message?: string; turnstileToken?: string };
-    const { from, subject, message, turnstileToken } = body;
+    const body = (await request.json()) as { email?: string; message?: string; token?: string };
+    const { email, message, token } = body;
 
     // Validate required fields
-    if (!from || !subject || !message) {
+    if (!email || !message) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Validate Turnstile token
-    if (!turnstileToken) {
+    if (!token) {
       return Response.json({ error: 'Missing Turnstile token' }, { status: 400 });
     }
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         secret: process.env.TURNSTILE_SECRET_KEY,
-        response: turnstileToken,
+        response: token,
       }),
     });
 
@@ -79,7 +79,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Create and send email
-    const emailMessage = createFeedbackEmail({ from, subject, message });
+    const emailMessage = createFeedbackEmail({
+      from: email,
+      subject: 'Website Feedback',
+      message,
+    });
 
     // Get the email sender binding from process.env (available in nodejs runtime on Cloudflare)
     const env = process.env as Record<string, unknown>;
