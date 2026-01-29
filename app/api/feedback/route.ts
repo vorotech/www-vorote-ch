@@ -31,40 +31,64 @@ function createFeedbackEmail(options: {
 }
 
 export async function POST(request: NextRequest) {
-  // Check if email sending is enabled
-  const isEnabled = process.env.ENABLE_EMAIL_SENDING !== 'false';
-
-  if (!isEnabled) {
-    return Response.json({ message: 'Email sending is currently disabled' }, { status: 503 });
-  }
-
-  const env = process.env as any;
-
   try {
-    const { email, message, token } = (await request.json()) as {
-      email: string;
-      message: string;
-      token: string;
-    };
+    // Check if email sending is enabled
+    const isEnabled = process.env.ENABLE_EMAIL_SENDING !== 'false';
+
+    if (!isEnabled) {
+      return Response.json({ message: 'Email sending is currently disabled' }, { status: 503 });
+    }
+
+    const env = process.env as any;
+
+    // Parse request body
+    let email: string, message: string, token: string;
+    try {
+      const body = (await request.json()) as { email: string; message: string; token: string };
+      email = body.email;
+      message = body.message;
+      token = body.token;
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError);
+      return Response.json({ message: 'Invalid request body' }, { status: 400 });
+    }
 
     if (!email || !message || !token) {
-      return new Response(JSON.stringify({ message: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      return Response.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
     // 1. Validate Turnstile token
+    const secretKey = env?.TURNSTILE_SECRET_KEY;
+    if (!secretKey) {
+      console.error('TURNSTILE_SECRET_KEY environment variable is not set');
+      return Response.json({ message: 'Server configuration error' }, { status: 500 });
+    }
+
     const formData = new FormData();
-    formData.append('secret', env?.TURNSTILE_SECRET_KEY || '');
+    formData.append('secret', secretKey);
     formData.append('response', token);
 
-    const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: formData,
-    });
+    let turnstileRes;
+    try {
+      turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (fetchError) {
+      console.error('Failed to verify Turnstile token:', fetchError);
+      return Response.json({ message: 'Captcha verification failed' }, { status: 500 });
+    }
 
-    const turnstileData = (await turnstileRes.json()) as { success: boolean };
+    let turnstileData;
+    try {
+      turnstileData = (await turnstileRes.json()) as { success: boolean };
+    } catch (jsonError) {
+      console.error('Failed to parse Turnstile response:', jsonError);
+      return Response.json({ message: 'Captcha verification failed' }, { status: 500 });
+    }
 
     if (!turnstileData.success) {
-      return new Response(JSON.stringify({ message: 'Invalid captcha' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+      return Response.json({ message: 'Invalid captcha' }, { status: 403 });
     }
 
     // 2. Get email sender using local configuration
@@ -73,10 +97,7 @@ export async function POST(request: NextRequest) {
     if (!emailSender) {
       console.warn(`${FEEDBACK_EMAIL_CONFIG.bindingName} binding not available - email not sent`);
       console.log(`Feedback from ${email}: ${message}`);
-      return new Response(JSON.stringify({ message: 'Feedback received (email delivery unavailable)' }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return Response.json({ message: 'Feedback received (email delivery unavailable)' }, { status: 200 });
     }
 
     // 3. Create and send feedback email
@@ -91,12 +112,14 @@ export async function POST(request: NextRequest) {
       await sendEmail(emailSender, emailMessage);
     } catch (emailError) {
       console.error('Cloudflare Email error:', emailError);
-      return new Response(JSON.stringify({ message: 'Failed to send email' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+      return Response.json({ message: 'Failed to send email' }, { status: 500 });
     }
 
-    return new Response(JSON.stringify({ message: 'Feedback sent successfully' }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    return Response.json({ message: 'Feedback sent successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Feedback API error:', error);
-    return new Response(JSON.stringify({ message: 'Internal server error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    // Catch any unexpected errors
+    console.error('Unexpected feedback API error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return Response.json({ message: 'Internal server error', error: errorMessage }, { status: 500 });
   }
 }
