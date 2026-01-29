@@ -8,9 +8,6 @@
  * not in this generic library.
  */
 
-// Export native Cloudflare EmailMessage
-export { EmailMessage } from 'cloudflare:email';
-
 // Export all email sender utilities
 export {
   createSimpleEmail,

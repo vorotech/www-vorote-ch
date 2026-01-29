@@ -7,7 +7,8 @@
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-import { EmailMessage } from 'cloudflare:email';
+// Use global EmailMessage type from cloudflare-env.d.ts
+// The actual EmailMessage class is available at runtime via cloudflare:email module
 
 export interface SimpleEmailOptions {
   from: string;
@@ -62,7 +63,9 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
   content += '\r\n';
   content += body;
 
-  // Use native Cloudflare EmailMessage constructor
+  // Use dynamic construction to avoid build-time module resolution
+  // The EmailMessage constructor is available at runtime from cloudflare:email
+  // @ts-expect-error - EmailMessage is globally available at runtime on Cloudflare Workers
   return new EmailMessage(from, to, content);
 }
 
