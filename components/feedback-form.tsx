@@ -194,15 +194,21 @@ export const FeedbackForm = () => {
                             <label htmlFor="message" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
                                 Message
                             </label>
-                            <textarea
-                                id="message"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Tell me what you think..."
-                                required
-                                rows={4}
-                                className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none dark:text-white"
-                            />
+                            <div className="relative">
+                                <textarea
+                                    id="message"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Tell me what you think..."
+                                    required
+                                    rows={4}
+                                    maxLength={500}
+                                    className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none dark:text-white"
+                                />
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 text-right">
+                                    {message.length}/500
+                                </div>
+                            </div>
                         </div>
 
                         <div className="flex justify-center min-h-[65px]">
