@@ -31,6 +31,13 @@ function createFeedbackEmail(options: {
 }
 
 export async function POST(request: NextRequest) {
+  // Check if email sending is enabled
+  const isEnabled = process.env.ENABLE_EMAIL_SENDING !== 'false';
+
+  if (!isEnabled) {
+    return Response.json({ message: 'Email sending is currently disabled' }, { status: 503 });
+  }
+
   const env = process.env as any;
 
   try {
