@@ -13,7 +13,7 @@ export {
   createSimpleEmail,
   sendEmail,
   sendSimpleEmail,
-  EmailMessage,
+  type EmailMessage,
   type EmailSenderBinding,
   type SimpleEmailOptions,
   type MimeEmailOptions,
