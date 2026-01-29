@@ -25,7 +25,6 @@ function createFeedbackEmail(options: {
       <h2 style="color: #333;">New Feedback Received</h2>
       <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${options.from}</p>
-        <p style="margin: 0 0 10px 0;"><strong>Subject:</strong> ${options.subject}</p>
         <div style="margin-top: 20px;">
           <strong>Message:</strong>
           <p style="white-space: pre-wrap; margin: 10px 0 0 0;">${options.message}</p>
