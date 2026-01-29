@@ -14,7 +14,7 @@ export default function ToolsPage() {
         <Layout>
             <div className="container mx-auto px-6 py-12 max-w-6xl">
                 <h1 className="text-4xl font-bold mb-8 font-abel">Tools</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                     <Link
                         href="/tools/scheduler"
                         className="group p-6 border rounded-xl hover:shadow-lg transition-all duration-300 bg-card hover:border-primary/50"
