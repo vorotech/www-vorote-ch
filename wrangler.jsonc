@@ -38,7 +38,22 @@
 	"vars": {
 		// Prevent JavaScript heap out of memory errors by allocate enough memory to the old space heap
 		"NODE_OPTIONS": "--max-old-space-size=4096"
-	}
+	},
+	/**
+	 * Email Sending
+	 * https://developers.cloudflare.com/email-routing/email-workers/send-email-workers/
+	 */
+	"send_email": [
+		{
+			"name": "SEND_FEEDBACK",
+			"allowed_destination_addresses": [
+				"hello@vorote.ch"
+			],
+			"allowed_sender_addresses": [
+				"noreply@vorote.ch"
+			]
+		}
+	]
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
