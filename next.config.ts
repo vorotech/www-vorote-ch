@@ -2,7 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Mark cloudflare:email as external package for Turbopack
-  // This prevents bundling and allows it to be loaded at runtime on Cloudflare Workers
   serverExternalPackages: ['cloudflare:email'],
 
   images: {
