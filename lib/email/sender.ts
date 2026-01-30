@@ -42,7 +42,7 @@ export interface MimeEmailOptions {
  *
  * @example
  * ```ts
- * const message = createSimpleEmail({
+ * const message = await createSimpleEmail({
  *   from: 'noreply@example.com',
  *   to: 'user@example.com',
  *   subject: 'Hello World',
@@ -51,7 +51,7 @@ export interface MimeEmailOptions {
  * });
  * ```
  */
-export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
+export async function createSimpleEmail(options: SimpleEmailOptions): Promise<EmailMessage> {
   const { from, to, subject, body, replyTo } = options;
 
   let content = `Subject: ${subject}\r\n`;
@@ -63,9 +63,9 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
   content += '\r\n';
   content += body;
 
-  // Use dynamic construction to avoid build-time module resolution
-  // The EmailMessage constructor is available at runtime from cloudflare:email
-  // @ts-expect-error - EmailMessage is globally available at runtime on Cloudflare Workers
+  // Dynamically import EmailMessage from cloudflare:email at runtime
+  // This avoids build-time module resolution while ensuring it's available at runtime
+  const { EmailMessage } = await import('cloudflare:email');
   return new EmailMessage(from, to, content);
 }
 
@@ -118,6 +118,6 @@ export async function sendEmail(emailSender: SendEmail, message: EmailMessage): 
  * ```
  */
 export async function sendSimpleEmail(emailSender: SendEmail, options: SimpleEmailOptions): Promise<void> {
-  const message = createSimpleEmail(options);
+  const message = await createSimpleEmail(options);
   await sendEmail(emailSender, message);
 }
