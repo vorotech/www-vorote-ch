@@ -40,7 +40,11 @@
 		"NODE_OPTIONS": "--max-old-space-size=4096",
 		// Email Sending Feature Flag
 		// Set to "false" to disable all email sending functionality
-		"ENABLE_EMAIL_SENDING": "true"
+		"ENABLE_EMAIL_SENDING": "true",
+		// Logging Level
+		// Controls the verbosity of server-side logs. Options: DEBUG, INFO, WARN, ERROR
+		// Default: WARN
+		"LOG_LEVEL": "WARN"
 	},
 	/**
 	 * Email Sending
