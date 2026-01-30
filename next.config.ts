@@ -1,18 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Webpack configuration
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Mark cloudflare:email as external to prevent bundling
-      // This module is only available at runtime on Cloudflare Workers
-      config.externals = config.externals || [];
-      if (Array.isArray(config.externals)) {
-        config.externals.push('cloudflare:email');
-      }
-    }
-    return config;
-  },
+  // Mark cloudflare:email as external package for Turbopack
+  // This prevents bundling and allows it to be loaded at runtime on Cloudflare Workers
+  serverExternalPackages: ['cloudflare:email'],
 
   images: {
     remotePatterns: [
