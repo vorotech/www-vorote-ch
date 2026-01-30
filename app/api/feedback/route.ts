@@ -16,7 +16,7 @@ const FEEDBACK_EMAIL_CONFIG = {
  * @param options - Feedback email options
  * @returns EmailMessage instance ready to be sent
  */
-function createFeedbackEmail(options: {
+async function createFeedbackEmail(options: {
   from: string;
   subject: string;
   message: string;
@@ -34,7 +34,7 @@ function createFeedbackEmail(options: {
     </div>
   `;
 
-  return createSimpleEmail({
+  return await createSimpleEmail({
     to: FEEDBACK_EMAIL_CONFIG.toAddress,
     from: FEEDBACK_EMAIL_CONFIG.fromAddress,
     subject: `New Feedback: ${options.subject}`,
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     logger.debug('Creating feedback email', undefined, 'Feedback API');
     // Create and send email
-    const emailMessage = createFeedbackEmail({
+    const emailMessage = await createFeedbackEmail({
       from: email,
       subject: 'Website Feedback',
       message,

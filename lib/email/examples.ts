@@ -11,7 +11,7 @@ import { createSimpleEmail, sendEmail, sendSimpleEmail } from './sender';
 
 // Example 1: Simple email with all options manually specified
 export async function exampleSimpleEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = createSimpleEmail({
+  const message = await createSimpleEmail({
     from: 'noreply@example.com',
     to: 'user@example.com',
     subject: 'Welcome to Our Service',
@@ -34,23 +34,22 @@ export async function exampleQuickEmail(env: { EMAIL_SENDER: SendEmail }) {
 
 // Example 3: Custom email with multiple headers
 export async function exampleCustomEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = createSimpleEmail({
+  const message = await createSimpleEmail({
     from: 'newsletter@example.com',
     to: 'subscriber@example.com',
-    subject: 'Monthly Newsletter - January 2026',
+    subject: 'Monthly Newsletter',
     body: `
-Hello Subscriber,
+Dear Subscriber,
 
-Here are the highlights from this month:
-
-1. New Feature Launch
-2. Community Spotlight
-3. Upcoming Events
+Here is your monthly update:
+- Feature 1
+- Feature 2
+- Feature 3
 
 Best regards,
 The Team
-    `.trim(),
-    replyTo: 'no-reply@example.com',
+    `,
+    replyTo: 'contact@example.com',
   });
 
   await sendEmail(env.EMAIL_SENDER, message);
@@ -153,12 +152,12 @@ export async function exampleWithLocalConfiguration() {
   const emailSender = env[EMAIL_CONFIG.bindingName]; // Gets env.SEND_FEEDBACK
 
   // Create and send email using local configuration
-  const message = createSimpleEmail({
+  const message = await createSimpleEmail({
     from: EMAIL_CONFIG.fromAddress,
     to: EMAIL_CONFIG.toAddress,
     subject: 'New Feedback Received',
     replyTo: 'user@example.com',
-    body: `New feedback from the website:\n\n` + `Great product!\n\n` + `---\n` + `From: user@example.com`,
+    body: 'This is a feedback message',
   });
 
   await sendEmail(emailSender, message);
