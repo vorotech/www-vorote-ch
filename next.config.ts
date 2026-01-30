@@ -1,30 +1,9 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Add this Webpack config to fix the TinaCMS "node:fs" error
-  // webpack: (config, { isServer, webpack }) => {
-  //   if (!isServer) {
-  //     // Fallback Node modules to false for the browser
-  //     config.resolve.fallback = {
-  //       ...config.resolve.fallback,
-  //       fs: false,
-  //       path: false,
-  //       os: false,
-  //       crypto: false, 
-  //     };
-
-  //     // Fix for "node:" protocol imports (caused by new pure ESM Tina packages)
-  //     config.plugins.push(
-  //       new webpack.NormalModuleReplacementPlugin(
-  //         /^node:/,
-  //         (resource: any) => {
-  //           resource.request = resource.request.replace(/^node:/, '');
-  //         }
-  //       )
-  //     );
-  //   }
-  //   return config;
-  // },
+  // Mark cloudflare:email as external package for Turbopack
+  // This prevents bundling and allows it to be loaded at runtime on Cloudflare Workers
+  serverExternalPackages: ['cloudflare:email'],
 
   images: {
     remotePatterns: [
@@ -37,7 +16,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
         port: '',
-      }
+      },
     ],
   },
   async headers() {
@@ -69,4 +48,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig
+export default nextConfig;
