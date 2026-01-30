@@ -1,10 +1,3 @@
-const config = {
-  default: {
-    override: {
-      wrapper: 'cloudflare-node',
-      converter: 'edge',
-    },
-  },
-  edgeExternals: ['cloudflare:email'],
-};
-export default config;
+import { defineCloudflareConfig } from '@opennextjs/cloudflare';
+
+export default defineCloudflareConfig();
