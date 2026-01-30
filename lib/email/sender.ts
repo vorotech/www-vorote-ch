@@ -63,20 +63,10 @@ export async function createSimpleEmail(options: SimpleEmailOptions): Promise<Em
   content += '\r\n';
   content += body;
 
-  // Use a function wrapper to delay module resolution until runtime
-  // This prevents the bundler from trying to resolve cloudflare:email at build time
-  const getEmailMessage = new Function(
-    'from',
-    'to',
-    'content',
-    `
-    // This require() call happens at runtime on Cloudflare Workers
-    const { EmailMessage } = require('cloudflare:email');
-    return new EmailMessage(from, to, content);
-  `
-  );
-
-  return getEmailMessage(from, to, content);
+  // Dynamically import EmailMessage from cloudflare:email at runtime
+  // This avoids build-time module resolution while ensuring it's available at runtime
+  const { EmailMessage } = await import('cloudflare:email');
+  return new EmailMessage(from, to, content);
 }
 
 /**
