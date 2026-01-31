@@ -11,8 +11,8 @@
 // Export all email sender utilities
 export {
   createSimpleEmail,
+  createHtmlEmail,
   sendEmail,
   sendSimpleEmail,
   type SimpleEmailOptions,
-  type MimeEmailOptions,
 } from './sender';

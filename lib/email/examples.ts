@@ -2,17 +2,17 @@
  * Email Sender Usage Examples
  *
  * This file demonstrates various ways to use the email-sender utility.
- * Based on Cloudflare Email Routing API examples.
+ * Based on Cloudflare Email Routing API examples with mimetext.
  *
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-import { createSimpleEmail, sendEmail, sendSimpleEmail } from './sender';
+import { createSimpleEmail, createHtmlEmail, sendEmail, sendSimpleEmail } from './sender';
 
-// Example 1: Simple email with all options manually specified
+// Example 1: Simple email with all options
 export async function exampleSimpleEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = await createSimpleEmail({
-    from: 'noreply@example.com',
+  const message = createSimpleEmail({
+    from: { name: 'Support Team', addr: 'noreply@example.com' },
     to: 'user@example.com',
     subject: 'Welcome to Our Service',
     body: 'Thank you for signing up! We are excited to have you on board.',
@@ -25,17 +25,17 @@ export async function exampleSimpleEmail(env: { EMAIL_SENDER: SendEmail }) {
 // Example 2: One-liner email sending
 export async function exampleQuickEmail(env: { EMAIL_SENDER: SendEmail }) {
   await sendSimpleEmail(env.EMAIL_SENDER, {
-    from: 'noreply@example.com',
+    from: { addr: 'noreply@example.com' },
     to: 'user@example.com',
     subject: 'Password Reset',
-    body: 'Click the link below to reset your password:\n\nhttps://example.com/reset/token123',
+    body: 'Click the link to reset your password: https://example.com/reset',
   });
 }
 
-// Example 3: Custom email with multiple headers
-export async function exampleCustomEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = await createSimpleEmail({
-    from: 'newsletter@example.com',
+// Example 3: HTML email with both text and HTML versions
+export async function exampleHtmlEmail(env: { EMAIL_SENDER: SendEmail }) {
+  const message = createHtmlEmail({
+    from: { name: 'Newsletter', addr: 'newsletter@example.com' },
     to: 'subscriber@example.com',
     subject: 'Monthly Newsletter',
     body: `
@@ -49,151 +49,54 @@ Here is your monthly update:
 Best regards,
 The Team
     `,
+    htmlBody: `
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Monthly Newsletter</h1>
+  <p>Dear Subscriber,</p>
+  <p>Here is your monthly update:</p>
+  <ul>
+    <li>Feature 1</li>
+    <li>Feature 2</li>
+    <li>Feature 3</li>
+  </ul>
+  <p>Best regards,<br>The Team</p>
+</body>
+</html>
+    `,
     replyTo: 'contact@example.com',
   });
 
   await sendEmail(env.EMAIL_SENDER, message);
 }
 
-// Example 5: Error handling
-export async function exampleWithErrorHandling(env: { EMAIL_SENDER: SendEmail }) {
-  try {
-    await sendSimpleEmail(env.EMAIL_SENDER, {
-      from: 'noreply@example.com',
-      to: 'user@example.com',
-      subject: 'Test Email',
-      body: 'This is a test email.',
-    });
+// Example 4: Feedback form email (similar to production use)
+export async function exampleFeedbackEmail(env: { SEND_FEEDBACK: SendEmail }) {
+  const userEmail = 'user@example.com';
+  const feedbackMessage = 'Great product!';
 
-    console.log('Email sent successfully!');
-  } catch (error) {
-    console.error('Failed to send email:', error);
-    // Handle error - maybe retry, log to monitoring service, etc.
-    throw error;
-  }
-}
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>New Feedback Received</h2>
+      <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px;">
+        <p><strong>From:</strong> ${userEmail}</p>
+        <p><strong>Message:</strong></p>
+        <p style="white-space: pre-wrap;">${feedbackMessage}</p>
+      </div>
+    </div>
+  `;
 
-// Example 6: Use in a Cloudflare Worker (Next.js API route with edge runtime)
-// This is similar to the Cloudflare example you provided
+  const plainText = `New Feedback Received\n\nFrom: ${userEmail}\nMessage:\n${feedbackMessage}`;
 
-interface Env {
-  EMAIL_SENDER: SendEmail;
-}
-
-export async function POST(request: Request, { env }: { env: Env }) {
-  try {
-    const { recipient, subject, message } = (await request.json()) as {
-      recipient: string;
-      subject: string;
-      message: string;
-    };
-
-    // Validate inputs
-    if (!recipient || !subject || !message) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
-    // Send email
-    await sendSimpleEmail(env.EMAIL_SENDER, {
-      from: 'noreply@example.com',
-      to: recipient,
-      subject: subject,
-      body: message,
-    });
-
-    return new Response(JSON.stringify({ success: true, message: 'Email sent successfully!' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('Email sending failed:', error);
-    return new Response(JSON.stringify({ error: 'Failed to send email' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
-  }
-}
-
-// Example 7: Batch email sending (e.g., for notifications)
-export async function exampleBatchEmails(env: { EMAIL_SENDER: SendEmail }, recipients: string[]) {
-  const results = await Promise.allSettled(
-    recipients.map((recipient) =>
-      sendSimpleEmail(env.EMAIL_SENDER, {
-        from: 'notifications@example.com',
-        to: recipient,
-        subject: 'Important Update',
-        body: 'We have an important update to share with you...',
-      })
-    )
-  );
-
-  const succeeded = results.filter((r) => r.status === 'fulfilled').length;
-  const failed = results.filter((r) => r.status === 'rejected').length;
-
-  console.log(`Batch email sending complete: ${succeeded} sent, ${failed} failed`);
-
-  return { succeeded, failed };
-}
-
-/*
- * Example 8: Using Local Configuration
- *
- * Define configuration locally where you use it, keeping the lib folder
- * generic and free of specific hardcoded values.
- */
-
-export async function exampleWithLocalConfiguration() {
-  // Define configuration inline or in your route file
-  const EMAIL_CONFIG = {
-    bindingName: 'SEND_FEEDBACK',
-    fromAddress: 'noreply@vorote.ch',
-    toAddress: 'hello@vorote.ch',
-  } as const;
-
-  // Access the environment using the binding name from config
-  const env = process.env as any;
-  const emailSender = env[EMAIL_CONFIG.bindingName]; // Gets env.SEND_FEEDBACK
-
-  // Create and send email using local configuration
-  const message = await createSimpleEmail({
-    from: EMAIL_CONFIG.fromAddress,
-    to: EMAIL_CONFIG.toAddress,
+  const message = createHtmlEmail({
+    from: { addr: 'noreply@example.com' },
+    to: 'feedback@example.com',
     subject: 'New Feedback Received',
-    replyTo: 'user@example.com',
-    body: 'This is a feedback message',
+    body: plainText,
+    htmlBody: htmlContent,
+    replyTo: userEmail,
   });
 
-  await sendEmail(emailSender, message);
+  await sendEmail(env.SEND_FEEDBACK, message);
 }
-
-/*
- * ADVANCED: Using with mimetext library
- *
- * If you need more advanced features like HTML emails, attachments, or complex MIME structures,
- * you can install the 'mimetext' package and use it as shown in the Cloudflare example:
- *
- * ```bash
- * pnpm add mimetext
- * ```
- *
- * Then create a MIME email:
- *
- * ```typescript
- * import { createMimeMessage } from "mimetext";
- * import { EmailMessage } from "./sender";
- *
- * const msg = createMimeMessage();
- * msg.setSender({ name: "Your Name", addr: "sender@example.com" });
- * msg.setRecipient("recipient@example.com");
- * msg.setSubject("An email with HTML content");
- * msg.addMessage({
- *   contentType: "text/html",
- *   data: `<h1>Hello!</h1><p>This is an <strong>HTML</strong> email.</p>`,
- * });
- *
- * const message = new EmailMessage(
- *   "sender@example.com",
- *   "recipient@example.com",
- *   msg.asRaw()
- * );
- *
- * await sendEmail(env.EMAIL_SENDER, message);
- * ```
- */
