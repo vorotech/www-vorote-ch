@@ -2,12 +2,12 @@
  * Email Sender Utility for Cloudflare Workers
  *
  * This module provides utilities for sending emails using Cloudflare's Email Routing API.
- * Uses mimetext for proper MIME message formatting.
+ * Uses mimetext for proper MIME formatting and dynamic imports to avoid build-time module resolution.
  *
  * @see https://developers.cloudflare.com/email-routing/email-workers/
  */
 
-import { EmailMessage } from 'cloudflare:email';
+import type { EmailMessage } from 'cloudflare:email';
 import { createMimeMessage } from 'mimetext';
 
 export interface SimpleEmailOptions {
@@ -21,6 +21,25 @@ export interface SimpleEmailOptions {
   replyTo?: string;
 }
 
+// Helper to safely get the EmailMessage class
+async function getEmailMessageClass(): Promise<typeof EmailMessage> {
+  try {
+    const pkg = 'cloudflare:email';
+    const mod = await import(pkg);
+    return mod.EmailMessage;
+  } catch (error) {
+    // Fallback mock for build time / non-Worker environments
+    console.warn('Failed to load cloudflare:email module, using mock implementation');
+    return class {
+      constructor(
+        public from: string,
+        public to: string,
+        public raw: string
+      ) {}
+    } as unknown as typeof EmailMessage;
+  }
+}
+
 /**
  * Creates a simple email message with plain text content using mimetext
  *
@@ -29,7 +48,7 @@ export interface SimpleEmailOptions {
  *
  * @example
  * ```ts
- * const message = createSimpleEmail({
+ * const message = await createSimpleEmail({
  *   from: { name: 'Support', addr: 'noreply@example.com' },
  *   to: 'user@example.com',
  *   subject: 'Hello World',
@@ -38,7 +57,7 @@ export interface SimpleEmailOptions {
  * });
  * ```
  */
-export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
+export async function createSimpleEmail(options: SimpleEmailOptions): Promise<EmailMessage> {
   const { from, to, subject, body, replyTo } = options;
 
   // Create MIME message
@@ -57,7 +76,8 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
   });
 
   // Create EmailMessage with MIME content
-  return new EmailMessage(from.addr, to, msg.asRaw());
+  const EmailMessageClass = await getEmailMessageClass();
+  return new EmailMessageClass(from.addr, to, msg.asRaw());
 }
 
 /**
@@ -66,7 +86,7 @@ export function createSimpleEmail(options: SimpleEmailOptions): EmailMessage {
  * @param options - Email configuration options
  * @returns EmailMessage instance ready to be sent
  */
-export function createHtmlEmail(options: SimpleEmailOptions & { htmlBody?: string }): EmailMessage {
+export async function createHtmlEmail(options: SimpleEmailOptions & { htmlBody?: string }): Promise<EmailMessage> {
   const { from, to, subject, body, htmlBody, replyTo } = options;
 
   const msg = createMimeMessage();
@@ -92,7 +112,8 @@ export function createHtmlEmail(options: SimpleEmailOptions & { htmlBody?: strin
     });
   }
 
-  return new EmailMessage(from.addr, to, msg.asRaw());
+  const EmailMessageClass = await getEmailMessageClass();
+  return new EmailMessageClass(from.addr, to, msg.asRaw());
 }
 
 /**
@@ -105,7 +126,7 @@ export function createHtmlEmail(options: SimpleEmailOptions & { htmlBody?: strin
  *
  * @example
  * ```ts
- * const message = createSimpleEmail({
+ * const message = await createSimpleEmail({
  *   from: { addr: 'noreply@example.com' },
  *   to: 'user@example.com',
  *   subject: 'Hello',
@@ -144,6 +165,6 @@ export async function sendEmail(emailSender: SendEmail, message: EmailMessage): 
  * ```
  */
 export async function sendSimpleEmail(emailSender: SendEmail, options: SimpleEmailOptions): Promise<void> {
-  const message = createSimpleEmail(options);
+  const message = await createSimpleEmail(options);
   await sendEmail(emailSender, message);
 }

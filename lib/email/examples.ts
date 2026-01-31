@@ -11,7 +11,7 @@ import { createSimpleEmail, createHtmlEmail, sendEmail, sendSimpleEmail } from '
 
 // Example 1: Simple email with all options
 export async function exampleSimpleEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = createSimpleEmail({
+  const message = await createSimpleEmail({
     from: { name: 'Support Team', addr: 'noreply@example.com' },
     to: 'user@example.com',
     subject: 'Welcome to Our Service',
@@ -34,7 +34,7 @@ export async function exampleQuickEmail(env: { EMAIL_SENDER: SendEmail }) {
 
 // Example 3: HTML email with both text and HTML versions
 export async function exampleHtmlEmail(env: { EMAIL_SENDER: SendEmail }) {
-  const message = createHtmlEmail({
+  const message = await createHtmlEmail({
     from: { name: 'Newsletter', addr: 'newsletter@example.com' },
     to: 'subscriber@example.com',
     subject: 'Monthly Newsletter',
@@ -89,7 +89,7 @@ export async function exampleFeedbackEmail(env: { SEND_FEEDBACK: SendEmail }) {
 
   const plainText = `New Feedback Received\n\nFrom: ${userEmail}\nMessage:\n${feedbackMessage}`;
 
-  const message = createHtmlEmail({
+  const message = await createHtmlEmail({
     from: { addr: 'noreply@example.com' },
     to: 'feedback@example.com',
     subject: 'New Feedback Received',
