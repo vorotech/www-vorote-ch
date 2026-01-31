@@ -1,4 +1,4 @@
-import { createSimpleEmail, sendEmail } from '@/lib/email/sender';
+import { createHtmlEmail, sendEmail } from '@/lib/email/sender';
 import { logger } from '@/lib/logger';
 import type { NextRequest } from 'next/server';
 
@@ -34,11 +34,15 @@ async function createFeedbackEmail(options: {
     </div>
   `;
 
-  return await createSimpleEmail({
+  const plainText = `New Feedback Received\n\nFrom: ${options.from}\nMessage:\n${options.message}`;
+
+  return createHtmlEmail({
+    from: { addr: FEEDBACK_EMAIL_CONFIG.fromAddress },
     to: FEEDBACK_EMAIL_CONFIG.toAddress,
-    from: FEEDBACK_EMAIL_CONFIG.fromAddress,
     subject: `New Feedback: ${options.subject}`,
-    body: htmlContent,
+    body: plainText,
+    htmlBody: htmlContent,
+    replyTo: options.from,
   });
 }
 
