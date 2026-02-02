@@ -8,7 +8,7 @@
  */
 
 import type { EmailMessage } from 'cloudflare:email';
-import { createMimeMessage } from 'mimetext';
+import { createMimeMessage, Mailbox } from 'mimetext';
 
 export interface SimpleEmailOptions {
   from: {
@@ -67,7 +67,7 @@ export async function createSimpleEmail(options: SimpleEmailOptions): Promise<Em
   msg.setSubject(subject);
 
   if (replyTo) {
-    msg.setHeader('Reply-To', replyTo);
+    msg.setHeader('Reply-To', new Mailbox(replyTo));
   }
 
   msg.addMessage({
@@ -95,7 +95,7 @@ export async function createHtmlEmail(options: SimpleEmailOptions & { htmlBody?:
   msg.setSubject(subject);
 
   if (replyTo) {
-    msg.setHeader('Reply-To', replyTo);
+    msg.setHeader('Reply-To', new Mailbox(replyTo));
   }
 
   // Add plain text version
