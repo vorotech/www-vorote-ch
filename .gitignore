@@ -1,19 +1,20 @@
 
 # dependencies
-/.pnpm-store
-/node_modules
+pnpm-store/
+node_modules/
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.open-next/
-/.next/
-/out/
+.open-next/
+.next/
+out/
 next-env.d.ts
+.wrangler/
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
