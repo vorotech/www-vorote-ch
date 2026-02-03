@@ -205,6 +205,101 @@ const testCases: TestCase[] = [
       ],
     },
   },
+  {
+    name: 'February 2026 - Weekly Distribution Test',
+    config: {
+      month: 1, // February
+      year: 2026,
+      members: [
+        {
+          id: 1,
+          name: 'Person 1',
+          weekendOnly: true,
+          maxWeekendSlots: null,
+          allowedWeekdays: [0, 6],
+          timeOffs: [
+            {
+              start: '2026-01-07T00:00:00.000Z',
+              end: '2026-01-11T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: 'Person 2',
+          weekendOnly: false,
+          maxWeekendSlots: null,
+          allowedWeekdays: [],
+          timeOffs: [
+            {
+              start: '2026-01-09T00:00:00.000Z',
+              end: '2026-01-14T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 3,
+          name: 'Person 3',
+          weekendOnly: false,
+          maxWeekendSlots: null,
+          allowedWeekdays: [],
+          timeOffs: [
+            {
+              start: '2026-01-21T00:00:00.000Z',
+              end: '2026-01-21T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 4,
+          name: 'Person 4',
+          weekendOnly: false,
+          maxWeekendSlots: null,
+          allowedWeekdays: [],
+          timeOffs: [
+            {
+              start: '2026-01-09T00:00:00.000Z',
+              end: '2026-01-19T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 5,
+          name: 'Person 5',
+          weekendOnly: true,
+          maxWeekendSlots: 3,
+          allowedWeekdays: [0, 6],
+          timeOffs: [
+            {
+              start: '2026-01-18T00:00:00.000Z',
+              end: '2026-01-31T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 6,
+          name: 'Person 6',
+          weekendOnly: false,
+          maxWeekendSlots: null,
+          allowedWeekdays: [],
+          timeOffs: [
+            {
+              start: '2026-01-27T00:00:00.000Z',
+              end: '2026-01-31T00:00:00.000Z',
+            },
+          ],
+        },
+        {
+          id: 7,
+          name: 'Person 7',
+          weekendOnly: false,
+          maxWeekendSlots: null,
+          allowedWeekdays: [],
+          timeOffs: [],
+        },
+      ],
+    },
+  },
   // Paste new exported configs here as new objects:
   // {
   //    name: "Scenario Name",

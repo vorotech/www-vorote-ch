@@ -1,7 +1,7 @@
 "use client";
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices, Download } from 'lucide-react';
+import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices, Download, Clipboard } from 'lucide-react';
 
 
 import { Member, ScheduleSlot, generateScheduleData, isOnTimeOff, isWeekend, getDaysInMonth } from './scheduler';
@@ -43,6 +43,7 @@ const OnCallScheduler = () => {
     const [showTimeOff, setShowTimeOff] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     // Load settings from local storage on mount
     useEffect(() => {
@@ -66,6 +67,12 @@ const OnCallScheduler = () => {
         }
         setIsLoaded(true);
     }, []);
+
+    // Toast helper
+    const showToast = (message: string) => {
+        setToastMessage(message);
+        setTimeout(() => setToastMessage(null), 3000);
+    };
 
     // Save settings to local storage whenever they change
     useEffect(() => {
@@ -96,18 +103,40 @@ const OnCallScheduler = () => {
     };
 
     const generateSchedule = () => {
-        const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members);
+        const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members, shiftStartHour);
         setSchedule(newSchedule);
         setStats(memberSlots);
     };
 
-    const exportConfiguration = () => {
+    const downloadConfiguration = () => {
         const config = {
             month,
             year,
             members: members.map(m => ({
                 ...m,
-                // Ensure dates are strings for JSON export if they aren't already
+                timeOffs: m.timeOffs.map(t => ({
+                    start: new Date(t.start).toISOString(),
+                    end: new Date(t.end).toISOString()
+                }))
+            }))
+        };
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `scheduler-config-${year}-${month + 1}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const copyConfiguration = () => {
+        const config = {
+            month,
+            year,
+            members: members.map(m => ({
+                ...m,
                 timeOffs: m.timeOffs.map(t => ({
                     start: new Date(t.start).toISOString(),
                     end: new Date(t.end).toISOString()
@@ -115,8 +144,47 @@ const OnCallScheduler = () => {
             }))
         };
         navigator.clipboard.writeText(JSON.stringify(config, null, 2));
-        alert('Configuration copied to clipboard! You can paste this into the test file.');
+        showToast('Configuration copied to clipboard!');
     };
+
+    const downloadResults = () => {
+        if (!schedule) return;
+        const result = {
+            month,
+            year,
+            schedule: schedule.map(s => ({
+                date: s.date.toISOString().split('T')[0],
+                member: s.member ? s.member.name : null
+            })),
+            stats
+        };
+        const blob = new Blob([JSON.stringify(result, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `schedule-results-${year}-${month + 1}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const copyResults = () => {
+        if (!schedule) return;
+        const result = {
+            month,
+            year,
+            schedule: schedule.map(s => ({
+                date: s.date.toISOString().split('T')[0],
+                member: s.member ? s.member.name : null
+            })),
+            stats
+        };
+        navigator.clipboard.writeText(JSON.stringify(result, null, 2));
+        showToast('Results copied to clipboard!');
+    };
+
+
 
     const updateMemberName = (id: any, name: any) => {
         setMembers(members.map(m => m.id === id ? { ...m, name } : m));
@@ -226,7 +294,7 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-6 px-6">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 pt-30 pb-6 px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
                     <div className="flex items-center justify-between mb-6">
@@ -469,18 +537,28 @@ const OnCallScheduler = () => {
 
                         <div className="flex gap-2 mt-6 justify-end border-t border-gray-200 pt-4">
                              <button
-                                 onClick={exportConfiguration}
-                                 className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
-                                 title="Export Config for Testing"
+                                 onClick={downloadConfiguration}
+                                 className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium"
+                                 title="Download Configuration"
                              >
-                                 <Download className="w-5 h-5" />
+                                 <Download className="w-4 h-4" />
+                                 <span className="hidden md:inline">Download</span>
+                             </button>
+                             <button
+                                 onClick={copyConfiguration}
+                                 className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium"
+                                 title="Copy Configuration"
+                             >
+                                 <Clipboard className="w-4 h-4" />
+                                 <span className="hidden md:inline">Copy</span>
                              </button>
                              <button
                                  onClick={clearSettings}
-                                 className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200"
+                                 className="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors border border-red-200 text-sm font-medium"
                                  title="Clear Cache"
                              >
-                                 <Trash2 className="w-5 h-5" />
+                                 <Trash2 className="w-4 h-4" />
+                                 <span className="hidden md:inline">Clear</span>
                              </button>
                         </div>
                     </div>
@@ -550,6 +628,22 @@ const OnCallScheduler = () => {
                                 >
                                     <Dices className="w-4 h-4" />
                                     <span className="hidden md:inline">Randomize</span>
+                                </button>
+                                <button
+                                    onClick={downloadResults}
+                                    className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium"
+                                    title="Download Results"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    <span className="hidden md:inline">Download</span>
+                                </button>
+                                <button
+                                    onClick={copyResults}
+                                    className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium"
+                                    title="Copy Results"
+                                >
+                                    <Clipboard className="w-4 h-4" />
+                                    <span className="hidden md:inline">Copy</span>
                                 </button>
                                 {viewMode === 'calendar' && (
                                     <button
@@ -702,6 +796,13 @@ const OnCallScheduler = () => {
             {schedule && (
                 <div className="max-w-md mx-auto mt-6 pb-12">
                     <FeedbackForm />
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {toastMessage && (
+                <div className="fixed bottom-6 right-6 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in z-50">
+                    {toastMessage}
                 </div>
             )}
         </div>
