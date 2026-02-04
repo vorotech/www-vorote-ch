@@ -91,6 +91,19 @@ To get help with any TinaCMS challenges you may have:
 - [Search or open an issue](https://github.com/tinacms/tinacms/issues) if something is not working.
 - Reach out on Twitter at [@tina_cms](https://twitter.com/tina_cms).
 
+## Email Integration
+
+Email sending is fully integrated and works seamlessly across all environments:
+
+- **Development** (`pnpm dev`): Emails logged to console (mock sender)
+- **Preview** (`pnpm preview`): Real email via Cloudflare (saved as `.eml` files)
+- **Production** (`pnpm deploy`): Real email delivery
+
+No additional configuration needed! The system automatically detects the environment and uses the appropriate email sender.
+
+**📖 Documentation:** [docs/EMAIL_INTEGRATION.md](./docs/EMAIL_INTEGRATION.md)
+
+
 ## Development tips
 
 ### Visual Studio Code GraphQL extension
