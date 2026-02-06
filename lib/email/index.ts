@@ -16,3 +16,12 @@ export {
   sendSimpleEmail,
   type SimpleEmailOptions,
 } from './sender';
+
+// Export environment-aware email sender (auto-detects dev vs prod)
+export {
+  getEmailSender,
+  MockEmailSender,
+} from './mock-sender';
+
+// Export environment utilities
+export { isCloudflareEnvironment } from './env';

@@ -22,8 +22,34 @@ export const FeedbackForm = () => {
     const [token, setToken] = useState<string | null>(null);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [emailError, setEmailError] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
+
+    // Simple email validation for UI
+    const validateEmailFormat = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+        
+        // Clear error when user starts typing
+        if (emailError) setEmailError('');
+        
+        // Validate on blur or when email looks complete
+        if (newEmail && !validateEmailFormat(newEmail) && newEmail.includes('@')) {
+            setEmailError('Please enter a valid email address');
+        }
+    };
+
+    const handleEmailBlur = () => {
+        if (email && !validateEmailFormat(email)) {
+            setEmailError('Please enter a valid email address');
+        }
+    };
 
     useEffect(() => {
         // Cleanup function to remove widget
@@ -80,6 +106,12 @@ export const FeedbackForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
+        // Validate email before submission
+        if (!validateEmailFormat(email)) {
+            setEmailError('Please enter a valid email address');
+            return;
+        }
+        
         if (!token) {
             setErrorMessage('Please complete the human verification.');
             return;
@@ -87,6 +119,7 @@ export const FeedbackForm = () => {
 
         setStatus('loading');
         setErrorMessage('');
+        setEmailError('');
 
         try {
             const res = await fetch('/api/feedback', {
@@ -187,14 +220,24 @@ export const FeedbackForm = () => {
                                 id="email"
                                 type="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={handleEmailChange}
+                                onBlur={handleEmailBlur}
                                 placeholder="your@email.com"
                                 required
                                 autoComplete="off"
                                 data-form-type="other"
                                 data-lpignore="true"
-                                className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                                className={`w-full px-3 py-2 bg-white dark:bg-zinc-950 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition-all dark:text-white ${
+                                    emailError 
+                                        ? 'border-red-500 focus:ring-red-500' 
+                                        : 'border-zinc-300 dark:border-zinc-700 focus:ring-indigo-500'
+                                }`}
                             />
+                            {emailError && (
+                                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                                    {emailError}
+                                </p>
+                            )}
                         </div>
 
                         <div>
