@@ -1,4 +1,4 @@
-import { createHtmlEmail, sendEmail } from '@/lib/email/sender';
+import { createHtmlEmail, sendEmail, getEmailSender } from '@/lib/email';
 import { logger } from '@/lib/logger';
 import type { NextRequest } from 'next/server';
 
@@ -80,6 +80,16 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Advanced email validation
+    // Uses a robust regex to ensure the email follows standard format and has a valid TLD
+    // This requires at least one '.' after the @ symbol (e.g. user@domain.com)
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+    if (!emailRegex.test(email)) {
+      logger.warn('Validation failed: invalid email format', { email }, 'Feedback API');
+      return Response.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+
     // Validate Turnstile token
     if (!token) {
       logger.warn('Validation failed: missing Turnstile token', undefined, 'Feedback API');
@@ -115,15 +125,11 @@ export async function POST(request: NextRequest) {
     });
     logger.debug('Email message created', undefined, 'Feedback API');
 
-    // Get the email sender binding from process.env (available in nodejs runtime on Cloudflare)
-    logger.debug('Getting email sender binding', undefined, 'Feedback API');
-    const env = process.env as Record<string, unknown>;
-    const emailSender = env[FEEDBACK_EMAIL_CONFIG.bindingName] as SendEmail;
-
-    if (!emailSender) {
-      logger.error('Email sender binding not found', { bindingName: FEEDBACK_EMAIL_CONFIG.bindingName }, 'Feedback API');
-      throw new Error('Email sender binding not configured');
-    }
+    // Get the appropriate email sender (auto-detects environment)
+    // In development: Uses mock sender (logs to console)
+    // In Cloudflare (preview/prod): Uses real email binding
+    logger.debug('Getting email sender', undefined, 'Feedback API');
+    const emailSender = await getEmailSender(FEEDBACK_EMAIL_CONFIG.bindingName);
 
     logger.info('Sending email', undefined, 'Feedback API');
     await sendEmail(emailSender, emailMessage);
