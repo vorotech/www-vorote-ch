@@ -1,4 +1,4 @@
-import { createHtmlEmail, sendEmail, getEmailSender } from '@/lib/email';
+import { sendEmail, type EmailOptions } from '@/lib/email';
 import { logger } from '@/lib/logger';
 import type { NextRequest } from 'next/server';
 
@@ -6,21 +6,20 @@ export const runtime = 'nodejs';
 
 // Email configuration for feedback form
 const FEEDBACK_EMAIL_CONFIG = {
-  bindingName: 'SEND_FEEDBACK',
   fromAddress: 'noreply@vorote.ch',
   toAddress: 'hello@vorote.ch',
 } as const;
 
 /**
- * Creates a feedback notification email
+ * Creates a feedback notification email options
  * @param options - Feedback email options
- * @returns EmailMessage instance ready to be sent
+ * @returns EmailOptions ready to be sent
  */
-async function createFeedbackEmail(options: {
+function createFeedbackEmail(options: {
   from: string;
   subject: string;
   message: string;
-}) {
+}): EmailOptions {
   const htmlContent = `
     <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #333;">New Feedback Received</h2>
@@ -36,14 +35,14 @@ async function createFeedbackEmail(options: {
 
   const plainText = `New Feedback Received\n\nFrom: ${options.from}\nMessage:\n${options.message}`;
 
-  return createHtmlEmail({
-    from: { addr: FEEDBACK_EMAIL_CONFIG.fromAddress },
+  return {
+    from: FEEDBACK_EMAIL_CONFIG.fromAddress,
     to: FEEDBACK_EMAIL_CONFIG.toAddress,
     subject: `New Feedback: ${options.subject}`,
-    body: plainText,
-    htmlBody: htmlContent,
+    text: plainText,
+    html: htmlContent,
     replyTo: options.from,
-  });
+  };
 }
 
 /**
@@ -117,22 +116,16 @@ export async function POST(request: NextRequest) {
     }
 
     logger.debug('Creating feedback email', undefined, 'Feedback API');
-    // Create and send email
-    const emailMessage = await createFeedbackEmail({
+    // Create email options
+    const emailOptions = createFeedbackEmail({
       from: email,
       subject: 'Website Feedback',
       message,
     });
-    logger.debug('Email message created', undefined, 'Feedback API');
+    logger.debug('Email options created', undefined, 'Feedback API');
 
-    // Get the appropriate email sender (auto-detects environment)
-    // In development: Uses mock sender (logs to console)
-    // In Cloudflare (preview/prod): Uses real email binding
-    logger.debug('Getting email sender', undefined, 'Feedback API');
-    const emailSender = await getEmailSender(FEEDBACK_EMAIL_CONFIG.bindingName);
-
-    logger.info('Sending email', undefined, 'Feedback API');
-    await sendEmail(emailSender, emailMessage);
+    logger.info('Sending email via Resend', undefined, 'Feedback API');
+    await sendEmail(emailOptions);
     logger.info('Email sent successfully', undefined, 'Feedback API');
 
     return Response.json({
