@@ -34,33 +34,13 @@
 	/**
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 */
 	"vars": {
 		// Prevent JavaScript heap out of memory errors by allocate enough memory to the old space heap
 		"NODE_OPTIONS": "--max-old-space-size=4096",
-		// Email Sending Feature Flag
-		// Set to "false" to disable all email sending functionality
-		"ENABLE_EMAIL_SENDING": "true",
 		// Logging Level
-		// Controls the verbosity of server-side logs. Options: DEBUG, INFO, WARN, ERROR
-		// Default: WARN
 		"LOG_LEVEL": "WARN"
 	},
-	/**
-	 * Email Sending
-	 * https://developers.cloudflare.com/email-routing/email-workers/send-email-workers/
-	 */
-	"send_email": [
-		{
-			"name": "SEND_FEEDBACK",
-			"allowed_destination_addresses": [
-				"hello@vorote.ch"
-			],
-			"allowed_sender_addresses": [
-				"noreply@vorote.ch"
-			]
-		}
-	]
+
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
