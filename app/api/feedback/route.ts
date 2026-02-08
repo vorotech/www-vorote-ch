@@ -8,6 +8,7 @@ export const runtime = 'nodejs';
 const FEEDBACK_EMAIL_CONFIG = {
   fromAddress: 'noreply@vorote.ch',
   toAddress: 'hello@vorote.ch',
+  subjectPrefix: process.env.EMAIL_SUBJECT_PREFIX ?? '',
 } as const;
 
 /**
@@ -38,7 +39,7 @@ function createFeedbackEmail(options: {
   return {
     from: FEEDBACK_EMAIL_CONFIG.fromAddress,
     to: FEEDBACK_EMAIL_CONFIG.toAddress,
-    subject: `New Feedback: ${options.subject}`,
+    subject: `${FEEDBACK_EMAIL_CONFIG.subjectPrefix}${options.subject}`,
     text: plainText,
     html: htmlContent,
     replyTo: options.from,
