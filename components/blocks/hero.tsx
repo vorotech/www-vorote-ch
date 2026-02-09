@@ -52,8 +52,22 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
       .join('-');
     const opacity = data.background.match(/\/(\d{1,3})$/)?.[1] || '100';
 
+    let darkColorName = colorName;
+    let darkOpacity = '30';
+    
+    // Map light colors to dark equivalents
+    if (colorName === 'white') {
+        darkColorName = 'zinc-950';
+        darkOpacity = '80';
+    } else if (colorName === 'default') {
+        darkColorName = 'background'; // Special case if needed, or handle separately
+    } else if (colorName.endsWith('50')) {
+        darkColorName = colorName.replace('50', '950');
+    }
+
     gradientStyle = {
-      '--tw-gradient-to': `color-mix(in oklab, var(--color-${colorName}) ${opacity}%, transparent)`,
+      '--hero-gradient-light': `color-mix(in oklab, var(--color-${colorName}) ${opacity}%, transparent)`,
+      '--hero-gradient-dark': `color-mix(in oklab, var(--color-${darkColorName}) ${darkOpacity}%, transparent)`,
     } as React.CSSProperties;
   }
 
@@ -93,7 +107,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
       {data.image && (
         <AnimatedGroup variants={transitionVariants}>
           <div className='relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 max-w-full' data-tina-field={tinaField(data, 'image')}>
-            <div aria-hidden className='bg-linear-to-b absolute inset-0 z-10 from-transparent from-35% pointer-events-none' style={gradientStyle} />
+            <div aria-hidden className='bg-linear-to-b absolute inset-0 z-10 from-transparent from-35% pointer-events-none [--tw-gradient-to:var(--hero-gradient-light)] dark:[--tw-gradient-to:var(--hero-gradient-dark)]' style={gradientStyle} />
             <div className='inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1'>
               <ImageBlock image={data.image} />
             </div>
