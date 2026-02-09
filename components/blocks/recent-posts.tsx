@@ -104,7 +104,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
 
   return (
     // Added negative margins to compensate for prose spacing
-    <div className="-mx-6 my-8">
+    <div className="my-8">
       <Section>
         <div className="container">
           {/* Section Header */}
@@ -135,7 +135,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
               <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
                 {/* Featured Post Image */}
                 {featuredPost.heroImg && (
-                  <div className="order-last lg:order-first">
+                  <div className="lg:order-first">
                     <Link href={featuredPost.url} className="block">
                       <div className="aspect-[16/10] overflow-clip rounded-lg border border-border">
                         <Image
@@ -171,27 +171,13 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 text-sm">
-                      <Avatar className="h-10 w-10">
-                        {featuredPost.author.avatar && (
-                          <AvatarImage
-                            src={featuredPost.author.avatar}
-                            alt={featuredPost.author.name}
-                          />
-                        )}
-                        <AvatarFallback>
-                          <UserRound size={20} strokeWidth={2} className="opacity-60" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <span className="font-medium">{featuredPost.author.name}</span>
-                        <span className="text-muted-foreground"> • {featuredPost.published}</span>
-                      </div>
+                    <div className="text-sm text-muted-foreground">
+                      {featuredPost.published}
                     </div>
 
                     <Link
                       href={featuredPost.url}
-                      className="inline-flex items-center font-semibold hover:underline"
+                      className="group inline-flex items-center font-semibold hover:underline"
                     >
                       <span>Read more</span>
                       <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
@@ -245,30 +231,14 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center space-x-3">
-                        <Avatar className="h-8 w-8">
-                          {post.author.avatar && (
-                            <AvatarImage
-                              src={post.author.avatar}
-                              alt={post.author.name}
-                            />
-                          )}
-                          <AvatarFallback>
-                            <UserRound size={14} strokeWidth={2} className="opacity-60" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <span className="text-muted-foreground">{post.author.name}</span>
-                          <span className="text-muted-foreground"> • {post.published}</span>
-                        </div>
-                      </div>
+                      <span className="text-muted-foreground">{post.published}</span>
 
                       <Link
                         href={post.url}
-                        className="inline-flex items-center text-sm font-medium hover:underline mr-1"
+                        className="group inline-flex items-center font-semibold hover:underline mr-1 text-base"
                       >
-                        Read
-                        <ArrowRight className="ml-1 size-3 transition-transform group-hover:translate-x-1" />
+                        Read more
+                        <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
                   </div>
