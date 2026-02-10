@@ -150,6 +150,7 @@ interface SolverOptions {
   strictFairness: boolean; // If true, enforcing Min/Max = floor/ceil(avg)
   spacingStrength: number; // 1.0 = (Available - 1), 0.0 = 1 (No consec). 0.5 = Half gap.
   enforceWeeklyDistribution: boolean; // If true, limit shifts per week for better spread
+  disableFairnessMax?: boolean; // If true, ignores fairness max caps (failsafe for unbalanced availability)
 }
 
 function solveWithOpts(solverParams: any, opts: SolverOptions) {
@@ -230,7 +231,8 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
       let targetGap = Math.floor(maxGap * opts.spacingStrength);
 
       // Enforce minimum gap of 1 (no consecutive) unless we strictly want 0
-      if (maxGap >= 1 && targetGap < 1) targetGap = 1;
+      // Fix: Only enforce if spacingStrength is significantly non-zero
+      if (opts.spacingStrength > 0.01 && maxGap >= 1 && targetGap < 1) targetGap = 1;
 
       if (targetGap > 0) {
         model.constraints[`spacing_${member.id}_${d}`] = { max: 1 };
@@ -253,18 +255,26 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
       if (targets.min > 0 && memberAvailability[member.id] >= targets.min) {
         model.constraints[`member_${member.id}_min`] = { min: targets.min };
       }
-    } else {
+    } else if (!opts.disableFairnessMax) {
       // Relaxed: Add buffer to max, but still respect hard caps
-      const relaxedMax = Math.min(targets.max + 2, memberCaps[member.id]);
+      // Increased buffer from 2 to 5 to handle unbalanced availability (e.g. weekdays vs weekends)
+      const relaxedMax = Math.min(targets.max + 5, memberCaps[member.id]);
       if (relaxedMax > 0) {
         model.constraints[`member_${member.id}_max`] = { max: relaxedMax };
       }
     }
+    // If disableFairnessMax is true, we impose NO specific max constraint
+    // (other than natural availability and maxWeekendSlots)
+  });
 
-    // Weekly distribution constraints - prevent clustering in same week
-    // Only apply if enforced
-    if (opts.enforceWeeklyDistribution) {
-      const numWeeks = Math.ceil(totalDays / 7);
+  // Weekly distribution constraints - prevent clustering in same week
+  // Only apply if enforced (loop outside member loop to group variables?)
+  // Actually, constraints are per member per week.
+  // The logic inside members.forEach is simpler.
+  if (opts.enforceWeeklyDistribution) {
+    const numWeeks = Math.ceil(totalDays / 7);
+    members.forEach((member) => {
+      const targets = memberTargets[member.id];
       for (let week = 0; week < numWeeks; week++) {
         // For members with 4+ shifts in a month, limit to max 2 per week
         // This prevents clustering while still allowing flexibility
@@ -275,8 +285,8 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
           model.constraints[`member_${member.id}_week_${week}_max`] = { max: 1 };
         }
       }
-    }
-  });
+    });
+  }
 
   // Variables
   members.forEach((member: Member) => {
@@ -300,7 +310,9 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
         const availableCountS = availabilityMap[s] || 0;
         const maxGapS = Math.max(0, availableCountS - 1);
         let targetGapS = Math.floor(maxGapS * opts.spacingStrength);
-        if (maxGapS >= 1 && targetGapS < 1) targetGapS = 1;
+
+        // Fix: Consistency with constraints
+        if (opts.spacingStrength > 0.01 && maxGapS >= 1 && targetGapS < 1) targetGapS = 1;
 
         if (targetGapS > 0 && s + targetGapS >= d) {
           model.variables[varName][`spacing_${member.id}_${s}`] = 1;
@@ -364,8 +376,13 @@ function solveSchedule(solverParams: any): SolverResult {
   result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.66, enforceWeeklyDistribution: false });
   if (result.feasible) return result;
 
-  // 8. Minimal: Relaxed Fairness + No Consecutive
-  return solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false });
+  // 8. Minimal: Relaxed Fairness + No Consecutive (Wait, strength 0 now allows consecutive if < 0.01)
+  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false });
+  if (result.feasible) return result;
+
+  // 9. Absolute Fallback: No Fairness Caps + No Spacing (Just Cover Days)
+  // This is the "Nuclear Option" to ensure output is generated even for very skewed/tight inputs
+  return solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false, disableFairnessMax: true });
 }
 
 // ==========================================
