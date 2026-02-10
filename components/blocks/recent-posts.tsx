@@ -177,10 +177,9 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
 
                     <Link
                       href={featuredPost.url}
-                      className="group inline-flex items-center font-semibold hover:underline"
+                      className="group inline-flex items-center text-sm font-medium text-primary hover:underline"
                     >
-                      <span>Read more</span>
-                      <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
+                      Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </div>
@@ -235,10 +234,9 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
 
                       <Link
                         href={post.url}
-                        className="group inline-flex items-center font-semibold hover:underline mr-1 text-base"
+                        className="group inline-flex items-center text-sm font-medium text-primary hover:underline"
                       >
-                        Read more
-                        <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
+                        Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
                   </div>

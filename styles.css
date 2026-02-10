@@ -144,3 +144,21 @@
     --tw-prose-td-borders: var(--border);
   }
 }
+
+/* 
+  Override typography plugin defaults.
+  These need to be outside @layer base to ensure they take precedence
+  over the plugin's default styles which are often in the components layer.
+*/
+.prose a {
+  color: var(--primary) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  transition-property: color, text-decoration-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.prose a:hover {
+  text-decoration: underline !important;
+}

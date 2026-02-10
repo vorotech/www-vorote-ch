@@ -110,6 +110,15 @@ export default function PostClientPage(props: ClientPostProps) {
             content={post._body}
             components={{
               ...components,
+              a: (props: any) => (
+                <a
+                  href={props.url}
+                  target={props.url?.startsWith('http') ? '_blank' : undefined}
+                  rel={props.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  {props.children}
+                </a>
+              ),
             }}
           />
         </div>
