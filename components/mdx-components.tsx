@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import React from 'react';
 import { Components, TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text';
 import Image from 'next/image';
-import { Prism } from 'tinacms/dist/rich-text/prism';
+import { CodeBlock } from './ui/code-block';
 import { Video } from './blocks/video';
 import { RecentPosts } from './blocks/recent-posts';
 import { FeaturedLink } from './blocks/featured-link';
@@ -45,7 +45,7 @@ export const components: Components<{
       return <Mermaid value={props.value} />
     }
 
-    return <Prism lang={props.lang} value={props.value} />;
+    return <CodeBlock lang={props.lang} value={props.value} />;
   },
   BlockQuote: (props: {
     children: TinaMarkdownContent;
