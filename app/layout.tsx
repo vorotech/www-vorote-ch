@@ -33,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={cn(sourceCodePro.variable, abel.variable)}>
-      <body className="min-h-screen bg-background font-sans antialiased">
+    <html lang="en" suppressHydrationWarning className={cn(sourceCodePro.variable, abel.variable)}>
+      <body suppressHydrationWarning className="min-h-screen bg-background font-sans antialiased">
         <ClientProviders>
           {children}
         </ClientProviders>

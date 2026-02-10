@@ -64,7 +64,7 @@ export function ScriptCopyBtn({
   return (
     <div
       className={cn(
-        "flex w-full no-prose",
+        "flex w-full not-prose",
         className,
       )}
     >
