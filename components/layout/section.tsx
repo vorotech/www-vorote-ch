@@ -6,7 +6,7 @@ interface SectionProps extends React.HTMLProps<HTMLElement> {
   children: ReactNode;
 }
 
-const getBackgroundClass = (bgClass: string | undefined): string => {
+export const getBackgroundClass = (bgClass: string | undefined): string => {
   if (!bgClass || bgClass === 'bg-default') return 'bg-background';
 
   // Handle various specific keys
