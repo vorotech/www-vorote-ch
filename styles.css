@@ -56,9 +56,9 @@
   --secondary: #ccd0da;
   --secondary-foreground: #4c4f69;
   --muted: #ccd0da;
-  --muted-foreground: #9ca0b0;
-  --accent: #ccd0da;
-  --accent-foreground: #4c4f69;
+  --muted-foreground: #6c6f85; /* Subtext 0 - darker for better contrast */
+  --accent: #179299; /* Teal - matches primary, from Catppuccin Latte */
+  --accent-foreground: #eff1f5; /* Light background for contrast */
   --destructive: #d20f39;
   --border: #bcc0cc;
   --input: #bcc0cc;
