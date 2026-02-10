@@ -9,9 +9,9 @@ export const Footer = () => {
   const { header, footer } = globalSettings!;
 
   return (
-    <footer className="border-b bg-white dark:bg-transparent">
+    <footer className="bg-white dark:bg-transparent">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="mt-12 flex flex-wrap items-center gap-6 border-t py-6 flex-col md:flex-row md:justify-between">
+        <div className="flex flex-wrap items-center gap-6 py-4 flex-col md:flex-row md:justify-between">
 
           <div className="order-last flex justify-center md:order-first md:justify-start">
             <Link href="/" aria-label="go home">

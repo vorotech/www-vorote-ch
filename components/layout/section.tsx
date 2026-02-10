@@ -6,9 +6,33 @@ interface SectionProps extends React.HTMLProps<HTMLElement> {
   children: ReactNode;
 }
 
+const getBackgroundClass = (bgClass: string | undefined): string => {
+  if (!bgClass || bgClass === 'bg-default') return 'bg-background';
+
+  // Handle various specific keys
+  const mapping: Record<string, string> = {
+    "bg-white/80": "bg-white/80 dark:bg-zinc-950/80",
+    "bg-zinc-50": "bg-zinc-50 dark:bg-zinc-950",
+    "bg-black/80": "bg-black/80 dark:bg-black/50", // Already dark, but maybe adjustment?
+  };
+
+  if (mapping[bgClass]) return mapping[bgClass];
+
+  // Generic handler for bg-{color}-50/80 pattern
+  const match = bgClass.match(/^bg-([a-z]+)-50\/80$/);
+  if (match) {
+    // Return a subtle white overlay in dark mode with light text for readability
+    return `${bgClass} dark:bg-white/10 dark:text-gray-100`;
+  }
+
+  return bgClass;
+};
+
 export const Section: React.FC<SectionProps> = ({ className, children, background, ...props }) => {
+  const bgClass = getBackgroundClass(background);
+  
   return (
-    <div className={background || "bg-default"}>
+    <div className={bgClass}>
       <section
         className={cn("py-12 mx-auto max-w-7xl px-6", className)}
         {...props}
