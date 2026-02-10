@@ -41,96 +41,119 @@ const transitionVariants = {
   },
 };
 
-export const Hero = ({ data }: { data: PageBlocksHero }) => {
-  // Extract the background style logic into a more readable format
-  let gradientStyle: React.CSSProperties | undefined = undefined;
-  if (data.background) {
-    const colorName = data.background
-      .replace(/\/\d{1,2}$/, '')
-      .split('-')
-      .slice(1)
-      .join('-');
-    const opacity = data.background.match(/\/(\d{1,3})$/)?.[1] || '100';
+import { cn } from '@/lib/utils';
+import { getBackgroundClass } from '../layout/section';
 
-    gradientStyle = {
-      '--tw-gradient-to': `color-mix(in oklab, var(--color-${colorName}) ${opacity}%, transparent)`,
-    } as React.CSSProperties;
-  }
+export const Hero = ({ data }: { data: PageBlocksHero }) => {
+  const bgClass = getBackgroundClass(data.background || undefined);
+  
+  // Use the selected image source explicitly as requested
+  const imageSrc = '/uploads/media/NBP_8378.jpg';
 
   return (
-    <Section background={data.background!}>
-      <div className='text-center sm:mx-auto lg:mr-auto lg:mt-0'>
-        {data.headline && (
-          <div data-tina-field={tinaField(data, 'headline')}>
-            <TextEffect preset='fade-in-blur' speedSegment={0.3} as='h1' className='mt-8 text-balance text-6xl md:text-7xl xl:text-[5.25rem]'>
-              {data.headline!}
-            </TextEffect>
-          </div>
-        )}
-        {data.tagline && (
-          <div data-tina-field={tinaField(data, 'tagline')}>
-            <TextEffect per='line' preset='fade-in-blur' speedSegment={0.3} delay={0.5} as='p' className='mx-auto mt-8 max-w-2xl text-balance text-lg'>
-              {data.tagline!}
-            </TextEffect>
-          </div>
-        )}
+    <div className={cn(bgClass, "relative overflow-hidden flex flex-col lg:block")}>
+      
+      {/* Content Container - Order 2 on mobile (text after image) */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-12 pb-12 lg:py-32 grid lg:grid-cols-2 gap-12 items-center order-2 lg:order-none">
+        {/* Left Column: Text */}
+        <div className="flex flex-col gap-6 text-left max-w-2xl lg:max-w-none mx-auto lg:mx-0">
+          {data.headline && (
+            <div data-tina-field={tinaField(data, 'headline')}>
+              <TextEffect preset='fade-in-blur' speedSegment={0.3} as='h1' className='text-balance text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground'>
+                {data.headline!}
+              </TextEffect>
+            </div>
+          )}
+          {data.tagline && (
+            <div data-tina-field={tinaField(data, 'tagline')}>
+              <TextEffect per='line' preset='fade-in-blur' speedSegment={0.3} delay={0.5} as='p' className='text-lg md:text-xl text-muted-foreground leading-relaxed'>
+                {data.tagline!}
+              </TextEffect>
+            </div>
+          )}
 
-        <AnimatedGroup variants={transitionVariants} className='mt-12 flex flex-col items-center justify-center gap-2 md:flex-row'>
-          {data.actions &&
-            data.actions.map((action) => (
-              <div key={action!.label} data-tina-field={tinaField(action)} className='bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5'>
-                <Button asChild size='lg' variant={action!.type === 'link' ? 'ghost' : 'default'} className='rounded-xl px-5 text-base'>
-                  <Link href={action!.link!}>
-                    {action?.icon && <Icon data={action?.icon} />}
-                    <span className='text-nowrap'>{action!.label}</span>
-                  </Link>
-                </Button>
-              </div>
-            ))}
-        </AnimatedGroup>
+          <AnimatedGroup variants={transitionVariants} className='flex flex-wrap gap-4 mt-4'>
+            {data.actions &&
+              data.actions.map((action) => (
+                <div key={action!.label} data-tina-field={tinaField(action)} className='bg-background/50 backdrop-blur-sm rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5 shadow-sm'>
+                  <Button asChild size='lg' variant={action!.type === 'link' ? 'ghost' : 'default'} className='rounded-xl px-6 text-base h-12'>
+                    <Link href={action!.link!}>
+                      {action?.icon && <Icon data={action?.icon} />}
+                      <span className='text-nowrap'>{action!.label}</span>
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+          </AnimatedGroup>
+        </div>
+        
+        {/* Empty column for grid alignment on Desktop */}
+        <div className="hidden lg:block"></div>
       </div>
 
-      {data.image && (
-        <AnimatedGroup variants={transitionVariants}>
-          <div className='relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 max-w-full' data-tina-field={tinaField(data, 'image')}>
-            <div aria-hidden className='bg-linear-to-b absolute inset-0 z-10 from-transparent from-35% pointer-events-none' style={gradientStyle} />
-            <div className='inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1'>
-              <ImageBlock image={data.image} />
-            </div>
-          </div>
-        </AnimatedGroup>
-      )}
-    </Section>
+      {/* Background Image Wrapper - Order 1 on mobile (image first) */}
+      <div className="relative w-full h-[50vh] min-h-[300px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[55%] order-1 lg:order-none overflow-hidden">
+         {/* Mobile/Tablet Simple Image (No Blur) */}
+         <div className="block lg:hidden w-full h-full relative">
+            <Image
+                className="object-cover object-top h-full w-full"
+                alt={data.image?.alt || 'Portrait'}
+                src={imageSrc}
+                fill
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                priority
+             />
+             {/* Bottom fade for smooth transition to text */}
+             <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+         </div>
+
+         {/* Desktop Complex Image (With Blur & Mask) */}
+         <div className="hidden lg:block w-full h-full relative">
+             {/* Layer 1: Blurred Background */}
+             <div className="absolute inset-0 z-0">
+                 <Image
+                    className="object-cover object-left-top h-full w-full blur-sm scale-110"
+                    alt={data.image?.alt || 'Portrait Background'}
+                    src={imageSrc}
+                    fill
+                    sizes="55vw"
+                    priority
+                    aria-hidden="true"
+                 />
+             </div>
+
+             {/* Layer 2: Sharp Subject with Linear Mask */}
+             <div 
+                className="absolute inset-0 z-10"
+                style={{
+                    maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 100%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 100%)'
+                }}
+             >
+                 <Image
+                    className="object-cover object-left-top h-full w-full"
+                    alt={data.image?.alt || 'Portrait'}
+                    src={imageSrc}
+                    fill
+                    sizes="55vw"
+                    priority
+                 />
+             </div>
+
+             {/* Gradient Overlays on top of everything to ensure text readability */}
+             {/* Desktop: Left fade from solid background */}
+             <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-background to-transparent z-20" />
+         </div>
+      </div>
+    </div>
   );
 };
 
-const ImageBlock = ({ image }: { image: PageBlocksHeroImage }) => {
-  if (image.videoUrl) {
-    let videoId = '';
-    if (image.videoUrl) {
-      const embedPrefix = '/embed/';
-      const idx = image.videoUrl.indexOf(embedPrefix);
-      if (idx !== -1) {
-        videoId = image.videoUrl.substring(idx + embedPrefix.length).split('?')[0];
-      }
-    }
-    const thumbnailSrc = image.src ? image.src! : videoId ? `https://i3.ytimg.com/vi/${videoId}/maxresdefault.jpg` : '';
+// Simplified ImageBlock for reference if needed, but we are using direct Image now for the hardcoded variants.
+// Keeping this component definition if other parts file use it, but since I am replacing the Hero implementation, 
+// and ImageBlock was only used inside Hero, I can remove it or keep it unused.
+// I will remove it to keep the file clean as I am replacing the usage.
 
-    return <HeroVideoDialog videoSrc={image.videoUrl} thumbnailSrc={thumbnailSrc} thumbnailAlt='Hero Video' />;
-  }
-
-  if (image.src) {
-    return (
-      <Image
-        className='z-2 border-border/25 aspect-15/8 relative rounded-2xl border max-w-full h-auto'
-        alt={image!.alt || ''}
-        src={image!.src!}
-        height={4000}
-        width={3000}
-      />
-    );
-  }
-};
 
 export const heroBlockSchema: Template = {
   name: 'hero',

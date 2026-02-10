@@ -100,10 +100,9 @@ export default function PostsClientPage(props: ClientPostProps) {
                     <div className="mt-6 flex items-center space-x-2 md:mt-8">
                       <Link
                         href={post.url}
-                        className="inline-flex items-center font-semibold hover:underline md:text-base"
+                        className="group inline-flex items-center text-sm font-medium text-primary hover:underline"
                       >
-                        <span>Read more</span>
-                        <ArrowRight className="ml-2 size-4 transition-transform" />
+                        Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
                   </div>
