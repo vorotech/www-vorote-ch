@@ -103,8 +103,8 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
   const [featuredPost, ...otherPosts] = posts;
 
   return (
-    // Added negative margins to compensate for prose spacing
-    <div className="my-8">
+    // Added top margin only to allow tight spacing with following sections
+    <div className="mt-8">
       <Section>
         <div className="container">
           {/* Section Header */}
