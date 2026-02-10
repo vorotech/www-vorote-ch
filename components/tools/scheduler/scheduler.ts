@@ -154,7 +154,8 @@ interface SolverOptions {
 }
 
 function solveWithOpts(solverParams: any, opts: SolverOptions) {
-  const { members, totalDays, blockedSet, periodStart } = solverParams;
+  const { members: untypedMembers, totalDays, blockedSet, periodStart } = solverParams;
+  const members = untypedMembers as Member[];
 
   const model: any = {
     optimize: 'fairness',

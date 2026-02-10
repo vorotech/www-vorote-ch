@@ -294,7 +294,7 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="bg-background pt-30 pb-6 px-6">
+        <div className="bg-background pt-8 pb-6 px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="bg-card rounded-xl border border-border p-6 mb-6">
                     <div className="flex items-center justify-between mb-6">
