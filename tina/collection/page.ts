@@ -26,6 +26,14 @@ const Page: Collection = {
   },
   fields: [
     {
+      type: 'string',
+      label: 'Title',
+      name: 'title',
+      description: 'The page title, used for SEO and browser tabs.',
+      isTitle: true,
+      required: true,
+    },
+    {
       type: 'object',
       list: true,
       name: 'blocks',

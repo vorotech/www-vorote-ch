@@ -23,8 +23,11 @@ const abel = Abel({
 });
 
 export const metadata: Metadata = {
-  title: "Tina",
-  description: "Tina Cloud Starter",
+  title: {
+    default: "Dmytro's Radar",
+    template: `Dmytro's Radar | %s`,
+  },
+  description: "Dmytro's Radar - Personal Blog & Portfolio",
 };
 
 export default function RootLayout({

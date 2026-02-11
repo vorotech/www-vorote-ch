@@ -57,6 +57,7 @@ export const Header = () => {
                     <li key={index}>
                       <Link
                         href={item!.href!}
+                        target={item!.href!.startsWith("http") ? "_blank" : "_self"}
                         className="text-muted-foreground hover:text-accent block duration-150">
                         <span>{item!.label}</span>
                       </Link>
@@ -70,6 +71,7 @@ export const Header = () => {
                     <li key={index}>
                       <Link
                         href={item!.href!}
+                        target={item!.href!.startsWith("http") ? "_blank" : "_self"}
                         className="text-muted-foreground hover:text-accent block duration-150">
                         <span>{item!.label}</span>
                       </Link>

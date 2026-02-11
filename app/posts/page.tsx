@@ -4,6 +4,12 @@ import PostsClientPage from './client-page';
 
 export const revalidate = 300;
 
+export async function generateMetadata() {
+  return {
+    title: "Blog",
+  };
+}
+
 export default async function PostsPage() {
   let posts = await client.queries.postConnection({
     sort: 'date',
