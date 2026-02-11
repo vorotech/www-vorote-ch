@@ -54,7 +54,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
     <div className={cn(bgClass, "relative overflow-hidden flex flex-col lg:block")}>
       
       {/* Content Container - Order 2 on mobile (text after image) */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 pt-12 pb-12 lg:py-32 grid lg:grid-cols-2 gap-12 items-center order-2 lg:order-none">
+      <div className="relative z-30 mx-auto max-w-7xl px-6 pt-12 pb-12 lg:py-32 grid lg:grid-cols-2 gap-12 items-center order-2 lg:order-none">
         {/* Left Column: Text */}
         <div className="flex flex-col gap-6 text-left max-w-2xl lg:max-w-none mx-auto lg:mx-0">
           {data.headline && (
