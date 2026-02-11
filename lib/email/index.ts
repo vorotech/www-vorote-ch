@@ -1,18 +1,9 @@
 /**
  * Email Module
  *
- * A generic email sending module for Cloudflare Workers.
- * Provides utilities for sending emails via Cloudflare Email Routing.
- *
- * Configuration should be defined where the email sender is used,
- * not in this generic library.
+ * A generic email sending module using Resend.
+ * Provides utilities for sending transactional emails.
+ * Make sure RESEND_API_KEY is set in your environment variables.
  */
 
-// Export all email sender utilities
-export {
-  createSimpleEmail,
-  createHtmlEmail,
-  sendEmail,
-  sendSimpleEmail,
-  type SimpleEmailOptions,
-} from './sender';
+export { sendEmail, type EmailOptions } from './sender';

@@ -22,8 +22,34 @@ export const FeedbackForm = () => {
     const [token, setToken] = useState<string | null>(null);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [emailError, setEmailError] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
+
+    // Simple email validation for UI
+    const validateEmailFormat = (email: string): boolean => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+        
+        // Clear error when user starts typing
+        if (emailError) setEmailError('');
+        
+        // Validate on blur or when email looks complete
+        if (newEmail && !validateEmailFormat(newEmail) && newEmail.includes('@')) {
+            setEmailError('Please enter a valid email address');
+        }
+    };
+
+    const handleEmailBlur = () => {
+        if (email && !validateEmailFormat(email)) {
+            setEmailError('Please enter a valid email address');
+        }
+    };
 
     useEffect(() => {
         // Cleanup function to remove widget
@@ -80,6 +106,12 @@ export const FeedbackForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
+        // Validate email before submission
+        if (!validateEmailFormat(email)) {
+            setEmailError('Please enter a valid email address');
+            return;
+        }
+        
         if (!token) {
             setErrorMessage('Please complete the human verification.');
             return;
@@ -87,6 +119,7 @@ export const FeedbackForm = () => {
 
         setStatus('loading');
         setErrorMessage('');
+        setEmailError('');
 
         try {
             const res = await fetch('/api/feedback', {
@@ -133,7 +166,7 @@ export const FeedbackForm = () => {
     }
 
     return (
-        <div className="w-full max-w-md mx-auto bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800 p-6">
+        <div className="w-full max-w-md mx-auto bg-card rounded-xl shadow-lg border border-border p-6">
             <Script 
                 src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
                 strategy="lazyOnload"
@@ -142,11 +175,11 @@ export const FeedbackForm = () => {
                     renderTurnstileWidget();
                 }}
             />
-            <h3 className="text-xl font-semibold mb-2 text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <Send className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-xl font-semibold mb-2 text-foreground flex items-center gap-2">
+                <Send className="w-5 h-5 text-primary" />
                 Feedback & Requests
             </h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
                 Have a suggestion or found a bug? Let me know!
             </p>
 
@@ -160,13 +193,13 @@ export const FeedbackForm = () => {
                         <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
                             <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
                         </div>
-                        <h4 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">Thank you!</h4>
-                        <p className="text-zinc-500 dark:text-zinc-400">
+                        <h4 className="text-lg font-medium text-foreground mb-2">Thank you!</h4>
+                        <p className="text-muted-foreground">
                             Your feedback has been sent successfully.
                         </p>
                         <button
                             onClick={() => setStatus('idle')}
-                            className="mt-6 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium"
+                            className="mt-6 text-sm text-primary hover:text-primary/90 font-medium"
                         >
                             Send another message
                         </button>
@@ -180,25 +213,35 @@ export const FeedbackForm = () => {
                         className="space-y-4"
                     >
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
                                 Email
                             </label>
                             <input
                                 id="email"
                                 type="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={handleEmailChange}
+                                onBlur={handleEmailBlur}
                                 placeholder="your@email.com"
                                 required
                                 autoComplete="off"
                                 data-form-type="other"
                                 data-lpignore="true"
-                                className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
+                                className={`w-full px-3 py-2 bg-background border rounded-lg focus:ring-2 focus:border-primary outline-none transition-all text-foreground ${
+                                    emailError 
+                                        ? 'border-red-500 focus:ring-red-500' 
+                                        : 'border-border focus:ring-primary'
+                                }`}
                             />
+                            {emailError && (
+                                <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                                    {emailError}
+                                </p>
+                            )}
                         </div>
 
                         <div>
-                            <label htmlFor="message" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                            <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1">
                                 Message
                             </label>
                             <div className="relative">
@@ -210,9 +253,9 @@ export const FeedbackForm = () => {
                                     required
                                     rows={4}
                                     maxLength={500}
-                                    className="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none dark:text-white"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all resize-none text-foreground"
                                 />
-                                <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 text-right">
+                                <div className="text-xs text-muted-foreground mt-1 text-right">
                                     {message.length}/500
                                 </div>
                             </div>
@@ -232,7 +275,7 @@ export const FeedbackForm = () => {
                         <button
                             type="submit"
                             disabled={status === 'loading'}
-                            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {status === 'loading' ? (
                                 <>
