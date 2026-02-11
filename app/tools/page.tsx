@@ -5,7 +5,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 import Layout from "@/components/layout/layout";
 
 export const metadata = {
-    title: "Tools | Vorotech",
+    title: "Tools",
     description: "Useful tools and utilities.",
 };
 
