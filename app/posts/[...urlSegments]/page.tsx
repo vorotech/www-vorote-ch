@@ -5,6 +5,29 @@ import PostClientPage from './client-page';
 
 export const revalidate = 300;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ urlSegments: string[] }>;
+}) {
+  const resolvedParams = await params;
+  const filepath = resolvedParams.urlSegments.join('/');
+
+  let data;
+  try {
+    data = await client.queries.post({
+      relativePath: `${filepath}.mdx`,
+    });
+    return {
+      title: data.data.post.title,
+    };
+  } catch (error) {
+    return {
+      title: 'Post Not Found',
+    };
+  }
+}
+
 export default async function PostPage({
   params,
 }: {
