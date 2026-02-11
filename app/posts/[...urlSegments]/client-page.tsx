@@ -105,11 +105,20 @@ export default function PostClientPage(props: ClientPostProps) {
             </div>
           </div>
         )}
-        <div data-tina-field={tinaField(post, '_body')} className='prose dark:prose-dark w-full max-w-none'>
+        <div data-tina-field={tinaField(post, '_body')} className='prose dark:prose-invert w-full max-w-none'>
           <TinaMarkdown
             content={post._body}
             components={{
               ...components,
+              a: (props: any) => (
+                <a
+                  href={props.url}
+                  target={props.url?.startsWith('http') ? '_blank' : undefined}
+                  rel={props.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  {props.children}
+                </a>
+              ),
             }}
           />
         </div>
