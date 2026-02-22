@@ -176,6 +176,10 @@ const SecurityAuditComponent = () => {
                                             <span className="text-3xl font-bold text-yellow-500">{result.summary.severity.moderate}</span>
                                             <span className="text-xs text-muted-foreground font-medium uppercase">Moderate</span>
                                         </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-3xl font-bold text-blue-400">{result.summary.severity.low}</span>
+                                            <span className="text-xs text-muted-foreground font-medium uppercase">Low</span>
+                                        </div>
                                         <div className="flex flex-col text-green-500 justify-center">
                                             {result.summary.total === 0 && (
                                                 <div className="flex items-center gap-2">
@@ -225,17 +229,28 @@ const SecurityAuditComponent = () => {
                                                                     </div>
                                                                     <h4 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight break-words">{vuln.title}</h4>
                                                                 </div>
-                                                                <div className="flex flex-wrap gap-2 mt-2">
-                                                                    {vuln.cves && vuln.cves.map(cve => (
-                                                                        <span key={cve} className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
-                                                                            {cve}
+                                                                <div className="flex flex-col gap-1.5 mt-2">
+                                                                    {vuln.cves && vuln.cves.length > 0 && (
+                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit">
+                                                                            {vuln.cves.join(', ')}
                                                                         </span>
-                                                                    ))}
+                                                                    )}
                                                                     {vuln.epss && (
-                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>
+                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>
                                                                             EPSS: {(Number(vuln.epss.score) * 100).toFixed(3)}%
                                                                         </span>
                                                                     )}
+                                                                    {(() => {
+                                                                        const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
+                                                                        if (advisoryId?.startsWith('GHSA')) {
+                                                                            return (
+                                                                                <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit">
+                                                                                    GHSA ID: {advisoryId}
+                                                                                </span>
+                                                                            );
+                                                                        }
+                                                                        return null;
+                                                                    })()}
                                                                 </div>
                                                             </div>
                                                             <a
