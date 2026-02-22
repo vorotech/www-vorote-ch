@@ -68,6 +68,78 @@ export async function GET(request: Request) {
         const advisoriesData = advisoriesResponse.ok ? await advisoriesResponse.json() as any : {};
         const packageVulnerabilities = advisoriesData[packageName] || [];
 
+        // Enrich vulnerabilities with OSV (CVEs, Patched Versions) and FIRST (EPSS) data
+        const enrichedVulnerabilities = await Promise.all(packageVulnerabilities.map(async (vuln: any) => {
+            let cves: string[] = [];
+            let epss: { score: string, percentile: string } | null = null;
+            let patchedVersion = '';
+
+            const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
+
+            try {
+                if (advisoryId?.startsWith('GHSA')) {
+                    const osvResponse = await fetch(`https://api.osv.dev/v1/vulns/${advisoryId}`);
+                    if (osvResponse.ok) {
+                        const osvData = await osvResponse.json() as any;
+                        if (osvData.aliases) {
+                            cves = osvData.aliases.filter((alias: string) => alias.startsWith('CVE-'));
+                        }
+
+                        if (osvData.affected) {
+                            for (const affected of osvData.affected) {
+                                if (affected.ranges) {
+                                    for (const range of affected.ranges) {
+                                        if (range.events) {
+                                            for (const event of range.events) {
+                                                if (event.fixed) {
+                                                    patchedVersion = event.fixed;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching OSV data:', e);
+            }
+
+            if (!patchedVersion && vuln.vulnerable_versions) {
+                const match = vuln.vulnerable_versions.match(/[<]=? ?([0-9A-Za-z.\-]+)$/);
+                if (match) {
+                    patchedVersion = match[0].startsWith('<=') ? '> ' + match[1] : '>= ' + match[1];
+                }
+            } else if (patchedVersion) {
+                patchedVersion = '>= ' + patchedVersion;
+            }
+
+            if (cves.length > 0) {
+                try {
+                    const epssResponse = await fetch(`https://api.first.org/data/v1/epss?cve=${cves[0]}`);
+                    if (epssResponse.ok) {
+                        const epssData = await epssResponse.json() as any;
+                        if (epssData.data && epssData.data.length > 0) {
+                            epss = {
+                                score: epssData.data[0].epss,
+                                percentile: epssData.data[0].percentile
+                            };
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error fetching EPSS data:', e);
+                }
+            }
+
+            return {
+                ...vuln,
+                cves,
+                epss,
+                patched_versions: patchedVersion
+            };
+        }));
+
         // Sort vulnerabilities by severity
         const severityScores: Record<string, number> = {
             critical: 4,
@@ -76,7 +148,7 @@ export async function GET(request: Request) {
             low: 1
         };
 
-        packageVulnerabilities.sort((a: any, b: any) => {
+        enrichedVulnerabilities.sort((a: any, b: any) => {
             const scoreA = severityScores[a.severity] || 0;
             const scoreB = severityScores[b.severity] || 0;
             return scoreB - scoreA;
@@ -85,15 +157,15 @@ export async function GET(request: Request) {
         return NextResponse.json({
             package: packageName,
             version: targetVersion,
-            vulnerabilities: packageVulnerabilities,
+            vulnerabilities: enrichedVulnerabilities,
             checkedAt: new Date().toISOString(),
             summary: {
-                total: packageVulnerabilities.length,
+                total: enrichedVulnerabilities.length,
                 severity: {
-                    critical: packageVulnerabilities.filter((v: any) => v.severity === 'critical').length,
-                    high: packageVulnerabilities.filter((v: any) => v.severity === 'high').length,
-                    moderate: packageVulnerabilities.filter((v: any) => v.severity === 'moderate').length,
-                    low: packageVulnerabilities.filter((v: any) => v.severity === 'low').length,
+                    critical: enrichedVulnerabilities.filter((v: any) => v.severity === 'critical').length,
+                    high: enrichedVulnerabilities.filter((v: any) => v.severity === 'high').length,
+                    moderate: enrichedVulnerabilities.filter((v: any) => v.severity === 'moderate').length,
+                    low: enrichedVulnerabilities.filter((v: any) => v.severity === 'low').length,
                 }
             }
         });

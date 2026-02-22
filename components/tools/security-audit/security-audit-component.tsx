@@ -9,7 +9,10 @@ interface Vulnerability {
     title: string;
     severity: 'low' | 'moderate' | 'high' | 'critical';
     vulnerable_versions: string;
+    patched_versions?: string;
     cwe: string[];
+    cves?: string[];
+    epss?: { score: string; percentile: string } | null;
     cvss: { score: number; vectorString: string };
     url: string;
 }
@@ -201,7 +204,6 @@ const SecurityAuditComponent = () => {
                                 ) : (
                                     <div className="flex flex-col gap-4">
                                         {result.vulnerabilities.map((vuln) => {
-                                            const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
                                             return (
                                                 <div
                                                     key={vuln.id}
@@ -211,18 +213,27 @@ const SecurityAuditComponent = () => {
                                                         <div className="flex items-start justify-between gap-4">
                                                             <div className="flex flex-col gap-1 min-w-0">
                                                                 <div className="flex items-center gap-3 flex-wrap">
-                                                                    <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${SEVERITY_COLORS[vuln.severity] || ''}`}>
-                                                                        {vuln.severity}
-                                                                    </span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${SEVERITY_COLORS[vuln.severity] || ''}`}>
+                                                                            {vuln.severity}
+                                                                        </span>
+                                                                        {vuln.cvss?.score && (
+                                                                            <span className="px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground bg-muted rounded border border-border/50">
+                                                                                CVSS: {vuln.cvss.score}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
                                                                     <h4 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight break-words">{vuln.title}</h4>
                                                                 </div>
                                                                 <div className="flex flex-wrap gap-2 mt-2">
-                                                                    <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
-                                                                        {advisoryId}
-                                                                    </span>
-                                                                    {vuln.cvss?.score && (
-                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
-                                                                            CVSS: {vuln.cvss.score}
+                                                                    {vuln.cves && vuln.cves.map(cve => (
+                                                                        <span key={cve} className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                                                                            {cve}
+                                                                        </span>
+                                                                    ))}
+                                                                    {vuln.epss && (
+                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>
+                                                                            EPSS: {(Number(vuln.epss.score) * 100).toFixed(3)}%
                                                                         </span>
                                                                     )}
                                                                 </div>
@@ -241,22 +252,25 @@ const SecurityAuditComponent = () => {
                                                         <div className="flex flex-col gap-3 mt-2">
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-xl border border-border/50">
                                                                 <div className="flex flex-col gap-1">
-                                                                    <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Affected Versions</span>
+                                                                    <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-orange-500" /> Affected Versions</span>
                                                                     <span className="text-sm font-mono text-foreground/90 font-medium">{vuln.vulnerable_versions}</span>
                                                                 </div>
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-green-500" /> Patched Versions</span>
+                                                                    <span className="text-sm font-mono text-foreground/90 font-medium">{vuln.patched_versions || 'See Advisory'}</span>
+                                                                </div>
                                                                 {vuln.cwe && vuln.cwe.length > 0 && (
-                                                                    <div className="flex flex-col gap-1">
+                                                                    <div className="flex flex-col gap-1 md:col-span-2 mt-2 pt-3 border-t border-border/50">
                                                                         <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> CWE Weaknesses</span>
-                                                                        <div className="flex flex-wrap gap-1 mt-1">
-                                                                            {vuln.cwe.map(c => <span key={c} className="text-xs font-mono bg-background border border-border px-1.5 py-0.5 rounded text-muted-foreground">{c}</span>)}
+                                                                        <div className="flex flex-wrap gap-2 mt-1">
+                                                                            {vuln.cwe.map(c => (
+                                                                                <a key={c} href={`https://cwe.mitre.org/data/definitions/${c.split('-')[1]}.html`} target="_blank" rel="noopener noreferrer" title="View Common Weakness Enumeration details on Mitre.org" className="text-xs font-mono bg-background border border-border px-2 py-1 rounded text-muted-foreground hover:text-primary hover:border-primary hover:bg-primary/5 transition-all">
+                                                                                    {c}
+                                                                                </a>
+                                                                            ))}
                                                                         </div>
                                                                     </div>
                                                                 )}
-                                                            </div>
-
-                                                            <div className="flex items-start gap-2 px-3 py-2 bg-primary/5 text-primary rounded-xl border border-primary/10">
-                                                                <Info className="w-4 h-4 shrink-0 mt-0.5" />
-                                                                <span className="text-sm font-medium">To see patched versions and full remediation guidance, view the official advisory details.</span>
                                                             </div>
                                                         </div>
                                                     </div>
