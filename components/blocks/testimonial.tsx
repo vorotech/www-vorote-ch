@@ -16,7 +16,7 @@ export const Testimonial = ({ data }: { data: PageBlocksTestimonial }) => {
       </div>
       <div className="mt-8 [column-width:300px] [column-gap:1.5rem] md:mt-12">
         {data.testimonials?.map((testimonial, index) => (
-          <TestimonialCard key={index} testimonial={testimonial!} />
+          <TestimonialCard key={testimonial?.author || `testimonial-${index}`} testimonial={testimonial!} />
         ))}
       </div>
     </Section>

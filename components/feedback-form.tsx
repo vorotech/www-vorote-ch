@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useReducer, useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from "motion/react"
+import { m, AnimatePresence } from "motion/react"
 import { useTheme } from "next-themes";
 
 declare global {
@@ -17,12 +17,15 @@ declare global {
 
 export const FeedbackForm = () => {
     const { theme } = useTheme();
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [token, setToken] = useState<string | null>(null);
-    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [emailError, setEmailError] = useState('');
+    const [state, setState] = useReducer((old: any, action: any) => ({ ...old, ...action }), {
+        email: '',
+        message: '',
+        token: null as string | null,
+        status: 'idle' as 'idle' | 'loading' | 'success' | 'error',
+        errorMessage: '',
+        emailError: ''
+    });
+    const { email, message, token, status, errorMessage, emailError } = state;
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
 
@@ -34,20 +37,20 @@ export const FeedbackForm = () => {
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newEmail = e.target.value;
-        setEmail(newEmail);
-        
+        setState({ email: newEmail });
+
         // Clear error when user starts typing
-        if (emailError) setEmailError('');
-        
+        if (emailError) setState({ emailError: '' });
+
         // Validate on blur or when email looks complete
         if (newEmail && !validateEmailFormat(newEmail) && newEmail.includes('@')) {
-            setEmailError('Please enter a valid email address');
+            setState({ emailError: 'Please enter a valid email address' });
         }
     };
 
     const handleEmailBlur = () => {
         if (email && !validateEmailFormat(email)) {
-            setEmailError('Please enter a valid email address');
+            setState({ emailError: 'Please enter a valid email address' });
         }
     };
 
@@ -64,7 +67,7 @@ export const FeedbackForm = () => {
     const renderTurnstileWidget = () => {
         if (window.turnstile && containerRef.current && !widgetIdRef.current) {
             const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
-            
+
             console.log('Rendering Turnstile widget with sitekey:', siteKey);
 
             try {
@@ -73,17 +76,15 @@ export const FeedbackForm = () => {
                     theme: theme === 'dark' ? 'dark' : 'light',
                     callback: (t: string) => {
                         console.log('Turnstile success token:', t ? t.substring(0, 10) + '...' : 'null');
-                        setToken(t);
-                        setErrorMessage(''); // Clear potential previous errors
+                        setState({ token: t, errorMessage: '' }); // Clear potential previous errors
                     },
                     'error-callback': () => {
                         console.error('Turnstile error');
-                        setErrorMessage('Turnstile verification failed. Please try again.');
+                        setState({ errorMessage: 'Turnstile verification failed. Please try again.' });
                     },
                     'expired-callback': () => {
                         console.warn('Turnstile expired');
-                        setToken(null);
-                        setErrorMessage('Turnstile expired. Please verify again.');
+                        setState({ token: null, errorMessage: 'Turnstile expired. Please verify again.' });
                     },
                 });
             } catch (err) {
@@ -105,21 +106,19 @@ export const FeedbackForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Validate email before submission
         if (!validateEmailFormat(email)) {
-            setEmailError('Please enter a valid email address');
-            return;
-        }
-        
-        if (!token) {
-            setErrorMessage('Please complete the human verification.');
+            setState({ emailError: 'Please enter a valid email address' });
             return;
         }
 
-        setStatus('loading');
-        setErrorMessage('');
-        setEmailError('');
+        if (!token) {
+            setState({ errorMessage: 'Please complete the human verification.' });
+            return;
+        }
+
+        setState({ status: 'loading', errorMessage: '', emailError: '' });
 
         try {
             const res = await fetch('/api/feedback', {
@@ -136,39 +135,34 @@ export const FeedbackForm = () => {
                 throw new Error(data.message || 'Something went wrong');
             }
 
-            setStatus('success');
-            setEmail('');
-            setMessage('');
-            setToken(null);
-            
+            setState({ status: 'success', email: '', message: '', token: null });
+
             // Remove the widget on success
             if (window.turnstile && widgetIdRef.current) {
                 window.turnstile.remove(widgetIdRef.current);
                 widgetIdRef.current = null;
             }
         } catch (error: any) {
-            setStatus('error');
-            setErrorMessage(error.message || 'Failed to send feedback');
-            
+            setState({ status: 'error', errorMessage: error.message || 'Failed to send feedback', token: null });
+
             // Reset the widget on error
             if (window.turnstile && widgetIdRef.current) {
                 window.turnstile.reset(widgetIdRef.current);
             }
-            setToken(null);
         }
     };
 
     // Check if email sending is enabled
     const isEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_SENDING !== 'false';
-    
+
     if (!isEnabled) {
         return null;
     }
 
     return (
         <div className="w-full max-w-md mx-auto bg-card rounded-xl shadow-lg border border-border p-6">
-            <Script 
-                src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" 
+            <Script
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
                 strategy="lazyOnload"
                 onLoad={() => {
                     console.log('Turnstile script loaded');
@@ -185,7 +179,7 @@ export const FeedbackForm = () => {
 
             <AnimatePresence mode="wait">
                 {status === 'success' ? (
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="flex flex-col items-center justify-center py-8 text-center"
@@ -198,14 +192,14 @@ export const FeedbackForm = () => {
                             Your feedback has been sent successfully.
                         </p>
                         <button
-                            onClick={() => setStatus('idle')}
+                            onClick={() => setState({ status: 'idle' })}
                             className="mt-6 text-sm text-primary hover:text-primary/90 font-medium"
                         >
                             Send another message
                         </button>
-                    </motion.div>
+                    </m.div>
                 ) : (
-                    <motion.form
+                    <m.form
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -227,11 +221,10 @@ export const FeedbackForm = () => {
                                 autoComplete="off"
                                 data-form-type="other"
                                 data-lpignore="true"
-                                className={`w-full px-3 py-2 bg-background border rounded-lg focus:ring-2 focus:border-primary outline-none transition-all text-foreground ${
-                                    emailError 
-                                        ? 'border-red-500 focus:ring-red-500' 
-                                        : 'border-border focus:ring-primary'
-                                }`}
+                                className={`w-full px-3 py-2 bg-background border rounded-lg focus:ring-2 focus:border-primary outline-none transition-all text-foreground ${emailError
+                                    ? 'border-red-500 focus:ring-red-500'
+                                    : 'border-border focus:ring-primary'
+                                    }`}
                             />
                             {emailError && (
                                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">
@@ -248,7 +241,7 @@ export const FeedbackForm = () => {
                                 <textarea
                                     id="message"
                                     value={message}
-                                    onChange={(e) => setMessage(e.target.value)}
+                                    onChange={(e) => setState({ message: e.target.value })}
                                     placeholder="Tell me what you think..."
                                     required
                                     rows={4}
@@ -286,7 +279,7 @@ export const FeedbackForm = () => {
                                 'Send Feedback'
                             )}
                         </button>
-                    </motion.form>
+                    </m.form>
                 )}
             </AnimatePresence>
         </div>

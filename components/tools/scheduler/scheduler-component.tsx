@@ -45,8 +45,7 @@ const OnCallScheduler = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-    // Load settings from local storage on mount
-    useEffect(() => {
+    const loadSettings = () => {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             try {
@@ -55,7 +54,7 @@ const OnCallScheduler = () => {
                 if (storedMembers) {
                     const migratedMembers = storedMembers.map((m: any) => ({
                         ...m,
-                        timeOffs: m.timeOffs  || []
+                        timeOffs: m.timeOffs || []
                     }));
                     setMembers(migratedMembers);
                 }
@@ -66,6 +65,11 @@ const OnCallScheduler = () => {
             }
         }
         setIsLoaded(true);
+    };
+
+    // Load settings from local storage on mount
+    useEffect(() => {
+        loadSettings();
     }, []);
 
     // Toast helper
@@ -294,30 +298,15 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="bg-background pt-8 pb-6 px-6">
+        <div className="bg-background pt-8 pb-6 px-4 md:px-6">
             <div className="max-w-6xl mx-auto">
-                <div className="bg-card rounded-xl border border-border p-6 mb-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3">
-                            <Calendar className="w-8 h-8 text-primary" />
-                            <h1 className="text-3xl font-bold text-foreground">On-Call Shift Scheduler</h1>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3 mb-8 px-2">
+                    <Calendar className="w-8 h-8 text-primary" />
+                    <h1 className="text-3xl md:text-4xl font-bold font-abel text-foreground">On-Call Scheduler</h1>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-2">
-                                Number of People
-                            </label>
-                            <input
-                                type="number"
-                                min="1"
-                                max={MAX_MEMBERS}
-                                value={numMembers}
-                                onChange={(e) => updateNumMembers(e.target.value)}
-                                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            />
-                        </div>
+                <div className="bg-card rounded-xl border border-border p-6 mb-6 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-2">
                                 Month
@@ -328,7 +317,7 @@ const OnCallScheduler = () => {
                                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                             >
                                 {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i} value={i}>
+                                    <option key={`month-${i}`} value={i}>
                                         {new Date(2024, i).toLocaleDateString('en-US', { month: 'long' })}
                                     </option>
                                 ))}
@@ -353,61 +342,68 @@ const OnCallScheduler = () => {
                         </div>
                     </div>
 
-                    {showSettings && (
-                        <div className="mb-6 p-4 bg-muted/50 rounded-xl border border-border">
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                <Users className="w-5 h-5" />
-                                Team Member Configuration
-                            </h2>
+                    <div className="mb-8 p-6 bg-muted/30 rounded-xl border border-border">
+                        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-foreground">
+                            <Clock className="w-5 h-5 text-primary" />
+                            Shift Settings
+                        </h2>
 
-
-
-                            <div className="mb-8 p-6 bg-card rounded-xl border border-border">
-                                <h3 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
-                                    <Clock className="w-5 h-5 text-primary" />
-                                    Generator Settings
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Start of Week
-                                        </label>
-                                        <select
-                                            value={startOfWeek}
-                                            onChange={(e) => setStartOfWeek(parseInt(e.target.value))}
-                                            className="w-full px-3 py-2 border border-border bg-background rounded focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
-                                        >
-                                            <option value={0}>Sunday</option>
-                                            <option value={1}>Monday</option>
-                                            <option value={6}>Saturday</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Shift Start Hour (24h)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="23"
-                                            value={shiftStartHour}
-                                            onChange={(e) => setShiftStartHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
-                                            className="w-full px-3 py-2 border border-border bg-background rounded focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Shift Length
-                                        </label>
-                                        <div className="w-full px-3 py-2 bg-muted border border-border rounded text-muted-foreground">
-                                            24 Hours (Fixed)
-                                        </div>
-                                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Number of People
+                                </label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max={MAX_MEMBERS}
+                                    value={numMembers}
+                                    onChange={(e) => updateNumMembers(e.target.value)}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Start of Week
+                                </label>
+                                <select
+                                    value={startOfWeek}
+                                    onChange={(e) => setStartOfWeek(parseInt(e.target.value))}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                >
+                                    <option value={0}>Sunday</option>
+                                    <option value={1}>Monday</option>
+                                    <option value={6}>Saturday</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Shift Start Hour (24h)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="23"
+                                    value={shiftStartHour}
+                                    onChange={(e) => setShiftStartHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Shift Length
+                                </label>
+                                <div className="w-full px-4 py-2 bg-background border border-border rounded-lg text-muted-foreground text-sm flex items-center h-[42px]">
+                                    24 Hours (Fixed)
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 border-t border-border pt-6">
-                                <Users className="w-5 h-5" />
+                    {showSettings && (
+                        <div className="mb-6">
+                            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 border-t border-border pt-6">
+                                <Users className="w-5 h-5 text-primary" />
                                 Member Configuration
                             </h2>
                             {members.map((member) => (
@@ -487,13 +483,13 @@ const OnCallScheduler = () => {
 
                                                 return vacStart <= monthEnd && vacEnd >= monthStart;
                                             })
-                                            .map((timeOff, idx) => (
-                                                <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
+                                            .map((timeOff, offIdx) => (
+                                                <div key={offIdx} className="flex items-center gap-2 mb-2 text-sm">
                                                     <span className="text-muted-foreground">
                                                         {new Date(timeOff.start).toLocaleDateString()} - {new Date(timeOff.end).toLocaleDateString()}
                                                     </span>
                                                     <button
-                                                        onClick={() => removeTimeOff(member.id, idx)}
+                                                        onClick={() => removeTimeOff(member.id, offIdx)}
                                                         className="text-red-500 hover:text-red-700"
                                                     >
                                                         Remove
@@ -535,43 +531,43 @@ const OnCallScheduler = () => {
                                 </div>
                             ))}
 
-                        <div className="flex gap-2 mt-6 justify-end border-t border-border pt-4">
-                             <button
-                                 onClick={downloadConfiguration}
-                                 className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                 title="Download Configuration"
-                             >
-                                 <Download className="w-4 h-4" />
-                                 <span className="hidden md:inline">Download</span>
-                             </button>
-                             <button
-                                 onClick={copyConfiguration}
-                                 className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                 title="Copy Configuration"
-                             >
-                                 <Clipboard className="w-4 h-4" />
-                                 <span className="hidden md:inline">Copy</span>
-                             </button>
-                             <button
-                                 onClick={clearSettings}
-                                 className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive hover:bg-destructive/20 rounded-lg transition-colors border border-destructive/20 text-sm font-medium"
-                                 title="Clear Cache"
-                             >
-                                 <Trash2 className="w-4 h-4" />
-                                 <span className="hidden md:inline">Clear</span>
-                             </button>
+                            <div className="flex gap-2 mt-6 justify-end border-t border-border pt-4">
+                                <button
+                                    onClick={downloadConfiguration}
+                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                    title="Download Configuration"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    <span className="hidden md:inline">Download</span>
+                                </button>
+                                <button
+                                    onClick={copyConfiguration}
+                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                    title="Copy Configuration"
+                                >
+                                    <Clipboard className="w-4 h-4" />
+                                    <span className="hidden md:inline">Copy</span>
+                                </button>
+                                <button
+                                    onClick={clearSettings}
+                                    className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive hover:bg-destructive/20 rounded-lg transition-colors border border-destructive/20 text-sm font-medium"
+                                    title="Clear Cache"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="hidden md:inline">Clear</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                <div className="flex gap-4">
+                    <div className="flex gap-4">
                         <button
                             onClick={() => setShowSettings(!showSettings)}
                             className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors whitespace-nowrap"
                         >
                             <Settings className="w-5 h-5" />
-                            <span className="hidden md:inline">{showSettings ? 'Hide' : 'Show'} Settings</span>
-                            <span className="md:hidden">Settings</span>
+                            <span className="hidden md:inline">{showSettings ? 'Hide' : 'Show'} Member Configuration</span>
+                            <span className="md:hidden">{showSettings ? 'Hide' : 'Show'} Members</span>
                         </button>
 
                         <button
@@ -621,56 +617,56 @@ const OnCallScheduler = () => {
                         </div>
 
                         <div className="flex flex-wrap justify-end gap-2 mb-4">
+                            <button
+                                onClick={generateSchedule}
+                                className="flex items-center gap-2 px-3 py-2 bg-accent/10 text-primary hover:bg-accent/20 rounded-lg transition-colors text-sm font-medium"
+                                title="Regenerate Schedule"
+                            >
+                                <Dices className="w-4 h-4" />
+                                <span className="hidden md:inline">Randomize</span>
+                            </button>
+                            <button
+                                onClick={downloadResults}
+                                className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                title="Download Results"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span className="hidden md:inline">Download</span>
+                            </button>
+                            <button
+                                onClick={copyResults}
+                                className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                title="Copy Results"
+                            >
+                                <Clipboard className="w-4 h-4" />
+                                <span className="hidden md:inline">Copy</span>
+                            </button>
+                            {viewMode === 'calendar' && (
                                 <button
-                                    onClick={generateSchedule}
-                                    className="flex items-center gap-2 px-3 py-2 bg-accent/10 text-primary hover:bg-accent/20 rounded-lg transition-colors text-sm font-medium"
-                                    title="Regenerate Schedule"
+                                    onClick={() => setShowTimeOff(!showTimeOff)}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showTimeOff ? 'bg-accent/10 text-primary' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                                        }`}
                                 >
-                                    <Dices className="w-4 h-4" />
-                                    <span className="hidden md:inline">Randomize</span>
+                                    {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    <span className="hidden md:inline">Time Off</span>
+                                </button>
+                            )}
+                            <div className="flex bg-secondary p-1 rounded-lg">
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                                    title="List View"
+                                >
+                                    <ListIcon className="w-5 h-5" />
                                 </button>
                                 <button
-                                    onClick={downloadResults}
-                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                    title="Download Results"
+                                    onClick={() => setViewMode('calendar')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                                    title="Calendar View"
                                 >
-                                    <Download className="w-4 h-4" />
-                                    <span className="hidden md:inline">Download</span>
+                                    <LayoutGrid className="w-5 h-5" />
                                 </button>
-                                <button
-                                    onClick={copyResults}
-                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                    title="Copy Results"
-                                >
-                                    <Clipboard className="w-4 h-4" />
-                                    <span className="hidden md:inline">Copy</span>
-                                </button>
-                                {viewMode === 'calendar' && (
-                                    <button
-                                        onClick={() => setShowTimeOff(!showTimeOff)}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showTimeOff ? 'bg-accent/10 text-primary' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
-                                            }`}
-                                    >
-                                        {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                        <span className="hidden md:inline">Time Off</span>
-                                    </button>
-                                )}
-                                <div className="flex bg-secondary p-1 rounded-lg">
-                                    <button
-                                        onClick={() => setViewMode('list')}
-                                        className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                                        title="List View"
-                                    >
-                                        <ListIcon className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => setViewMode('calendar')}
-                                        className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                                        title="Calendar View"
-                                    >
-                                        <LayoutGrid className="w-5 h-5" />
-                                    </button>
-                                </div>
+                            </div>
                         </div>
 
                         {viewMode === 'list' ? (
@@ -715,7 +711,7 @@ const OnCallScheduler = () => {
                                                 const dayIndex = (startOfWeek + i) % 7;
                                                 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                                                 return (
-                                                    <div key={i} className="py-2 text-center text-sm font-semibold text-muted-foreground">
+                                                    <div key={`head-${i}`} className="py-2 text-center text-sm font-semibold text-muted-foreground">
                                                         {days[dayIndex]}
                                                     </div>
                                                 );
@@ -731,8 +727,8 @@ const OnCallScheduler = () => {
                                                 const cells = [];
 
                                                 // Empty cells before start of month
-                                                for (let i = 0; i < offset; i++) {
-                                                    cells.push(<div key={`empty-${i}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
+                                                for (let emptyIdx = 0; emptyIdx < offset; emptyIdx++) {
+                                                    cells.push(<div key={`empty-${emptyIdx}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
                                                 }
 
                                                 // Day cells
@@ -778,8 +774,8 @@ const OnCallScheduler = () => {
 
                                                 // Fill remaining cells
                                                 const remainingCells = (7 - ((offset + totalDays) % 7)) % 7;
-                                                for (let i = 0; i < remainingCells; i++) {
-                                                    cells.push(<div key={`empty-end-${i}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
+                                                for (let endIdx = 0; endIdx < remainingCells; endIdx++) {
+                                                    cells.push(<div key={`empty-end-${endIdx}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
                                                 }
 
                                                 return cells;
@@ -792,20 +788,24 @@ const OnCallScheduler = () => {
                     </div>
                 )}
             </div>
-            
-            {schedule && (
-                <div className="max-w-md mx-auto mt-6 pb-12">
-                    <FeedbackForm />
-                </div>
-            )}
+
+            {
+                schedule && (
+                    <div className="max-w-md mx-auto mt-6 pb-12">
+                        <FeedbackForm />
+                    </div>
+                )
+            }
 
             {/* Toast Notification */}
-            {toastMessage && (
-                <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-lg animate-fade-in z-50">
-                    {toastMessage}
-                </div>
-            )}
-        </div>
+            {
+                toastMessage && (
+                    <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-lg animate-fade-in z-50">
+                        {toastMessage}
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

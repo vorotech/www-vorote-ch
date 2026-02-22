@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import {
   AnimatePresence,
-  motion,
+  m,
   TargetAndTransition,
   Transition,
   Variant,
@@ -117,30 +117,30 @@ const AnimationComponent: React.FC<{
 }> = React.memo(({ segment, variants, per, segmentWrapperClassName }) => {
   const content =
     per === 'line' ? (
-      <motion.span variants={variants} className='block'>
+      <m.span variants={variants} className='block'>
         {segment}
-      </motion.span>
+      </m.span>
     ) : per === 'word' ? (
-      <motion.span
+      <m.span
         aria-hidden='true'
         variants={variants}
         className='inline-block whitespace-pre'
       >
         {segment}
-      </motion.span>
+      </m.span>
     ) : (
-      <motion.span className='inline-block whitespace-pre'>
+      <m.span className='inline-block whitespace-pre'>
         {segment.split('').map((char, charIndex) => (
-          <motion.span
+          <m.span
             key={`char-${charIndex}`}
             aria-hidden='true'
             variants={variants}
             className='inline-block whitespace-pre'
           >
             {char}
-          </motion.span>
+          </m.span>
         ))}
-      </motion.span>
+      </m.span>
     );
 
   if (!segmentWrapperClassName) {
@@ -222,7 +222,7 @@ export function TextEffect({
   style,
 }: TextEffectProps) {
   const segments = splitText(children, per);
-  const MotionTag = motion[as as keyof typeof motion] as typeof motion.div;
+  const MotionTag = m[as as keyof typeof m] as typeof m.div;
 
   const baseVariants = preset
     ? presetVariants[preset]
@@ -234,12 +234,12 @@ export function TextEffect({
 
   const customStagger = hasTransition(variants?.container?.visible ?? {})
     ? (variants?.container?.visible as TargetAndTransition).transition
-        ?.staggerChildren
+      ?.staggerChildren
     : undefined;
 
   const customDelay = hasTransition(variants?.container?.visible ?? {})
     ? (variants?.container?.visible as TargetAndTransition).transition
-        ?.delayChildren
+      ?.delayChildren
     : undefined;
 
   const computedVariants = {
@@ -275,9 +275,9 @@ export function TextEffect({
           style={style}
         >
           {per !== 'line' ? <span className='sr-only'>{children}</span> : null}
-          {segments.map((segment, index) => (
+          {segments.map((segment, segIdx) => (
             <AnimationComponent
-              key={`${per}-${index}-${segment}`}
+              key={`${per}-${segIdx}-${segment}`}
               segment={segment}
               variants={computedVariants.item}
               per={per}
