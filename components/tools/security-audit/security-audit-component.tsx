@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShieldCheck, ShieldAlert, Search, Loader2, AlertTriangle, ExternalLink, ChevronRight, Info } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Search, Loader2, AlertTriangle, ExternalLink, ChevronRight, Info, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface Vulnerability {
@@ -33,18 +33,44 @@ interface AuditResult {
     };
 }
 
-const SEVERITY_COLORS = {
-    critical: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
-    high: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20',
-    moderate: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20',
-    low: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+const SEVERITY_COLORS: Record<string, string> = {
+    critical: 'text-red-600 border-red-600 bg-red-600/10 dark:text-red-400 dark:border-red-400 dark:bg-red-400/10',
+    high: 'text-orange-500 border-orange-500 bg-orange-500/10 dark:text-orange-400 dark:border-orange-400 dark:bg-orange-400/10',
+    moderate: 'text-yellow-500 border-yellow-500 bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-400 dark:bg-yellow-400/10',
+    low: 'text-blue-500 border-blue-500 bg-blue-500/10 dark:text-blue-400 dark:border-blue-400 dark:bg-blue-400/10'
 };
 
-const SecurityAuditComponent = () => {
+const CWE_DICTIONARY: Record<string, string> = {
+    'CWE-20': 'Improper Input Validation',
+    'CWE-22': 'Improper Limitation of a Pathname to a Restricted Directory (\'Path Traversal\')',
+    'CWE-78': 'Improper Neutralization of Special Elements used in an OS Command (\'OS Command Injection\')',
+    'CWE-79': 'Improper Neutralization of Input During Web Page Generation (\'Cross-site Scripting\')',
+    'CWE-94': 'Improper Control of Generation of Code (\'Code Injection\')',
+    'CWE-185': 'Incorrect Regular Expression',
+    'CWE-248': 'Uncaught Exception',
+    'CWE-352': 'Cross-Site Request Forgery (CSRF)',
+    'CWE-384': 'Session Fixation',
+    'CWE-400': 'Uncontrolled Resource Consumption',
+    'CWE-476': 'NULL Pointer Dereference',
+    'CWE-502': 'Deserialization of Untrusted Data',
+    'CWE-601': 'URL Redirection to Untrusted Site (\'Open Redirect\')',
+    'CWE-776': 'Improper Restriction of Recursive Entity References in DTDs (\'XML Bomb\')',
+    'CWE-862': 'Missing Authorization',
+    'CWE-1333': 'Inefficient Regular Expression Complexity',
+};
+
+const SecurityAuditComponent: React.FC = () => {
     const [packageName, setPackageName] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<AuditResult | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
+
+    const handleCopy = (text: string, id: string) => {
+        navigator.clipboard.writeText(text);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
 
     const handleAudit = async (nameOverride?: string) => {
         const name = nameOverride || packageName;
@@ -229,29 +255,6 @@ const SecurityAuditComponent = () => {
                                                                     </div>
                                                                     <h4 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight break-words">{vuln.title}</h4>
                                                                 </div>
-                                                                <div className="flex flex-col gap-1.5 mt-2">
-                                                                    {vuln.cves && vuln.cves.length > 0 && (
-                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit">
-                                                                            {vuln.cves.join(', ')}
-                                                                        </span>
-                                                                    )}
-                                                                    {vuln.epss && (
-                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>
-                                                                            EPSS: {(Number(vuln.epss.score) * 100).toFixed(3)}%
-                                                                        </span>
-                                                                    )}
-                                                                    {(() => {
-                                                                        const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
-                                                                        if (advisoryId?.startsWith('GHSA')) {
-                                                                            return (
-                                                                                <span className="text-xs font-mono text-muted-foreground bg-muted/40 px-2 py-0.5 rounded border border-border/40 w-fit">
-                                                                                    GHSA ID: {advisoryId}
-                                                                                </span>
-                                                                            );
-                                                                        }
-                                                                        return null;
-                                                                    })()}
-                                                                </div>
                                                             </div>
                                                             <a
                                                                 href={vuln.url}
@@ -274,12 +277,57 @@ const SecurityAuditComponent = () => {
                                                                     <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-green-500" /> Patched Versions</span>
                                                                     <span className="text-sm font-mono text-foreground/90 font-medium">{vuln.patched_versions || 'See Advisory'}</span>
                                                                 </div>
+
+                                                                {vuln.cves && vuln.cves.length > 0 && (
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">CVE ID</span>
+                                                                        <div className="flex flex-wrap gap-2">
+                                                                            {vuln.cves.map(cve => (
+                                                                                <button
+                                                                                    key={cve}
+                                                                                    onClick={() => handleCopy(cve, `${vuln.id}-${cve}`)}
+                                                                                    className="group flex items-center gap-2 text-sm font-mono text-foreground/90 font-medium bg-background border border-border px-2 py-1 rounded hover:bg-muted transition-colors"
+                                                                                >
+                                                                                    {cve}
+                                                                                    {copiedId === `${vuln.id}-${cve}` ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3 text-muted-foreground opacity-50 group-hover:opacity-100" />}
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {vuln.epss && (
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">EPSS Score</span>
+                                                                        <span className="text-sm font-mono text-foreground/90 font-medium" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>{(Number(vuln.epss.score) * 100).toFixed(3)}%</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {(() => {
+                                                                    const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
+                                                                    if (advisoryId?.startsWith('GHSA')) {
+                                                                        return (
+                                                                            <div className="flex flex-col gap-1">
+                                                                                <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">GHSA ID</span>
+                                                                                <button
+                                                                                    onClick={() => handleCopy(advisoryId, `${vuln.id}-${advisoryId}`)}
+                                                                                    className="group w-fit flex items-center gap-2 text-sm font-mono text-foreground/90 font-medium bg-background border border-border px-2 py-1 rounded hover:bg-muted transition-colors"
+                                                                                >
+                                                                                    {advisoryId}
+                                                                                    {copiedId === `${vuln.id}-${advisoryId}` ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3 text-muted-foreground opacity-50 group-hover:opacity-100" />}
+                                                                                </button>
+                                                                            </div>
+                                                                        );
+                                                                    }
+                                                                    return null;
+                                                                })()}
+
                                                                 {vuln.cwe && vuln.cwe.length > 0 && (
                                                                     <div className="flex flex-col gap-1 md:col-span-2 mt-2 pt-3 border-t border-border/50">
                                                                         <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> CWE Weaknesses</span>
                                                                         <div className="flex flex-wrap gap-2 mt-1">
                                                                             {vuln.cwe.map(c => (
-                                                                                <a key={c} href={`https://cwe.mitre.org/data/definitions/${c.split('-')[1]}.html`} target="_blank" rel="noopener noreferrer" title="View Common Weakness Enumeration details on Mitre.org" className="text-xs font-mono bg-background border border-border px-2 py-1 rounded text-muted-foreground hover:text-primary hover:border-primary hover:bg-primary/5 transition-all">
+                                                                                <a key={c} href={`https://cwe.mitre.org/data/definitions/${c.split('-')[1]}.html`} target="_blank" rel="noopener noreferrer" title={CWE_DICTIONARY[c] || "Common Weakness Enumeration"} className="text-sm font-mono bg-background border border-border px-2 py-1 rounded text-foreground/90 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all">
                                                                                     {c}
                                                                                 </a>
                                                                             ))}
@@ -290,7 +338,7 @@ const SecurityAuditComponent = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            )
+                                            );
                                         })}
                                     </div>
                                 )}
@@ -299,7 +347,7 @@ const SecurityAuditComponent = () => {
                     )}
                 </AnimatePresence>
             </div>
-        </div>
+        </div >
     );
 };
 
