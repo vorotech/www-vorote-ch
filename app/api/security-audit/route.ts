@@ -2,10 +2,30 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const packageName = searchParams.get('package');
+    const rawPackage = searchParams.get('package');
 
-    if (!packageName) {
+    if (!rawPackage) {
         return NextResponse.json({ error: 'Package name is required' }, { status: 400 });
+    }
+
+    let packageName = rawPackage;
+    let requestedVersion = '';
+
+    // Handle scoped packages and versions (e.g., @org/pkg@1.0.0 or pkg@1.0.0)
+    if (packageName.startsWith('@')) {
+        const parts = packageName.slice(1).split('@');
+        if (parts.length > 1) {
+            packageName = '@' + parts[0];
+            requestedVersion = parts.slice(1).join('@');
+        } else {
+            packageName = '@' + parts[0];
+        }
+    } else {
+        const parts = packageName.split('@');
+        if (parts.length > 1) {
+            packageName = parts[0];
+            requestedVersion = parts.slice(1).join('@');
+        }
     }
 
     try {
@@ -19,8 +39,14 @@ export async function GET(request: Request) {
         const data = await response.json() as any;
         const latestVersion = data['dist-tags']?.latest;
 
-        if (!latestVersion) {
-            return NextResponse.json({ error: 'Could not determine latest version' }, { status: 500 });
+        let targetVersion = requestedVersion || latestVersion;
+
+        if (!targetVersion) {
+            return NextResponse.json({ error: 'Could not determine version to check' }, { status: 500 });
+        }
+
+        if (requestedVersion && !data.versions[requestedVersion]) {
+            return NextResponse.json({ error: `Version "${requestedVersion}" not found for package "${packageName}"` }, { status: 404 });
         }
 
         // In a real implementation of mcp-security-audit, it might call the audit endpoint.
@@ -32,7 +58,7 @@ export async function GET(request: Request) {
         const advisoriesResponse = await fetch(`https://registry.npmjs.org/-/npm/v1/security/advisories/bulk`, {
             method: 'POST',
             body: JSON.stringify({
-                [packageName]: [latestVersion]
+                [packageName]: [targetVersion]
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +69,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json({
             package: packageName,
-            version: latestVersion,
+            version: targetVersion,
             vulnerabilities: vulnerabilities[packageName] || [],
             checkedAt: new Date().toISOString(),
             summary: {
