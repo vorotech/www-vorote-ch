@@ -1,5 +1,19 @@
 import { NextResponse } from 'next/server';
 
+function isValidPackageName(name: string): boolean {
+    // Approximate npm package name validation, including scoped packages.
+    // - Unscoped: one segment, 1–214 chars, lowercase letters, digits, hyphens, underscores, dots.
+    // - Scoped: @scope/name, each segment 1–214 chars, same character set.
+    // See: https://docs.npmjs.com/cli/v10/configuring-npm/package-json#name
+    const unscoped = /^(?:[a-z0-9_.-]{1,214})$/;
+    const scoped = /^@[a-z0-9_.-]{1,214}\/[a-z0-9_.-]{1,214}$/;
+    // Quickly reject obvious bad inputs (whitespace, control chars, path separators)
+    if (!name || /[\s\r\n\t]/.test(name) || name.includes('..') || name.includes('\\') || name.includes('%0')) {
+        return false;
+    }
+    return unscoped.test(name) || scoped.test(name);
+}
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const rawPackage = searchParams.get('package');
@@ -28,9 +42,13 @@ export async function GET(request: Request) {
         }
     }
 
+    if (!isValidPackageName(packageName)) {
+        return NextResponse.json({ error: 'Invalid package name' }, { status: 400 });
+    }
+
     try {
         // Fetch package info from npm registry
-        const response = await fetch(`https://registry.npmjs.org/${packageName}`);
+        const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(packageName)}`);
 
         if (!response.ok) {
             return NextResponse.json({ error: `Package "${packageName}" not found` }, { status: 404 });
