@@ -298,7 +298,7 @@ const SecurityAuditComponent: React.FC = () => {
 
                                                                 {vuln.epss && (
                                                                     <div className="flex flex-col gap-1">
-                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">EPSS Score</span>
+                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">EPSS Score <span title="Exploit Prediction Scoring System (EPSS) estimates the probability of exploitation in the wild within the next 30 days."><Info className="w-3 h-3 text-muted-foreground cursor-help" /></span></span>
                                                                         <span className="text-sm font-mono text-foreground/90 font-medium" title={`Percentile: ${(Number(vuln.epss.percentile) * 100).toFixed(2)}%`}>{(Number(vuln.epss.score) * 100).toFixed(3)}%</span>
                                                                     </div>
                                                                 )}
@@ -323,9 +323,9 @@ const SecurityAuditComponent: React.FC = () => {
                                                                 })()}
 
                                                                 {vuln.cwe && vuln.cwe.length > 0 && (
-                                                                    <div className="flex flex-col gap-1 md:col-span-2 mt-2 pt-3 border-t border-border/50">
-                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> CWE Weaknesses</span>
-                                                                        <div className="flex flex-wrap gap-2 mt-1">
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">CWE Weaknesses</span>
+                                                                        <div className="flex flex-wrap gap-2">
                                                                             {vuln.cwe.map(c => (
                                                                                 <a key={c} href={`https://cwe.mitre.org/data/definitions/${c.split('-')[1]}.html`} target="_blank" rel="noopener noreferrer" title={CWE_DICTIONARY[c] || "Common Weakness Enumeration"} className="text-sm font-mono bg-background border border-border px-2 py-1 rounded text-foreground/90 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all">
                                                                                     {c}
