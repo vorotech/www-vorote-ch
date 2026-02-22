@@ -298,30 +298,15 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="bg-background pt-8 pb-6 px-6">
+        <div className="bg-background pt-8 pb-6 px-4 md:px-6">
             <div className="max-w-6xl mx-auto">
-                <div className="bg-card rounded-xl border border-border p-6 mb-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3">
-                            <Calendar className="w-8 h-8 text-primary" />
-                            <h1 className="text-3xl font-bold text-foreground">On-Call Shift Scheduler</h1>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3 mb-8 px-2">
+                    <Calendar className="w-8 h-8 text-primary" />
+                    <h1 className="text-3xl md:text-4xl font-bold font-abel text-foreground">On-Call Scheduler</h1>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-2">
-                                Number of People
-                            </label>
-                            <input
-                                type="number"
-                                min="1"
-                                max={MAX_MEMBERS}
-                                value={numMembers}
-                                onChange={(e) => updateNumMembers(e.target.value)}
-                                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-                            />
-                        </div>
+                <div className="bg-card rounded-xl border border-border p-6 mb-6 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-2">
                                 Month
@@ -331,9 +316,9 @@ const OnCallScheduler = () => {
                                 onChange={(e) => setMonth(parseInt(e.target.value))}
                                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                             >
-                                {Array.from({ length: 12 }, (i, val) => (
-                                    <option key={`head-${i}`} value={val}>
-                                        {new Date(2024, val).toLocaleDateString('en-US', { month: 'long' })}
+                                {Array.from({ length: 12 }, (_, i) => (
+                                    <option key={`month-${i}`} value={i}>
+                                        {new Date(2024, i).toLocaleDateString('en-US', { month: 'long' })}
                                     </option>
                                 ))}
                             </select>
@@ -357,61 +342,68 @@ const OnCallScheduler = () => {
                         </div>
                     </div>
 
-                    {showSettings && (
-                        <div className="mb-6 p-4 bg-muted/50 rounded-xl border border-border">
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                <Users className="w-5 h-5" />
-                                Team Member Configuration
-                            </h2>
+                    <div className="mb-8 p-6 bg-muted/30 rounded-xl border border-border">
+                        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 text-foreground">
+                            <Clock className="w-5 h-5 text-primary" />
+                            Shift Settings
+                        </h2>
 
-
-
-                            <div className="mb-8 p-6 bg-card rounded-xl border border-border">
-                                <h3 className="text-lg font-medium text-foreground mb-4 flex items-center gap-2">
-                                    <Clock className="w-5 h-5 text-primary" />
-                                    Generator Settings
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Start of Week
-                                        </label>
-                                        <select
-                                            value={startOfWeek}
-                                            onChange={(e) => setStartOfWeek(parseInt(e.target.value))}
-                                            className="w-full px-3 py-2 border border-border bg-background rounded focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
-                                        >
-                                            <option value={0}>Sunday</option>
-                                            <option value={1}>Monday</option>
-                                            <option value={6}>Saturday</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Shift Start Hour (24h)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="23"
-                                            value={shiftStartHour}
-                                            onChange={(e) => setShiftStartHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
-                                            className="w-full px-3 py-2 border border-border bg-background rounded focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">
-                                            Shift Length
-                                        </label>
-                                        <div className="w-full px-3 py-2 bg-muted border border-border rounded text-muted-foreground">
-                                            24 Hours (Fixed)
-                                        </div>
-                                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Number of People
+                                </label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max={MAX_MEMBERS}
+                                    value={numMembers}
+                                    onChange={(e) => updateNumMembers(e.target.value)}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Start of Week
+                                </label>
+                                <select
+                                    value={startOfWeek}
+                                    onChange={(e) => setStartOfWeek(parseInt(e.target.value))}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                >
+                                    <option value={0}>Sunday</option>
+                                    <option value={1}>Monday</option>
+                                    <option value={6}>Saturday</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Shift Start Hour (24h)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="23"
+                                    value={shiftStartHour}
+                                    onChange={(e) => setShiftStartHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+                                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-2">
+                                    Shift Length
+                                </label>
+                                <div className="w-full px-4 py-2 bg-background border border-border rounded-lg text-muted-foreground text-sm flex items-center h-[42px]">
+                                    24 Hours (Fixed)
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 border-t border-border pt-6">
-                                <Users className="w-5 h-5" />
+                    {showSettings && (
+                        <div className="mb-6">
+                            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2 border-t border-border pt-6">
+                                <Users className="w-5 h-5 text-primary" />
                                 Member Configuration
                             </h2>
                             {members.map((member) => (
@@ -574,8 +566,8 @@ const OnCallScheduler = () => {
                             className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors whitespace-nowrap"
                         >
                             <Settings className="w-5 h-5" />
-                            <span className="hidden md:inline">{showSettings ? 'Hide' : 'Show'} Settings</span>
-                            <span className="md:hidden">Settings</span>
+                            <span className="hidden md:inline">{showSettings ? 'Hide' : 'Show'} Member Configuration</span>
+                            <span className="md:hidden">{showSettings ? 'Hide' : 'Show'} Members</span>
                         </button>
 
                         <button
@@ -797,19 +789,23 @@ const OnCallScheduler = () => {
                 )}
             </div>
 
-            {schedule && (
-                <div className="max-w-md mx-auto mt-6 pb-12">
-                    <FeedbackForm />
-                </div>
-            )}
+            {
+                schedule && (
+                    <div className="max-w-md mx-auto mt-6 pb-12">
+                        <FeedbackForm />
+                    </div>
+                )
+            }
 
             {/* Toast Notification */}
-            {toastMessage && (
-                <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-lg animate-fade-in z-50">
-                    {toastMessage}
-                </div>
-            )}
-        </div>
+            {
+                toastMessage && (
+                    <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow-lg animate-fade-in z-50">
+                        {toastMessage}
+                    </div>
+                )
+            }
+        </div >
     );
 };
 
