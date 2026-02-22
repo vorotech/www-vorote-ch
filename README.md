@@ -28,15 +28,11 @@ pnpm install
 ```
 
 ### 2. Configure Environment
-1.  Copy `.env.develpment.example` to `.env.develpment` for frontend/local development variables.
-    ```bash
-    cp .env.develpment.example .env.development
-    ```
-2.  Copy `.env.example` to `.env` for backend/Wrangler variables.
+1.  Copy `.env.example` to `.env` for build and runtime variables.
     ```bash
     cp .env.example .env
     ```
-3.  Fill in the required tokens (TinaCMS, Cloudflare Turnstile, Resend API Key).
+2.  Fill in the required tokens (TinaCMS, Cloudflare Turnstile, Resend API Key).
 
 ### 3. Run Development Server
 ```bash
@@ -51,7 +47,6 @@ To generate Cloudflare Worker types (`Env` interface) based on your `.env` file:
 ```bash
 pnpm types
 ```
-*Note: This strictly reads `.env` to keep backend types clean of frontend `NEXT_PUBLIC_` variables.*
 
 ## 📦 Deployment
 
