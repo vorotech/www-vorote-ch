@@ -9,6 +9,7 @@ import { FeaturedLink } from './blocks/featured-link';
 import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Mermaid } from './blocks/mermaid';
 import { PageBlocksRecent } from '@/tina/__generated__/types';
+import { Table, THead, TBody, TR, TH, TD } from './blocks/table';
 
 export const components: Components<{
   BlockQuote: {
@@ -40,7 +41,7 @@ export const components: Components<{
     if (!props) {
       return <></>;
     }
-    
+
     if (props.lang === 'mermaid') {
       return <Mermaid value={props.value} />
     }
@@ -132,4 +133,10 @@ export const components: Components<{
   recentPosts: (props) => {
     return <RecentPosts data={props} />;
   },
-};
+  table: (props: any) => <Table {...props} />,
+  thead: (props: any) => <THead {...props} />,
+  tbody: (props: any) => <TBody {...props} />,
+  tr: (props: any) => <TR {...props} />,
+  th: (props: any) => <TH {...props} />,
+  td: (props: any) => <TD {...props} />,
+} as any;

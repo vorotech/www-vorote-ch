@@ -9,6 +9,7 @@ import { Section } from '../layout/section';
 import { Mermaid } from './mermaid';
 import { sectionBlockSchemaField } from '../layout/section';
 import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
+import { Table, THead, TBody, TR, TH, TD } from './table';
 
 export const Content = ({ data }: { data: PageBlocksContent }) => {
   return (
@@ -18,6 +19,12 @@ export const Content = ({ data }: { data: PageBlocksContent }) => {
         components={{
           mermaid: (props: any) => <Mermaid {...props} />,
           scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
+          table: (props: any) => <Table {...props} />,
+          thead: (props: any) => <THead {...props} />,
+          tbody: (props: any) => <TBody {...props} />,
+          tr: (props: any) => <TR {...props} />,
+          th: (props: any) => <TH {...props} />,
+          td: (props: any) => <TD {...props} />,
         }}
       />
     </Section>
