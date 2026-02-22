@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Calendar } from "lucide-react";
+import { ArrowRight, Calendar, ShieldCheck } from "lucide-react";
 
 import Layout from "@/components/layout/layout";
 
@@ -27,6 +27,24 @@ export default function ToolsPage() {
                         </div>
                         <p className="text-muted-foreground mb-4">
                             Generate fair and optimized on-call shift schedules for your team, considering time offs and constraints.
+                        </p>
+                        <div className="flex items-center text-sm font-medium text-primary group-hover:underline">
+                            Open Tool <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+                        </div>
+                    </Link>
+
+                    <Link
+                        href="/tools/security-audit"
+                        className="group p-6 border rounded-xl hover:shadow-lg transition-all duration-300 bg-card hover:border-primary/50"
+                    >
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-3 bg-primary/10 rounded-lg text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                <ShieldCheck className="w-6 h-6" />
+                            </div>
+                            <h2 className="text-xl font-semibold">Security Audit</h2>
+                        </div>
+                        <p className="text-muted-foreground mb-4">
+                            Audit npm package dependencies for real-time security vulnerabilities and recommendations.
                         </p>
                         <div className="flex items-center text-sm font-medium text-primary group-hover:underline">
                             Open Tool <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
