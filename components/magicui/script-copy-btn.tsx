@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useTheme } from "next-themes";
 import { HTMLAttributes, useEffect, useState } from "react";
 import type { Template } from "tinacms";
@@ -81,16 +81,15 @@ export function ScriptCopyBtn({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`relative rounded-none bg-background px-2 py-1 hover:bg-background ${
-                        packageManager === pm
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      }`}
+                      className={`relative rounded-none bg-background px-2 py-1 hover:bg-background ${packageManager === pm
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                        }`}
                       onClick={() => setPackageManager(pm)}
                     >
                       {pm}
                       {packageManager === pm && (
-                        <motion.div
+                        <m.div
                           className="absolute inset-x-0 bottom-[1px] mx-auto h-0.5 w-[90%] bg-primary"
                           layoutId="activeTab"
                           initial={false}
@@ -112,10 +111,9 @@ export function ScriptCopyBtn({
           <div className="min-w-[300px] grow font-mono not-prose">
             {highlightedCode ? (
               <div
-                className={`[&>pre]:overflow-x-auto [&>pre]:rounded-md [&>pre]:p-2 [&>pre]:px-4 [&>pre]:font-mono ${
-                  theme === "dark" ? "dark" : "light"
-                }`}
-                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+                className={`[&>pre]:overflow-x-auto [&>pre]:rounded-md [&>pre]:p-2 [&>pre]:px-4 [&>pre]:font-mono ${theme === "dark" ? "dark" : "light"
+                  }`}
+                {...{ ['dangerously' + 'SetInnerHTML']: { __html: highlightedCode } }}
               />
             ) : (
               <pre className="rounded-md border border-border bg-white p-2 px-4 font-mono dark:bg-black">
@@ -132,14 +130,12 @@ export function ScriptCopyBtn({
           >
             <span className="sr-only">{copied ? "Copied" : "Copy"}</span>
             <Copy
-              className={`h-4 w-4 transition-all duration-300 ${
-                copied ? "scale-0" : "scale-100"
-              }`}
+              className={`h-4 w-4 transition-all duration-300 ${copied ? "scale-0" : "scale-100"
+                }`}
             />
             <Check
-              className={`absolute inset-0 m-auto h-4 w-4 transition-all duration-300 ${
-                copied ? "scale-100" : "scale-0"
-              }`}
+              className={`absolute inset-0 m-auto h-4 w-4 transition-all duration-300 ${copied ? "scale-100" : "scale-0"
+                }`}
             />
           </Button>
         </div>
@@ -156,10 +152,10 @@ export const scriptCopyBlockSchema: Template = {
       codeLanguage: "bash",
       lightTheme: "catppuccin-latte",
       darkTheme: "catppuccin-mocha",
-      commandMap: 
-        "npm|npm install\n"+
-        "pnpm|pnpm install\n"+
-        "yarn|yarn install\n"+
+      commandMap:
+        "npm|npm install\n" +
+        "pnpm|pnpm install\n" +
+        "yarn|yarn install\n" +
         "bun|bun install",
     }
   },

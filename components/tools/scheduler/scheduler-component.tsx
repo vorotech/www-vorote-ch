@@ -45,8 +45,7 @@ const OnCallScheduler = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-    // Load settings from local storage on mount
-    useEffect(() => {
+    const loadSettings = () => {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             try {
@@ -55,7 +54,7 @@ const OnCallScheduler = () => {
                 if (storedMembers) {
                     const migratedMembers = storedMembers.map((m: any) => ({
                         ...m,
-                        timeOffs: m.timeOffs  || []
+                        timeOffs: m.timeOffs || []
                     }));
                     setMembers(migratedMembers);
                 }
@@ -66,6 +65,11 @@ const OnCallScheduler = () => {
             }
         }
         setIsLoaded(true);
+    };
+
+    // Load settings from local storage on mount
+    useEffect(() => {
+        loadSettings();
     }, []);
 
     // Toast helper
@@ -327,9 +331,9 @@ const OnCallScheduler = () => {
                                 onChange={(e) => setMonth(parseInt(e.target.value))}
                                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                             >
-                                {Array.from({ length: 12 }, (_, i) => (
-                                    <option key={i} value={i}>
-                                        {new Date(2024, i).toLocaleDateString('en-US', { month: 'long' })}
+                                {Array.from({ length: 12 }, (i, val) => (
+                                    <option key={`head-${i}`} value={val}>
+                                        {new Date(2024, val).toLocaleDateString('en-US', { month: 'long' })}
                                     </option>
                                 ))}
                             </select>
@@ -487,13 +491,13 @@ const OnCallScheduler = () => {
 
                                                 return vacStart <= monthEnd && vacEnd >= monthStart;
                                             })
-                                            .map((timeOff, idx) => (
-                                                <div key={idx} className="flex items-center gap-2 mb-2 text-sm">
+                                            .map((timeOff, offIdx) => (
+                                                <div key={offIdx} className="flex items-center gap-2 mb-2 text-sm">
                                                     <span className="text-muted-foreground">
                                                         {new Date(timeOff.start).toLocaleDateString()} - {new Date(timeOff.end).toLocaleDateString()}
                                                     </span>
                                                     <button
-                                                        onClick={() => removeTimeOff(member.id, idx)}
+                                                        onClick={() => removeTimeOff(member.id, offIdx)}
                                                         className="text-red-500 hover:text-red-700"
                                                     >
                                                         Remove
@@ -535,36 +539,36 @@ const OnCallScheduler = () => {
                                 </div>
                             ))}
 
-                        <div className="flex gap-2 mt-6 justify-end border-t border-border pt-4">
-                             <button
-                                 onClick={downloadConfiguration}
-                                 className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                 title="Download Configuration"
-                             >
-                                 <Download className="w-4 h-4" />
-                                 <span className="hidden md:inline">Download</span>
-                             </button>
-                             <button
-                                 onClick={copyConfiguration}
-                                 className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                 title="Copy Configuration"
-                             >
-                                 <Clipboard className="w-4 h-4" />
-                                 <span className="hidden md:inline">Copy</span>
-                             </button>
-                             <button
-                                 onClick={clearSettings}
-                                 className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive hover:bg-destructive/20 rounded-lg transition-colors border border-destructive/20 text-sm font-medium"
-                                 title="Clear Cache"
-                             >
-                                 <Trash2 className="w-4 h-4" />
-                                 <span className="hidden md:inline">Clear</span>
-                             </button>
+                            <div className="flex gap-2 mt-6 justify-end border-t border-border pt-4">
+                                <button
+                                    onClick={downloadConfiguration}
+                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                    title="Download Configuration"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    <span className="hidden md:inline">Download</span>
+                                </button>
+                                <button
+                                    onClick={copyConfiguration}
+                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                    title="Copy Configuration"
+                                >
+                                    <Clipboard className="w-4 h-4" />
+                                    <span className="hidden md:inline">Copy</span>
+                                </button>
+                                <button
+                                    onClick={clearSettings}
+                                    className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive hover:bg-destructive/20 rounded-lg transition-colors border border-destructive/20 text-sm font-medium"
+                                    title="Clear Cache"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="hidden md:inline">Clear</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                <div className="flex gap-4">
+                    <div className="flex gap-4">
                         <button
                             onClick={() => setShowSettings(!showSettings)}
                             className="flex items-center gap-2 px-4 py-3 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors whitespace-nowrap"
@@ -621,56 +625,56 @@ const OnCallScheduler = () => {
                         </div>
 
                         <div className="flex flex-wrap justify-end gap-2 mb-4">
+                            <button
+                                onClick={generateSchedule}
+                                className="flex items-center gap-2 px-3 py-2 bg-accent/10 text-primary hover:bg-accent/20 rounded-lg transition-colors text-sm font-medium"
+                                title="Regenerate Schedule"
+                            >
+                                <Dices className="w-4 h-4" />
+                                <span className="hidden md:inline">Randomize</span>
+                            </button>
+                            <button
+                                onClick={downloadResults}
+                                className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                title="Download Results"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span className="hidden md:inline">Download</span>
+                            </button>
+                            <button
+                                onClick={copyResults}
+                                className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
+                                title="Copy Results"
+                            >
+                                <Clipboard className="w-4 h-4" />
+                                <span className="hidden md:inline">Copy</span>
+                            </button>
+                            {viewMode === 'calendar' && (
                                 <button
-                                    onClick={generateSchedule}
-                                    className="flex items-center gap-2 px-3 py-2 bg-accent/10 text-primary hover:bg-accent/20 rounded-lg transition-colors text-sm font-medium"
-                                    title="Regenerate Schedule"
+                                    onClick={() => setShowTimeOff(!showTimeOff)}
+                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showTimeOff ? 'bg-accent/10 text-primary' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
+                                        }`}
                                 >
-                                    <Dices className="w-4 h-4" />
-                                    <span className="hidden md:inline">Randomize</span>
+                                    {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    <span className="hidden md:inline">Time Off</span>
+                                </button>
+                            )}
+                            <div className="flex bg-secondary p-1 rounded-lg">
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                                    title="List View"
+                                >
+                                    <ListIcon className="w-5 h-5" />
                                 </button>
                                 <button
-                                    onClick={downloadResults}
-                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                    title="Download Results"
+                                    onClick={() => setViewMode('calendar')}
+                                    className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                                    title="Calendar View"
                                 >
-                                    <Download className="w-4 h-4" />
-                                    <span className="hidden md:inline">Download</span>
+                                    <LayoutGrid className="w-5 h-5" />
                                 </button>
-                                <button
-                                    onClick={copyResults}
-                                    className="flex items-center gap-2 px-3 py-2 bg-secondary text-foreground hover:bg-secondary/80 rounded-lg transition-colors text-sm font-medium"
-                                    title="Copy Results"
-                                >
-                                    <Clipboard className="w-4 h-4" />
-                                    <span className="hidden md:inline">Copy</span>
-                                </button>
-                                {viewMode === 'calendar' && (
-                                    <button
-                                        onClick={() => setShowTimeOff(!showTimeOff)}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${showTimeOff ? 'bg-accent/10 text-primary' : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
-                                            }`}
-                                    >
-                                        {showTimeOff ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                                        <span className="hidden md:inline">Time Off</span>
-                                    </button>
-                                )}
-                                <div className="flex bg-secondary p-1 rounded-lg">
-                                    <button
-                                        onClick={() => setViewMode('list')}
-                                        className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                                        title="List View"
-                                    >
-                                        <ListIcon className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        onClick={() => setViewMode('calendar')}
-                                        className={`p-2 rounded-md transition-all ${viewMode === 'calendar' ? 'bg-card shadow text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                                        title="Calendar View"
-                                    >
-                                        <LayoutGrid className="w-5 h-5" />
-                                    </button>
-                                </div>
+                            </div>
                         </div>
 
                         {viewMode === 'list' ? (
@@ -715,7 +719,7 @@ const OnCallScheduler = () => {
                                                 const dayIndex = (startOfWeek + i) % 7;
                                                 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
                                                 return (
-                                                    <div key={i} className="py-2 text-center text-sm font-semibold text-muted-foreground">
+                                                    <div key={`head-${i}`} className="py-2 text-center text-sm font-semibold text-muted-foreground">
                                                         {days[dayIndex]}
                                                     </div>
                                                 );
@@ -731,8 +735,8 @@ const OnCallScheduler = () => {
                                                 const cells = [];
 
                                                 // Empty cells before start of month
-                                                for (let i = 0; i < offset; i++) {
-                                                    cells.push(<div key={`empty-${i}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
+                                                for (let emptyIdx = 0; emptyIdx < offset; emptyIdx++) {
+                                                    cells.push(<div key={`empty-${emptyIdx}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
                                                 }
 
                                                 // Day cells
@@ -778,8 +782,8 @@ const OnCallScheduler = () => {
 
                                                 // Fill remaining cells
                                                 const remainingCells = (7 - ((offset + totalDays) % 7)) % 7;
-                                                for (let i = 0; i < remainingCells; i++) {
-                                                    cells.push(<div key={`empty-end-${i}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
+                                                for (let endIdx = 0; endIdx < remainingCells; endIdx++) {
+                                                    cells.push(<div key={`empty-end-${endIdx}`} className="min-h-[8rem] border-b border-r border-border bg-muted/20" />);
                                                 }
 
                                                 return cells;
@@ -792,7 +796,7 @@ const OnCallScheduler = () => {
                     </div>
                 )}
             </div>
-            
+
             {schedule && (
                 <div className="max-w-md mx-auto mt-6 pb-12">
                     <FeedbackForm />

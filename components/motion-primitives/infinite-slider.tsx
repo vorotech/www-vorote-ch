@@ -1,6 +1,6 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { useMotionValue, animate, motion } from 'motion/react';
+import { useMotionValue, animate, m } from 'motion/react';
 import { useState, useEffect } from 'react';
 import useMeasure from 'react-use-measure';
 
@@ -23,7 +23,8 @@ export function InfiniteSlider({
   reverse = false,
   className,
 }: InfiniteSliderProps) {
-  const [currentSpeed, setCurrentSpeed] = useState(speed);
+  const [isHovered, setIsHovered] = useState(false);
+  const currentSpeed = isHovered && speedOnHover ? speedOnHover : speed;
   const [ref, { width, height }] = useMeasure();
   const translation = useMotionValue(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -79,20 +80,20 @@ export function InfiniteSlider({
 
   const hoverProps = speedOnHover
     ? {
-        onHoverStart: () => {
-          setIsTransitioning(true);
-          setCurrentSpeed(speedOnHover);
-        },
-        onHoverEnd: () => {
-          setIsTransitioning(true);
-          setCurrentSpeed(speed);
-        },
-      }
+      onHoverStart: () => {
+        setIsTransitioning(true);
+        setIsHovered(true);
+      },
+      onHoverEnd: () => {
+        setIsTransitioning(true);
+        setIsHovered(false);
+      },
+    }
     : {};
 
   return (
     <div className={cn('overflow-hidden', className)}>
-      <motion.div
+      <m.div
         className='flex w-max'
         style={{
           ...(direction === 'horizontal'
@@ -106,7 +107,7 @@ export function InfiniteSlider({
       >
         {children}
         {children}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

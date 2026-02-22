@@ -5,6 +5,15 @@ import ClientPage from "./[...urlSegments]/client-page";
 
 export const revalidate = 300;
 
+export async function generateMetadata() {
+  const data = await client.queries.page({
+    relativePath: `home.mdx`,
+  });
+  return {
+    title: data.data.page.title || 'Vorotech',
+  }
+}
+
 export default async function Home() {
   const data = await client.queries.page({
     relativePath: `home.mdx`,

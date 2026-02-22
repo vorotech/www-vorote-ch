@@ -25,7 +25,7 @@ export const Footer = () => {
 
           <div className="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
             {footer?.social?.map((link, index) => (
-              <Link key={`${link!.icon}${index}`} href={link!.url!} target="_blank" rel="noopener noreferrer" >
+              <Link key={link?.url || index} href={link!.url!} target="_blank" rel="noopener noreferrer" >
                 <Icon data={{ ...link!.icon, size: 'small' }} className="text-muted-foreground hover:text-primary block" />
               </Link>
             ))}

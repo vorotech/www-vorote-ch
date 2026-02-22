@@ -1,6 +1,6 @@
 'use client';
 import { ReactNode } from 'react';
-import { motion, Variants } from 'motion/react';
+import { m, Variants } from 'motion/react';
 import React from 'react';
 
 export type PresetType =
@@ -116,11 +116,11 @@ function AnimatedGroup({
   const itemVariants = variants?.item || selectedVariants.item;
 
   const MotionComponent = React.useMemo(
-    () => motion.create(as as keyof JSX.IntrinsicElements),
+    () => m.create(as as keyof JSX.IntrinsicElements),
     [as]
   );
   const MotionChild = React.useMemo(
-    () => motion.create(asChild as keyof JSX.IntrinsicElements),
+    () => m.create(asChild as keyof JSX.IntrinsicElements),
     [asChild]
   );
 
@@ -132,7 +132,7 @@ function AnimatedGroup({
       className={className}
     >
       {React.Children.map(children, (child, index) => (
-        <MotionChild key={index} variants={itemVariants}>
+        <MotionChild key={(child as any)?.key || index} variants={itemVariants}>
           {child}
         </MotionChild>
       ))}

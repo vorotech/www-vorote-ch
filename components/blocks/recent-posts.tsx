@@ -111,16 +111,16 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
           {(data.title || data.description) && (
             <div className="text-center mb-12 lg:mb-16">
               {data.title && (
-                <h2 
-                  data-tina-field={tinaField(data, 'title')} 
+                <h2
+                  data-tina-field={tinaField(data, 'title')}
                   className="text-3xl font-semibold md:text-4xl lg:text-5xl mb-4"
                 >
                   {data.title}
                 </h2>
               )}
               {data.description && (
-                <p 
-                  data-tina-field={tinaField(data, 'description')} 
+                <p
+                  data-tina-field={tinaField(data, 'description')}
                   className="text-muted-foreground md:text-lg max-w-2xl mx-auto"
                 >
                   {data.description}
@@ -155,7 +155,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
                   <div className="mb-4">
                     <div className="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground">
                       {featuredPost.tags.map((tag, index) => (
-                        <span key={index}>{tag}</span>
+                        <span key={tag || index}>{tag}</span>
                       ))}
                     </div>
                   </div>
@@ -214,7 +214,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
                     <div className="mb-3">
                       <div className="flex flex-wrap gap-2 text-xs uppercase tracking-wider text-muted-foreground">
                         {post.tags.slice(0, 2).map((tag, index) => (
-                          <span key={index}>{tag}</span>
+                          <span key={tag || index}>{tag}</span>
                         ))}
                       </div>
                     </div>
@@ -246,7 +246,7 @@ export const RecentPosts = ({ data }: { data: PageBlocksRecent }) => {
           )}
         </div>
       </Section>
-    </div> 
+    </div>
   );
 };
 
