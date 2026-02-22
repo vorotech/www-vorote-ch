@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.30.1+sha512.3590e550d5384caa39bd5c7c739f72270234b2f6059e13018f975c313b1eb9fefcc09714048765d4d9efe961382c312e624572c0420762bdc5d5940cdf9be73a",
   "scripts": {
     "dev": "tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build --partial-reindex && next build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 tinacms build && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build --noMinify && opennextjs-cloudflare preview",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
@@ -29,6 +29,7 @@
     "@types/react": "^18.3.27",
     "@types/styled-components": "^5.1.36",
     "autoprefixer": "^10.4.24",
+    "cross-env": "^10.1.0",
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",
     "postcss-nesting": "^13.0.2",
@@ -79,6 +80,13 @@
     "ignoredBuiltDependencies": [
       "@biomejs/biome",
       "better-sqlite3"
+    ],
+    "onlyBuiltDependencies": [
+      "core-js",
+      "esbuild",
+      "protobufjs",
+      "sharp",
+      "workerd"
     ]
   }
 }

@@ -37,7 +37,7 @@ export const components: Components<{
   video: PageBlocksVideo;
   recentPosts: PageBlocksRecent;
 }> = {
-  code_block: (props) => {
+  code_block: (props: any) => {
     if (!props) {
       return <></>;
     }
@@ -61,7 +61,7 @@ export const components: Components<{
       </div>
     );
   },
-  DateTime: (props) => {
+  DateTime: (props: any) => {
     const dt = React.useMemo(() => {
       return new Date();
     }, []);
@@ -77,7 +77,7 @@ export const components: Components<{
         return <span>{format(dt, 'P')}</span>;
     }
   },
-  NewsletterSignup: (props) => {
+  NewsletterSignup: (props: any) => {
     return (
       <div className='bg-white'>
         <div className='max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8'>
@@ -113,7 +113,7 @@ export const components: Components<{
       </div>
     );
   },
-  img: (props) => {
+  img: (props: any) => {
     if (!props) {
       return <></>;
     }
@@ -123,14 +123,14 @@ export const components: Components<{
       </span>
     );
   },
-  FeaturedLink: (props) => {
+  FeaturedLink: (props: any) => {
     return <FeaturedLink {...props} />;
   },
   mermaid: (props: any) => <Mermaid {...props} />,
-  video: (props) => {
+  video: (props: any) => {
     return <Video data={props} />;
   },
-  recentPosts: (props) => {
+  recentPosts: (props: any) => {
     return <RecentPosts data={props} />;
   },
   table: (props: any) => <Table {...props} />,
