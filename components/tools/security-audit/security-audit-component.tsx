@@ -5,13 +5,12 @@ import { ShieldCheck, ShieldAlert, Search, Loader2, AlertTriangle, ExternalLink,
 import { motion, AnimatePresence } from 'motion/react';
 
 interface Vulnerability {
-    id: string;
+    id: number;
     title: string;
     severity: 'low' | 'moderate' | 'high' | 'critical';
-    overview: string;
-    recommendation: string;
-    cvss: { score: number };
-    cves: string[];
+    vulnerable_versions: string;
+    cwe: string[];
+    cvss: { score: number; vectorString: string };
     url: string;
 }
 
@@ -23,6 +22,7 @@ interface AuditResult {
     summary: {
         total: number;
         severity: {
+            critical: number;
             high: number;
             moderate: number;
             low: number;
@@ -107,7 +107,7 @@ const SecurityAuditComponent = () => {
 
                     <div className="mt-4 flex flex-wrap gap-2 items-center">
                         <span className="text-sm text-muted-foreground mr-2">Try:</span>
-                        {['lodash', 'express', 'qs', 'react'].map((name) => (
+                        {['lodash', 'express', 'qs@6.11.0', 'fast-xml-parser@5.2.5', 'react'].map((name) => (
                             <button
                                 key={name}
                                 onClick={() => {
@@ -146,32 +146,36 @@ const SecurityAuditComponent = () => {
                             className="flex flex-col gap-6"
                         >
                             {/* Summary Card */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col gap-2">
+                            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                                <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col gap-2 md:col-span-2 overflow-hidden">
                                     <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Package</span>
-                                    <div className="flex items-baseline gap-2">
-                                        <h2 className="text-2xl font-bold">{result.package}</h2>
-                                        <span className="text-muted-foreground font-mono">v{result.version}</span>
+                                    <div className="flex flex-col gap-1 min-w-0">
+                                        <h2 className="text-2xl font-bold truncate" title={result.package}>{result.package}</h2>
+                                        <span className="text-muted-foreground font-mono truncate">v{result.version}</span>
                                     </div>
                                 </div>
-                                <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col gap-2 md:col-span-2">
-                                    <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Vulnerability Summary</span>
-                                    <div className="flex gap-8">
+                                <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex flex-col gap-2 md:col-span-3 overflow-x-auto">
+                                    <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider whitespace-nowrap">Vulnerability Summary</span>
+                                    <div className="flex gap-6 md:gap-8 min-w-max">
                                         <div className="flex flex-col">
                                             <span className="text-3xl font-bold text-foreground">{result.summary.total}</span>
                                             <span className="text-xs text-muted-foreground font-medium uppercase">Total</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-3xl font-bold text-red-500">{result.summary.severity.high}</span>
+                                            <span className="text-3xl font-bold text-red-600 dark:text-red-400">{result.summary.severity.critical}</span>
+                                            <span className="text-xs text-muted-foreground font-medium uppercase">Critical</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-3xl font-bold text-orange-500">{result.summary.severity.high}</span>
                                             <span className="text-xs text-muted-foreground font-medium uppercase">High</span>
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="text-3xl font-bold text-yellow-500">{result.summary.severity.moderate}</span>
                                             <span className="text-xs text-muted-foreground font-medium uppercase">Moderate</span>
                                         </div>
-                                        <div className="flex flex-col text-green-500">
+                                        <div className="flex flex-col text-green-500 justify-center">
                                             {result.summary.total === 0 && (
-                                                <div className="flex items-center gap-2 mt-2">
+                                                <div className="flex items-center gap-2">
                                                     <ShieldCheck className="w-6 h-6" />
                                                     <span className="font-bold">Safe</span>
                                                 </div>
@@ -196,58 +200,69 @@ const SecurityAuditComponent = () => {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-4">
-                                        {result.vulnerabilities.map((vuln) => (
-                                            <div
-                                                key={vuln.id}
-                                                className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-all group"
-                                            >
-                                                <div className="p-6 flex flex-col gap-4">
-                                                    <div className="flex items-start justify-between gap-4">
-                                                        <div className="flex flex-col gap-1">
-                                                            <div className="flex items-center gap-3">
-                                                                <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${SEVERITY_COLORS[vuln.severity] || ''}`}>
-                                                                    {vuln.severity}
-                                                                </span>
-                                                                <h4 className="text-lg font-bold group-hover:text-primary transition-colors">{vuln.title}</h4>
+                                        {result.vulnerabilities.map((vuln) => {
+                                            const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
+                                            return (
+                                                <div
+                                                    key={vuln.id}
+                                                    className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-all group"
+                                                >
+                                                    <div className="p-6 flex flex-col gap-4">
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <div className="flex flex-col gap-1 min-w-0">
+                                                                <div className="flex items-center gap-3 flex-wrap">
+                                                                    <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${SEVERITY_COLORS[vuln.severity] || ''}`}>
+                                                                        {vuln.severity}
+                                                                    </span>
+                                                                    <h4 className="text-lg font-bold group-hover:text-primary transition-colors leading-tight break-words">{vuln.title}</h4>
+                                                                </div>
+                                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                                    <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                                                                        {advisoryId}
+                                                                    </span>
+                                                                    {vuln.cvss?.score && (
+                                                                        <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border/50">
+                                                                            CVSS: {vuln.cvss.score}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             </div>
-                                                            <div className="flex gap-2">
-                                                                {vuln.cves?.map(cve => (
-                                                                    <span key={cve} className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                                                                        {cve}
-                                                                    </span>
-                                                                ))}
-                                                                {vuln.cvss?.score && (
-                                                                    <span className="text-xs font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
-                                                                        CVSS: {vuln.cvss.score}
-                                                                    </span>
+                                                            <a
+                                                                href={vuln.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="p-2 bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-all shrink-0"
+                                                                title="View Advisory"
+                                                            >
+                                                                <ExternalLink className="w-5 h-5" />
+                                                            </a>
+                                                        </div>
+
+                                                        <div className="flex flex-col gap-3 mt-2">
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/30 p-4 rounded-xl border border-border/50">
+                                                                <div className="flex flex-col gap-1">
+                                                                    <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> Affected Versions</span>
+                                                                    <span className="text-sm font-mono text-foreground/90 font-medium">{vuln.vulnerable_versions}</span>
+                                                                </div>
+                                                                {vuln.cwe && vuln.cwe.length > 0 && (
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <span className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1"><ShieldAlert className="w-3 h-3" /> CWE Weaknesses</span>
+                                                                        <div className="flex flex-wrap gap-1 mt-1">
+                                                                            {vuln.cwe.map(c => <span key={c} className="text-xs font-mono bg-background border border-border px-1.5 py-0.5 rounded text-muted-foreground">{c}</span>)}
+                                                                        </div>
+                                                                    </div>
                                                                 )}
                                                             </div>
-                                                        </div>
-                                                        <a
-                                                            href={vuln.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="p-2 bg-muted hover:bg-primary/10 hover:text-primary rounded-lg transition-all"
-                                                        >
-                                                            <ExternalLink className="w-5 h-5" />
-                                                        </a>
-                                                    </div>
 
-                                                    <div className="flex flex-col gap-3">
-                                                        <div className="flex items-start gap-2 bg-muted/50 p-3 rounded-xl">
-                                                            <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-                                                            <p className="text-sm text-foreground/80 leading-relaxed">{vuln.overview}</p>
-                                                        </div>
-
-                                                        <div className="flex items-center gap-2 px-3 py-2 bg-green-500/5 text-green-700 dark:text-green-400 rounded-xl border border-green-500/10">
-                                                            <ShieldCheck className="w-4 h-4" />
-                                                            <span className="text-xs font-bold uppercase">Recommendation:</span>
-                                                            <span className="text-xs font-medium">{vuln.recommendation}</span>
+                                                            <div className="flex items-start gap-2 px-3 py-2 bg-primary/5 text-primary rounded-xl border border-primary/10">
+                                                                <Info className="w-4 h-4 shrink-0 mt-0.5" />
+                                                                <span className="text-sm font-medium">To see patched versions and full remediation guidance, view the official advisory details.</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
                                 )}
                             </div>

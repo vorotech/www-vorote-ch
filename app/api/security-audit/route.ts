@@ -65,19 +65,35 @@ export async function GET(request: Request) {
             }
         });
 
-        const vulnerabilities = advisoriesResponse.ok ? await advisoriesResponse.json() as any : {};
+        const advisoriesData = advisoriesResponse.ok ? await advisoriesResponse.json() as any : {};
+        const packageVulnerabilities = advisoriesData[packageName] || [];
+
+        // Sort vulnerabilities by severity
+        const severityScores: Record<string, number> = {
+            critical: 4,
+            high: 3,
+            moderate: 2,
+            low: 1
+        };
+
+        packageVulnerabilities.sort((a: any, b: any) => {
+            const scoreA = severityScores[a.severity] || 0;
+            const scoreB = severityScores[b.severity] || 0;
+            return scoreB - scoreA;
+        });
 
         return NextResponse.json({
             package: packageName,
             version: targetVersion,
-            vulnerabilities: vulnerabilities[packageName] || [],
+            vulnerabilities: packageVulnerabilities,
             checkedAt: new Date().toISOString(),
             summary: {
-                total: (vulnerabilities[packageName] || []).length,
+                total: packageVulnerabilities.length,
                 severity: {
-                    high: (vulnerabilities[packageName] || []).filter((v: any) => v.severity === 'high').length,
-                    moderate: (vulnerabilities[packageName] || []).filter((v: any) => v.severity === 'moderate').length,
-                    low: (vulnerabilities[packageName] || []).filter((v: any) => v.severity === 'low').length,
+                    critical: packageVulnerabilities.filter((v: any) => v.severity === 'critical').length,
+                    high: packageVulnerabilities.filter((v: any) => v.severity === 'high').length,
+                    moderate: packageVulnerabilities.filter((v: any) => v.severity === 'moderate').length,
+                    low: packageVulnerabilities.filter((v: any) => v.severity === 'low').length,
                 }
             }
         });
