@@ -15,9 +15,9 @@ export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
   if (!props.blocks) return null;
   return (
     <>
-      {props.blocks.map(function (block, i) {
+      {props.blocks.map(function (block, blockIdx) {
         return (
-          <div key={i} data-tina-field={tinaField(block)}>
+          <div key={`${block?.__typename}-${blockIdx}`} data-tina-field={tinaField(block)}>
             <Block {...block} />
           </div>
         );

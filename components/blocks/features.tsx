@@ -23,7 +23,7 @@ export const Features = ({ data }: { data: PageBlocksFeatures }) => {
         <Card className="@min-4xl:max-w-full @min-4xl:grid-cols-3 @min-4xl:divide-x @min-4xl:divide-y-0 mx-auto mt-8 grid max-w-sm divide-y overflow-hidden shadow-zinc-950/5 *:text-center md:mt-16">
           {data.items &&
             data.items.map(function (block, i) {
-              return <Feature key={i} {...block!} />;
+              return <Feature key={block?.title || `feature-${i}`} {...block!} />;
             })}
         </Card>
       </div>

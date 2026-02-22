@@ -13,11 +13,14 @@
     "start": "next start",
     "lint": "biome lint",
     "types": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "test:scheduler": "npx tsx components/tools/scheduler/scheduler.test.ts"
+    "test:scheduler": "npx tsx components/tools/scheduler/scheduler.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@opennextjs/cloudflare": "1.16.1",
+    "@playwright/test": "^1.58.2",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tinacms/cli": "^2.1.5",

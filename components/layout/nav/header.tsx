@@ -54,7 +54,7 @@ export const Header = () => {
               <div className="hidden lg:block">
                 <ul className="flex gap-8 text-sm">
                   {header.nav!.map((item, index) => (
-                    <li key={index}>
+                    <li key={item?.href || index}>
                       <Link
                         href={item!.href!}
                         target={item!.href!.startsWith("http") ? "_blank" : "_self"}
@@ -68,7 +68,7 @@ export const Header = () => {
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
                   {header.nav!.map((item, index) => (
-                    <li key={index}>
+                    <li key={item?.href || index}>
                       <Link
                         href={item!.href!}
                         target={item!.href!.startsWith("http") ? "_blank" : "_self"}

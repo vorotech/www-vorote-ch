@@ -2,6 +2,7 @@
 
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useVideoDialog } from "./VideoDialogContext";
 
 interface HeroVideoProps {
@@ -24,13 +25,21 @@ export default function HeroVideoDialog({
       <div
         className="group relative cursor-pointer"
         onClick={() => openVideo(videoSrc)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openVideo(videoSrc);
+          }
+        }}
+        role="button"
+        tabIndex={0}
       >
-        <img
+        <Image
           src={thumbnailSrc}
           alt={thumbnailAlt}
           width={1920}
           height={1080}
-          className="w-full rounded-md border shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8]"
+          className="w-full object-cover rounded-md border shadow-lg transition-all duration-200 ease-out group-hover:brightness-[0.8]"
         />
         <div className="absolute inset-0 flex scale-[0.9] items-center justify-center rounded-2xl transition-all duration-200 ease-out group-hover:scale-100">
           <div className="flex size-28 items-center justify-center rounded-full bg-primary/10 backdrop-blur-md">
