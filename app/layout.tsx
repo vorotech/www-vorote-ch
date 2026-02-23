@@ -6,6 +6,7 @@ import { ClientProviders } from "@/components/layout/client-providers";
 
 import "@/styles.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
+import { GridPattern } from "@/components/magicui/grid-pattern";
 
 
 // Source Code Pro for body text
@@ -37,9 +38,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={cn(sourceCodePro.variable, abel.variable)}>
-      <body suppressHydrationWarning className="min-h-screen bg-background font-sans antialiased">
+      <body suppressHydrationWarning className="min-h-screen bg-background font-sans antialiased relative">
+        <GridPattern
+          width={40}
+          height={40}
+          x={-1}
+          y={-1}
+          className={cn(
+            "[mask-image:radial-gradient(1000px_circle_at_center,white,transparent)]",
+            "opacity-50"
+          )}
+        />
         <ClientProviders>
-          {children}
+          <div className="relative z-10">
+            {children}
+          </div>
         </ClientProviders>
         <TailwindIndicator />
       </body>

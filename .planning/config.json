@@ -1,20 +1,12 @@
 {
-  "model_profile": "quality",
-  "commit_docs": true,
-  "search_gitignored": false,
-  "branching_strategy": "none",
-  "phase_branch_template": "gsd/phase-{phase}-{slug}",
-  "milestone_branch_template": "gsd/{milestone}-{slug}",
+  "mode": "yolo",
+  "depth": "standard",
+  "parallelization": true,
+  "commit_docs": false,
+  "model_profile": "balanced",
   "workflow": {
     "research": true,
     "plan_check": true,
-    "verifier": true,
-    "nyquist_validation": true,
-    "auto_advance": false
-  },
-  "parallelization": true,
-  "brave_search": false,
-  "git": {
-    "branching_strategy": "none"
+    "verifier": true
   }
 }

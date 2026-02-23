@@ -1,9 +1,13 @@
 import React, { ReactNode } from 'react';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
+import { AnimatedGroup, PresetType } from '@/components/motion-primitives/animated-group';
+import { GridPattern } from '@/components/magicui/grid-pattern';
 
 interface SectionProps extends React.HTMLProps<HTMLElement> {
   background?: string;
   children: ReactNode;
+  showGrid?: boolean;
+  preset?: PresetType;
 }
 
 export const getBackgroundClass = (bgClass: string | undefined): string => {
@@ -28,16 +32,36 @@ export const getBackgroundClass = (bgClass: string | undefined): string => {
   return bgClass;
 };
 
-export const Section: React.FC<SectionProps> = ({ className, children, background, ...props }) => {
+export const Section: React.FC<SectionProps> = ({ 
+  className, 
+  children, 
+  background, 
+  showGrid = false,
+  preset = 'fade',
+  ...props 
+}) => {
   const bgClass = getBackgroundClass(background);
   
   return (
-    <div className={bgClass}>
+    <div className={cn("relative overflow-hidden", bgClass)}>
+      {showGrid && (
+        <GridPattern
+          width={40}
+          height={40}
+          x={-1}
+          y={-1}
+          className={cn(
+            "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
+          )}
+        />
+      )}
       <section
-        className={cn("py-12 mx-auto max-w-7xl px-6", className)}
+        className={cn("py-12 mx-auto max-w-7xl px-6 relative z-10", className)}
         {...props}
       >
-        {children}
+        <AnimatedGroup preset={preset}>
+          {children}
+        </AnimatedGroup>
       </section>
     </div>
   );

@@ -43,15 +43,15 @@ const transitionVariants = {
 
 import { cn } from '@/lib/utils';
 import { getBackgroundClass } from '../layout/section';
+import { Meteors } from '../magicui/meteors';
 
 export const Hero = ({ data }: { data: PageBlocksHero }) => {
-  const bgClass = getBackgroundClass(data.background || undefined);
-
   // Use the selected image source explicitly as requested
   const imageSrc = '/uploads/media/NBP_8378.jpg';
 
   return (
-    <div className={cn(bgClass, "w-full")}>
+    <Section background={data.background!} className='relative' showGrid={false}>
+      <Meteors number={20} className="opacity-30" />
       <div className="relative overflow-hidden flex flex-col lg:block mx-auto max-w-7xl">
 
         {/* Content Container - Order 2 on mobile (text after image) */}
@@ -146,7 +146,7 @@ export const Hero = ({ data }: { data: PageBlocksHero }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Section>
   );
 };
 

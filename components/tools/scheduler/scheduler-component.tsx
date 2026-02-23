@@ -1,11 +1,12 @@
 "use client";
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Calendar, Users, AlertCircle, RefreshCw, Settings, Trash2, LayoutGrid, List as ListIcon, Clock, Eye, EyeOff, Plane, Dices, Download, Clipboard } from 'lucide-react';
 
 
 import { Member, ScheduleSlot, generateScheduleData, isOnTimeOff, isWeekend, getDaysInMonth } from './scheduler';
 import { FeedbackForm } from '../../feedback-form';
+import { Section } from '../../layout/section';
+import { AnimatedGroup } from '../../motion-primitives/animated-group';
 
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';
@@ -25,12 +26,12 @@ const MEMBER_COLORS = [
 
 const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
 
-const OnCallScheduler = () => {
-    const [numMembers, setNumMembers] = useState<any>(3);
-    const [month, setMonth] = useState<any>(new Date().getMonth());
-    const [year, setYear] = useState<any>(new Date().getFullYear());
+const OnCallScheduler: React.FC = () => {
+    const [numMembers, setNumMembers] = useState<number | ''>(3);
+    const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [year, setYear] = useState<number | ''>(new Date().getFullYear());
     const [schedule, setSchedule] = useState<ScheduleSlot[] | null>(null);
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<Record<number, { total: number; weekday: number; weekend: number }> | null>(null);
     const [timeOffInputs, setTimeOffInputs] = useState<Record<number, { start: string; end: string }>>({});
     const [members, setMembers] = useState<Member[]>([
         { id: 1, name: 'Person 1', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
@@ -190,11 +191,11 @@ const OnCallScheduler = () => {
 
 
 
-    const updateMemberName = (id: any, name: any) => {
+    const updateMemberName = (id: number, name: string) => {
         setMembers(members.map(m => m.id === id ? { ...m, name } : m));
     };
 
-    const addTimeOff = (memberId: any, start: any, end: any) => {
+    const addTimeOff = (memberId: number, start: string, end: string) => {
         setMembers(members.map(m =>
             m.id === memberId
                 ? { ...m, timeOffs: [...m.timeOffs, { start, end }] }
@@ -202,7 +203,7 @@ const OnCallScheduler = () => {
         ));
     };
 
-    const removeTimeOff = (memberId: any, index: any) => {
+    const removeTimeOff = (memberId: number, index: number) => {
         setMembers(members.map(m =>
             m.id === memberId
                 ? { ...m, timeOffs: m.timeOffs.filter((_, i) => i !== index) }
@@ -210,7 +211,7 @@ const OnCallScheduler = () => {
         ));
     };
 
-    const toggleWeekendOnly = (memberId: any) => {
+    const toggleWeekendOnly = (memberId: number) => {
         setMembers(members.map(m => {
             if (m.id === memberId) {
                 // When toggling weekend only, set allowed weekdays to weekend or clear them
@@ -225,7 +226,7 @@ const OnCallScheduler = () => {
         }));
     };
 
-    const toggleWeekday = (memberId: any, weekday: any) => {
+    const toggleWeekday = (memberId: number, weekday: number) => {
         setMembers(members.map(m => {
             if (m.id === memberId) {
                 const allowed = [...m.allowedWeekdays];
@@ -241,7 +242,7 @@ const OnCallScheduler = () => {
         }));
     };
 
-    const setMaxWeekendSlots = (memberId: any, max: any) => {
+    const setMaxWeekendSlots = (memberId: number, max: string) => {
         setMembers(members.map(m =>
             m.id === memberId
                 ? { ...m, maxWeekendSlots: max ? parseInt(max) : null }
@@ -249,7 +250,7 @@ const OnCallScheduler = () => {
         ));
     };
 
-    const updateNumMembers = (num: any) => {
+    const updateNumMembers = (num: string) => {
         if (num === '') {
             setNumMembers('');
             return;
@@ -283,7 +284,7 @@ const OnCallScheduler = () => {
         setNumMembers(n);
     };
 
-    const formatDate = (date: any) => {
+    const formatDate = (date: Date) => {
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
     };
 
@@ -298,7 +299,7 @@ const OnCallScheduler = () => {
     };
 
     return (
-        <div className="bg-background pt-8 pb-6 px-4 md:px-6">
+        <Section showGrid={true} className="pt-8 pb-6 px-4 md:px-6">
             <div className="max-w-6xl mx-auto">
                 <div className="flex items-center gap-3 mb-8 px-2">
                     <Calendar className="w-8 h-8 text-primary" />
@@ -584,7 +585,7 @@ const OnCallScheduler = () => {
                 {stats && (
                     <div className="bg-card rounded-xl border border-border p-6 mb-6">
                         <h2 className="text-2xl font-bold text-foreground mb-4">Distribution Statistics</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <AnimatedGroup className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" preset="blur-slide">
                             {members.map((member) => {
                                 const color = getMemberColor(member.id);
                                 return (
@@ -604,7 +605,7 @@ const OnCallScheduler = () => {
                                     </div>
                                 );
                             })}
-                        </div>
+                        </AnimatedGroup>
                     </div>
                 )}
 
@@ -670,7 +671,7 @@ const OnCallScheduler = () => {
                         </div>
 
                         {viewMode === 'list' ? (
-                            <div className="space-y-2">
+                            <AnimatedGroup className="space-y-2" preset="blur-slide">
                                 {schedule.map((slot, idx) => (
                                     <div
                                         key={idx}
@@ -701,7 +702,7 @@ const OnCallScheduler = () => {
                                         </div>
                                     </div>
                                 ))}
-                            </div>
+                            </AnimatedGroup>
                         ) : (
                             <div className="overflow-x-auto pb-4">
                                 <div className="min-w-[800px]">
@@ -805,7 +806,7 @@ const OnCallScheduler = () => {
                     </div>
                 )
             }
-        </div >
+        </Section >
     );
 };
 
