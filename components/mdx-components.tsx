@@ -9,6 +9,7 @@ import { FeaturedLink } from './blocks/featured-link';
 import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Mermaid } from './blocks/mermaid';
 import { PageBlocksRecent } from '@/tina/__generated__/types';
+import { Table, THead, TBody, TR, TH, TD } from './blocks/table';
 
 export const components: Components<{
   BlockQuote: {
@@ -36,11 +37,11 @@ export const components: Components<{
   video: PageBlocksVideo;
   recentPosts: PageBlocksRecent;
 }> = {
-  code_block: (props) => {
+  code_block: (props: any) => {
     if (!props) {
       return <></>;
     }
-    
+
     if (props.lang === 'mermaid') {
       return <Mermaid value={props.value} />
     }
@@ -60,7 +61,7 @@ export const components: Components<{
       </div>
     );
   },
-  DateTime: (props) => {
+  DateTime: (props: any) => {
     const dt = React.useMemo(() => {
       return new Date();
     }, []);
@@ -76,7 +77,7 @@ export const components: Components<{
         return <span>{format(dt, 'P')}</span>;
     }
   },
-  NewsletterSignup: (props) => {
+  NewsletterSignup: (props: any) => {
     return (
       <div className='bg-white'>
         <div className='max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8'>
@@ -112,7 +113,7 @@ export const components: Components<{
       </div>
     );
   },
-  img: (props) => {
+  img: (props: any) => {
     if (!props) {
       return <></>;
     }
@@ -122,14 +123,20 @@ export const components: Components<{
       </span>
     );
   },
-  FeaturedLink: (props) => {
+  FeaturedLink: (props: any) => {
     return <FeaturedLink {...props} />;
   },
   mermaid: (props: any) => <Mermaid {...props} />,
-  video: (props) => {
+  video: (props: any) => {
     return <Video data={props} />;
   },
-  recentPosts: (props) => {
+  recentPosts: (props: any) => {
     return <RecentPosts data={props} />;
   },
-};
+  table: (props: any) => <Table {...props} />,
+  thead: (props: any) => <THead {...props} />,
+  tbody: (props: any) => <TBody {...props} />,
+  tr: (props: any) => <TR {...props} />,
+  th: (props: any) => <TH {...props} />,
+  td: (props: any) => <TD {...props} />,
+} as any;
