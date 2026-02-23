@@ -38,7 +38,8 @@ export default async function Page({
   const resolvedParams = await params;
   const filepath = resolvedParams.urlSegments.join('/');
 
-  if (resolvedParams.urlSegments.includes('socket.io')) {
+  const skippedHosts = ['socket.io'];
+  if (resolvedParams.urlSegments.some((segment) => skippedHosts.includes(segment))) {
     notFound();
   }
 
