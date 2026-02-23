@@ -79,7 +79,6 @@
       "markdown-it": "~14.1.1"
     },
     "ignoredBuiltDependencies": [
-      "@biomejs/biome",
       "better-sqlite3"
     ],
     "onlyBuiltDependencies": [

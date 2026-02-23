@@ -36,3 +36,9 @@ tsconfig.tsbuildinfo
 # e2e
 test-results/
 playwright-report/
+
+# gcd
+.gemini/
+.planning/*
+!.planning/config.json
+!.planning/codebase
