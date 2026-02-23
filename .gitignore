@@ -42,3 +42,8 @@ playwright-report/
 .planning/*
 !.planning/config.json
 !.planning/codebase
+
+# osv-scanner
+osv-test.json
+osv-stdout.txt
+osv-stderr.txt

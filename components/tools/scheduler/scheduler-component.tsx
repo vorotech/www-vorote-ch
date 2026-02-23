@@ -29,7 +29,7 @@ const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.le
 const OnCallScheduler: React.FC = () => {
     const [numMembers, setNumMembers] = useState<number | ''>(3);
     const [month, setMonth] = useState<number>(new Date().getMonth());
-    const [year, setYear] = useState<number | ''>(new Date().getFullYear());
+    const [year, setYear] = useState<number>(new Date().getFullYear());
     const [schedule, setSchedule] = useState<ScheduleSlot[] | null>(null);
     const [stats, setStats] = useState<Record<number, { total: number; weekday: number; weekend: number }> | null>(null);
     const [timeOffInputs, setTimeOffInputs] = useState<Record<number, { start: string; end: string }>>({});
@@ -335,7 +335,7 @@ const OnCallScheduler: React.FC = () => {
                                 value={year}
                                 onChange={(e) => {
                                     const val = e.target.value;
-                                    if (val === '') setYear('');
+                                    if (val === '') setYear(new Date().getFullYear());
                                     else setYear(parseInt(val));
                                 }}
                                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-foreground placeholder:text-muted-foreground"
