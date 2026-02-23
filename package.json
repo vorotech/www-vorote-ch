@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tinacms dev -c \"next dev --turbopack\"",
     "generate-report": "node scripts/generate-security-report.js",
-    "build": "npm run generate-report && cross-env NODE_OPTIONS=--max-old-space-size=4096 tinacms build && next build",
+    "build": "pnpm run generate-report && cross-env NODE_OPTIONS=--max-old-space-size=4096 tinacms build && next build",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build --noMinify && opennextjs-cloudflare preview",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
