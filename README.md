@@ -15,7 +15,6 @@ This project is a modern Next.js application designed to be:
 
 Detailed documentation for specific features and integrations can be found in the `docs/` directory:
 
-*   **[Email Integration](./docs/EMAIL_INTEGRATION.md)**: How transactional emails (feedback forms, etc.) are handled using Resend and Cloudflare Turnstile.
 *   **[Scheduler Algorithm](./docs/SCHEDULER_ALGORITHM.md)**: A deep dive into the constraint-based linear optimization algorithm used for the on-call scheduler tool.
 
 ## 🛠️ Local Development
