@@ -8,9 +8,22 @@ const config: Config = {
     './content/**/*.{md,mdx}',
   ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['var(--font-sans)'],
+          extend: {
+            keyframes: {
+              meteor: {
+                "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
+                "70%": { opacity: "1" },
+                "100%": {
+                  transform: "rotate(215deg) translateX(-500px)",
+                  opacity: "0",
+                },
+              },
+            },
+                    animation: {
+                      meteor: "meteor 5s linear infinite",
+                    },
+            
+            fontFamily: {        sans: ['var(--font-sans)'],
         heading: ['var(--font-abel)'],
         mono: ['var(--font-mono)'],
       },
