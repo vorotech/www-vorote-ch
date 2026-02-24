@@ -5,6 +5,7 @@ import { Content } from "./content";
 import { Features } from "./features";
 import { Testimonial } from "./testimonial";
 import { Video } from "./video";
+import { Mermaid } from "./mermaid";
 import { Callout } from "./callout";
 import { Stats } from "./stats";
 import { CallToAction } from "./call-to-action";
@@ -30,6 +31,8 @@ const Block = (block: PageBlocks) => {
   switch (block.__typename) {
     case "PageBlocksVideo":
       return <Video data={block} />;
+    case "PageBlocksMermaid":
+      return <Mermaid {...(block as any)} />;
     case "PageBlocksHero":
       return <Hero data={block} />;
     case "PageBlocksCallout":
