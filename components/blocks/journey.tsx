@@ -2,8 +2,8 @@
 import React from 'react';
 import type { Template } from 'tinacms';
 import { tinaField } from 'tinacms/dist/react';
-import { JourneyRoadmap } from '../journey/journey-roadmap';
 import { Section, sectionBlockSchemaField } from '../layout/section';
+import { JourneyRoadmap } from '../journey/journey-roadmap';
 
 export const Journey = ({ data }: { data: any }) => {
   return (
