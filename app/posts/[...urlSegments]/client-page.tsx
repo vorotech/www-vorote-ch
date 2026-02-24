@@ -44,83 +44,99 @@ export default function PostClientPage(props: ClientPostProps) {
 
   return (
     <ErrorBoundary>
-      <Section>
-        <h2 data-tina-field={tinaField(post, 'title')} className={`w-full relative\tmb-8 text-6xl font-extrabold tracking-normal text-center title-font`}>
-          <span className={`bg-clip-text text-transparent bg-linear-to-r ${titleColour}`}>{post.title}</span>
-        </h2>
-        <div data-tina-field={tinaField(post, 'author')} className='flex items-center justify-center mb-16'>
-          {post.author && (
-            <>
-              {post.author.avatar && (
-                <div className='shrink-0 mr-4'>
-                  <Image
-                    data-tina-field={tinaField(post.author, 'avatar')}
-                    priority={true}
-                    className='h-14 w-14 object-cover rounded-full shadow-xs'
-                    src={post.author.avatar}
-                    alt={post.author.name}
-                    width={500}
-                    height={500}
-                  />
+      <Section className="py-20">
+        <div className="max-w-4xl mx-auto px-4">
+          <h1 data-tina-field={tinaField(post, 'title')} className="w-full relative mb-10 text-5xl md:text-7xl font-extrabold tracking-tight text-center font-heading leading-tight">
+            <span className={`bg-clip-text text-transparent bg-linear-to-r ${titleColour}`}>
+              {post.title}
+            </span>
+          </h1>
+
+          <div data-tina-field={tinaField(post, 'author')} className="flex items-center justify-center mb-16 space-x-4 border-y border-border/50 py-6">
+            {post.author && (
+              <div className="flex items-center group">
+                {post.author.avatar && (
+                  <div className="shrink-0 mr-3 overflow-hidden rounded-full ring-2 ring-primary/20 transition-all group-hover:ring-primary/40">
+                    <Image
+                      data-tina-field={tinaField(post.author, 'avatar')}
+                      priority={true}
+                      className="h-12 w-12 object-cover"
+                      src={post.author.avatar}
+                      alt={post.author.name}
+                      width={100}
+                      height={100}
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col">
+                  <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold mb-0.5">Author</span>
+                  <p
+                    data-tina-field={tinaField(post.author, 'name')}
+                    className="text-sm font-bold text-foreground group-hover:text-primary transition-colors"
+                  >
+                    {post.author.name}
+                  </p>
                 </div>
-              )}
+              </div>
+            )}
+            
+            <div className="h-8 w-[1px] bg-border/50" />
+            
+            <div className="flex flex-col">
+              <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold mb-0.5">Published</span>
               <p
-                data-tina-field={tinaField(post.author, 'name')}
-                className='text-base font-medium text-gray-600 group-hover:text-gray-800 dark:text-gray-200 dark:group-hover:text-white'
+                data-tina-field={tinaField(post, 'date')}
+                className="text-sm font-medium text-foreground"
               >
-                {post.author.name}
+                {formattedDate}
               </p>
-              <span className='font-bold text-gray-200 dark:text-gray-500 mx-2'>—</span>
-            </>
-          )}
-          <p
-            data-tina-field={tinaField(post, 'date')}
-            className='text-base text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-150'
-          >
-            {formattedDate}
-          </p>
+            </div>
+          </div>
         </div>
+
         {post.heroImg && (
-          <div className='px-4 w-full'>
-            <div data-tina-field={tinaField(post, 'heroImg')} className='relative max-w-4xl lg:max-w-5xl mx-auto'>
+          <div className="px-4 w-full mb-20">
+            <div data-tina-field={tinaField(post, 'heroImg')} className="relative max-w-5xl mx-auto group">
               <Image
                 priority={true}
                 src={post.heroImg}
                 alt={post.title}
-                className='absolute block mx-auto rounded-lg w-full h-auto blur-2xl brightness-150 contrast-[0.9] dark:brightness-150 saturate-200 opacity-50 dark:opacity-30 mix-blend-multiply dark:mix-blend-hard-light'
-                aria-hidden='true'
-                width={500}
-                height={500}
-                style={{ maxHeight: '25vh' }}
+                className="absolute inset-0 block mx-auto rounded-3xl w-full h-full blur-3xl opacity-20 dark:opacity-10 scale-105 pointer-events-none transition-opacity group-hover:opacity-30"
+                aria-hidden="true"
+                width={1200}
+                height={600}
               />
               <Image
                 priority={true}
                 src={post.heroImg}
                 alt={post.title}
-                width={500}
-                height={500}
-                className='relative z-10 mb-14 mx-auto block rounded-lg w-full h-auto opacity-100'
-                style={{ maxWidth: '25vh' }}
+                width={1200}
+                height={600}
+                className="relative z-10 mx-auto block rounded-3xl w-full h-auto shadow-2xl border border-border/50 transition-transform duration-700 group-hover:scale-[1.005]"
               />
             </div>
           </div>
         )}
-        <div data-tina-field={tinaField(post, '_body')} className='prose dark:prose-invert w-full max-w-none'>
-          <TinaMarkdown
-            content={post._body}
-            components={{
-              ...components,
-              a: (props: any) => (
-                <a
-                  href={props.url}
-                  target={props.url?.startsWith('http') ? '_blank' : undefined}
-                  rel={props.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                >
-                  {props.children}
-                </a>
-              ),
-            }}
-          />
+
+        <div className="max-w-3xl mx-auto px-4">
+          <div data-tina-field={tinaField(post, '_body')} className="prose dark:prose-invert w-full max-w-none prose-headings:font-heading prose-headings:tracking-tight prose-p:leading-relaxed prose-pre:p-0 prose-img:rounded-2xl selection:bg-primary/20">
+            <TinaMarkdown
+              content={post._body}
+              components={{
+                ...components,
+                a: (props: any) => (
+                  <a
+                    href={props.url}
+                    className="text-primary hover:text-primary/80 underline-offset-4 decoration-primary/30 transition-all"
+                    target={props.url?.startsWith('http') ? '_blank' : undefined}
+                    rel={props.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {props.children}
+                  </a>
+                ),
+              }}
+            />
+          </div>
         </div>
       </Section>
     </ErrorBoundary>
