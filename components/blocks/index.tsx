@@ -11,6 +11,7 @@ import { Stats } from "./stats";
 import { CallToAction } from "./call-to-action";
 import { RecentPosts } from "./recent-posts";
 import { LatestPostsList } from "./latest-posts-list";
+import { Journey } from "./journey";
 
 export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
   if (!props.blocks) return null;
@@ -51,6 +52,8 @@ const Block = (block: PageBlocks) => {
       return <RecentPosts data={block} />;
     case "PageBlocksLatestPostsList":
       return <LatestPostsList data={block as any} />;
+    case "PageBlocksJourney":
+      return <Journey data={block} />;
     default:
       return null;
   }

@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-02-24T09:35:41.774Z",
+  "generated_at": "2026-02-24T18:52:02.538Z",
   "checks": {
     "dependencies": {
       "name": "OSV Dependency Scan",
       "status": "secure",
       "metrics": {
         "vulnerabilities": 0,
-        "scanned_at": "2026-02-24T09:35:39.586Z",
+        "scanned_at": "2026-02-24T18:52:00.357Z",
         "packages_count": 0
       }
     },
@@ -14,7 +14,7 @@
       "name": "Biome Code Health",
       "status": "failing",
       "metrics": {
-        "errors": 940
+        "errors": 951
       }
     }
   }
