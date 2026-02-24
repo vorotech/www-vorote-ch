@@ -121,17 +121,17 @@ export const components: Components<{
     }
     return (
       <span className='flex flex-col items-center justify-center my-10 group'>
-        <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl transition-transform duration-500 group-hover:scale-[1.01]">
+        <span className="relative rounded-2xl overflow-hidden border border-border shadow-xl transition-transform duration-500 group-hover:scale-[1.01] block">
           <Image 
             src={props.url} 
             alt={props.alt || ''} 
             width={1200} 
             height={800} 
-            className="w-full h-auto object-cover"
+            className="w-full h-auto object-cover !m-0 block"
           />
-        </div>
+        </span>
         {props.alt && (
-          <span className="mt-4 text-sm text-muted-foreground italic font-medium tracking-tight">
+          <span className="mt-4 text-sm text-muted-foreground italic font-medium tracking-tight text-center max-w-xl block">
             {props.alt}
           </span>
         )}

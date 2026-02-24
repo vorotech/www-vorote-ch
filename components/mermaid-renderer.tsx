@@ -81,7 +81,7 @@ const MermaidInner: React.FC<MermaidProps> = ({ value: content }) => {
   useEffect(() => {
     const el = scrollRef.current;
     if (el) {
-      el.addEventListener('scroll', handleScroll);
+      el.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('resize', handleScroll);
       handleScroll();
       return () => {

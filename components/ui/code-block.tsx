@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { Button } from './button';
 import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
 
 // Keep a singleton highlighter promise to avoid re-creating it
 let highlighterPromise: Promise<any> | null = null;
@@ -13,7 +14,7 @@ async function getHighlighter() {
     // Dynamic import to keep bundle small
     const { createHighlighter } = await import('shiki');
     highlighterPromise = createHighlighter({
-      themes: ['github-dark'],
+      themes: ['github-dark', 'github-light'],
       langs: [
         'typescript',
         'javascript',
@@ -42,6 +43,7 @@ interface CodeBlockProps {
 export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   // Map common language aliases or fallback to text
   const getLanguage = (l?: string) => {
@@ -64,9 +66,10 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
     async function highlight() {
       try {
         const highlighter = await getHighlighter();
+        const theme = resolvedTheme === 'dark' ? 'github-dark' : 'github-light';
         const html = highlighter.codeToHtml(value, {
           lang: language,
-          theme: 'github-dark',
+          theme: theme,
         });
         if (isMounted) setHighlightedHtml(html);
       } catch (err) {
@@ -76,7 +79,7 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
     }
     highlight();
     return () => { isMounted = false; };
-  }, [value, language]);
+  }, [value, language, resolvedTheme]);
 
   const copyToClipboard = async () => {
     if (!value) return;
@@ -91,21 +94,21 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
   };
 
   return (
-    <div className="relative group my-6 rounded-lg border border-zinc-800 bg-zinc-950 overflow-hidden shadow-xl">
+    <div className="relative group my-8 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 overflow-hidden shadow-xl transition-colors duration-300">
       {/* Header with language and copy button */}
-      <div className="flex items-center justify-between px-4 py-1.5 bg-zinc-900/80 border-b border-zinc-800 backdrop-blur-sm">
-        <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">
+      <div className="flex items-center justify-between px-4 py-1.5 bg-zinc-100/80 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 backdrop-blur-sm">
+        <span className="text-[10px] uppercase font-bold text-zinc-500 dark:text-zinc-400 tracking-widest">
           {language}
         </span>
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          className="h-7 w-7 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
           onClick={copyToClipboard}
           aria-label={copied ? "Copied" : "Copy code"}
         >
           {copied ? (
-            <Check className="h-3.5 w-3.5 text-green-500" />
+            <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-500" />
           ) : (
             <Copy className="h-3.5 w-3.5" />
           )}
@@ -120,7 +123,7 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
             dangerouslySetInnerHTML={{ __html: highlightedHtml }} 
           />
         ) : (
-          <pre className="text-zinc-300 m-0 p-0 font-mono selection:bg-teal-500/20">
+          <pre className="text-zinc-700 dark:text-zinc-300 m-0 p-0 font-mono selection:bg-teal-500/20">
             <code>{value}</code>
           </pre>
         )}
@@ -128,3 +131,4 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
     </div>
   );
 };
+
