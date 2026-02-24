@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-02-23T23:30:56.386Z",
+  "generated_at": "2026-02-24T09:35:41.774Z",
   "checks": {
     "dependencies": {
       "name": "OSV Dependency Scan",
       "status": "secure",
       "metrics": {
         "vulnerabilities": 0,
-        "scanned_at": "2026-02-23T23:30:54.101Z",
+        "scanned_at": "2026-02-24T09:35:39.586Z",
         "packages_count": 0
       }
     },
