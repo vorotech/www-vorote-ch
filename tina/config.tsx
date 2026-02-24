@@ -6,6 +6,7 @@ import Global from "./collection/global";
 import Author from "./collection/author";
 import Page from "./collection/page";
 import Tag from "./collection/tag";
+import Milestone from "./collection/milestone";
 
 const config = defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -33,7 +34,7 @@ const config = defineConfig({
     host: process.env.NEXT_PUBLIC_TINA_HOST || '127.0.0.1', // The host of the app
   },
   schema: {
-    collections: [Page, Post, Author, Tag, Global],
+    collections: [Page, Post, Author, Tag, Global, Milestone],
   },
 });
 
