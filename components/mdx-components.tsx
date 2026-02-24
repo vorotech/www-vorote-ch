@@ -53,11 +53,13 @@ export const components: Components<{
     authorName: string;
   }) => {
     return (
-      <div>
-        <blockquote>
+      <div className="my-10 pl-6 border-l-4 border-primary/50 bg-primary/5 dark:bg-primary/10 py-6 pr-6 rounded-r-xl italic shadow-sm">
+        <blockquote className="text-xl font-medium leading-relaxed text-foreground/90 mb-4">
           <TinaMarkdown content={props.children} />
-          {props.authorName}
         </blockquote>
+        {props.authorName && (
+          <cite className="not-italic font-bold text-sm uppercase tracking-widest text-primary/80">— {props.authorName}</cite>
+        )}
       </div>
     );
   },
@@ -79,35 +81,35 @@ export const components: Components<{
   },
   NewsletterSignup: (props: any) => {
     return (
-      <div className='bg-white'>
-        <div className='max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8'>
-          <div className=''>
+      <div className='bg-card border border-border rounded-2xl p-8 my-12 shadow-lg backdrop-blur-sm'>
+        <div className='max-w-3xl mx-auto'>
+          <div className='prose prose-sm dark:prose-invert mb-8'>
             <TinaMarkdown content={props.children} />
           </div>
-          <div className='mt-8 '>
-            <form className='sm:flex'>
-              <label htmlFor='email-address' className='sr-only'>
-                Email address
-              </label>
-              <input
-                id='email-address'
-                name='email-address'
-                type='email'
-                autoComplete='email'
-                required
-                className='w-full px-5 py-3 border border-gray-300 shadow-xs placeholder-gray-400 focus:ring-1 focus:ring-teal-500 focus:border-teal-500 sm:max-w-xs rounded-md'
-                placeholder={props.placeholder}
-              />
-              <div className='mt-3 rounded-md shadow-sm sm:mt-0 sm:ml-3 sm:shrink-0'>
-                <button
-                  type='submit'
-                  className='w-full flex items-center justify-center py-3 px-5 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-teal-500'
-                >
-                  {props.buttonText}
-                </button>
-              </div>
-            </form>
-            <div className='mt-3 text-sm text-gray-500'>{props.disclaimer && <TinaMarkdown content={props.disclaimer} />}</div>
+          <form className='sm:flex gap-4'>
+            <label htmlFor='email-address' className='sr-only'>
+              Email address
+            </label>
+            <input
+              id='email-address'
+              name='email-address'
+              type='email'
+              autoComplete='email'
+              required
+              className='w-full px-5 py-3 border border-input bg-background/50 placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary sm:max-w-xs rounded-xl transition-all'
+              placeholder={props.placeholder}
+            />
+            <div className='mt-3 sm:mt-0 sm:shrink-0'>
+              <button
+                type='submit'
+                className='w-full flex items-center justify-center py-3 px-8 border border-transparent text-base font-bold rounded-xl text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-md active:scale-[0.98]'
+              >
+                {props.buttonText}
+              </button>
+            </div>
+          </form>
+          <div className='mt-4 text-xs text-muted-foreground italic'>
+            {props.disclaimer && <TinaMarkdown content={props.disclaimer} />}
           </div>
         </div>
       </div>
@@ -118,8 +120,21 @@ export const components: Components<{
       return <></>;
     }
     return (
-      <span className='flex items-center justify-center'>
-        <Image src={props.url} alt={props.alt || ''} width={500} height={500} />
+      <span className='flex flex-col items-center justify-center my-10 group'>
+        <span className="relative rounded-2xl overflow-hidden border border-border shadow-xl transition-transform duration-500 group-hover:scale-[1.01] block">
+          <Image 
+            src={props.url} 
+            alt={props.alt || ''} 
+            width={1200} 
+            height={800} 
+            className="w-full h-auto object-cover !m-0 block"
+          />
+        </span>
+        {props.alt && (
+          <span className="mt-4 text-sm text-muted-foreground italic font-medium tracking-tight text-center max-w-xl block">
+            {props.alt}
+          </span>
+        )}
       </span>
     );
   },

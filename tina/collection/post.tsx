@@ -1,5 +1,6 @@
 import React from 'react';
 import { videoBlockSchema } from '@/components/blocks/video';
+import { mermaidBlockSchema } from '@/components/blocks/mermaid';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Collection } from 'tinacms';
 
@@ -259,6 +260,7 @@ const Post: Collection = {
           },
         },
         videoBlockSchema,
+        mermaidBlockSchema,
       ],
       isBody: true,
     },

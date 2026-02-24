@@ -162,3 +162,38 @@
 .prose a:hover {
   text-decoration: underline !important;
 }
+
+/* Custom Scrollbar and Overflow handling */
+.content-scroll-container {
+  @apply relative overflow-x-auto w-full;
+  -webkit-overflow-scrolling: touch;
+}
+
+.content-scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.content-scroll-container::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.content-scroll-container::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full;
+}
+
+.content-scroll-container::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40;
+}
+
+/* Subtle gradient for horizontal scrolling indicators */
+.scroll-indicator-right::after {
+  content: '';
+  @apply absolute top-0 right-0 h-full w-8 pointer-events-none z-10;
+  background: linear-gradient(to right, transparent, var(--background));
+}
+
+.scroll-indicator-left::before {
+  content: '';
+  @apply absolute top-0 left-0 h-full w-8 pointer-events-none z-10;
+  background: linear-gradient(to left, transparent, var(--background));
+}

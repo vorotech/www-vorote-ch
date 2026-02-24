@@ -4,6 +4,7 @@ import { contentBlockSchema } from '@/components/blocks/content';
 import { testimonialBlockSchema } from '@/components/blocks/testimonial';
 import { featureBlockSchema } from '@/components/blocks/features';
 import { videoBlockSchema } from '@/components/blocks/video';
+import { mermaidBlockSchema } from '@/components/blocks/mermaid';
 import { calloutBlockSchema } from '@/components/blocks/callout';
 import { statsBlockSchema } from '@/components/blocks/stats';
 import { ctaBlockSchema } from '@/components/blocks/call-to-action';
@@ -50,6 +51,7 @@ const Page: Collection = {
         contentBlockSchema,
         testimonialBlockSchema,
         videoBlockSchema,
+        mermaidBlockSchema,
         recentPostsBlockSchema,
         latestPostsListBlockSchema,
       ],
