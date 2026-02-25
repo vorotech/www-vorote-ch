@@ -13,11 +13,11 @@ import { RecentPosts } from "./recent-posts";
 import { LatestPostsList } from "./latest-posts-list";
 import { Journey } from "./journey";
 
-export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values">) => {
+export const Blocks = (props: any) => {
   if (!props.blocks) return null;
   return (
     <>
-      {props.blocks.map(function (block, blockIdx) {
+      {props.blocks.map(function (block: any, blockIdx: number) {
         return (
           <div key={`${block?.__typename}-${blockIdx}`} data-tina-field={tinaField(block)}>
             <Block {...block} />

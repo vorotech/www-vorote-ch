@@ -7,7 +7,10 @@ import { JourneyMilestone } from './journey-milestone';
 
 interface JourneyRoadmapProps {
   title: string;
-  milestones?: any[];
+  milestones?: {
+    __typename?: string;
+    milestone?: any;
+  }[];
 }
 
 export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) => {
