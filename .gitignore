@@ -31,8 +31,11 @@ coverage/
 test-results/
 playwright-report/
 
+# gemini
+.gemini/*
+!.gemini/settings.json
+
 # gsd
-.gemini/
 .planning/*
 !.planning/config.json
 !.planning/codebase
