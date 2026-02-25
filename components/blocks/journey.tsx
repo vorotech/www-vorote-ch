@@ -42,6 +42,11 @@ export const journeyBlockSchema: Template = {
           name: 'milestone',
           collections: ['milestone'],
         },
+        {
+          type: 'string',
+          label: 'Link Title',
+          name: 'linkTitle',
+        },
       ],
     },
   ],

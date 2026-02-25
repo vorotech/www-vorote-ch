@@ -39,23 +39,28 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
 
   const pathData = useMemo(() => {
     if (milestoneCount <= 0) return '';
-    if (milestoneCount === 1) return 'M 50 0 L 50 100';
     
-    const height = 100; // Using 100 as base for percentage-based coordinates
-    const step = height / (milestoneCount - 1);
+    // Start and end at the center of the first and last rows
+    // Coordinate space is 0-100
+    const startY = 100 / (2 * milestoneCount);
+    const endY = 100 - startY;
     
-    const points = [`M 50 0`];
+    if (milestoneCount === 1) return `M 50 0 L 50 100`;
+    
+    const totalPathHeight = endY - startY;
+    const step = totalPathHeight / (milestoneCount - 1);
+    
+    const points = [`M 50 ${startY}`];
     
     for (let i = 0; i < milestoneCount - 1; i++) {
-      const nextY = (i + 1) * step;
+      const currentY = startY + i * step;
+      const nextY = startY + (i + 1) * step;
       const isRight = i % 2 === 0;
       const xOffset = isRight ? amplitude : -amplitude;
       
       const cpX = 50 + xOffset;
-      const prevY = i * step;
-      // Using 0.4 and 0.6 for control points creates a smoother S-curve
-      const cpY1 = prevY + step * 0.4;
-      const cpY2 = prevY + step * 0.6;
+      const cpY1 = currentY + step * 0.4;
+      const cpY2 = currentY + step * 0.6;
       
       points.push(`C ${cpX} ${cpY1}, ${cpX} ${cpY2}, 50 ${nextY}`);
     }

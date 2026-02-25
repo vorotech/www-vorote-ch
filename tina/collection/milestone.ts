@@ -34,6 +34,12 @@ const Milestone: Collection = {
       collections: ['post'],
     },
     {
+      type: 'string',
+      label: 'Link Title',
+      name: 'linkTitle',
+      description: 'The text to display for the deep-dive link (defaults to "Read Professional Deep-Dive").',
+    },
+    {
       type: 'number',
       label: 'Year',
       name: 'year',

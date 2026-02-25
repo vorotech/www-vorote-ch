@@ -44,13 +44,7 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
       <div className='relative' ref={containerRef}>
         {/* S-curve background path with dynamic milestone count */}
         {milestoneCount > 0 && (
-          <div 
-            className='absolute left-0 w-full pointer-events-none -z-10'
-            style={{ 
-              top: `${100 / (2 * milestoneCount)}%`,
-              bottom: `${100 / (2 * milestoneCount)}%`
-            }}
-          >
+          <div className='absolute inset-0 pointer-events-none -z-10'>
             <JourneyPath progress={scrollYProgress} milestoneCount={milestoneCount} />
           </div>
         )}
@@ -60,7 +54,7 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
           <div 
             className='relative grid grid-cols-1'
             style={{ 
-              gridTemplateRows: `repeat(${milestoneCount}, minmax(min-content, 1fr))` 
+              gridTemplateRows: `repeat(${milestoneCount}, 1fr)` 
             }}
           >
             {validMilestones.map((m, i) => {
@@ -70,27 +64,48 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
               return (
                 <div 
                   key={i} 
-                  className="grid grid-cols-[1fr_40px_1fr] md:grid-cols-[1fr_80px_1fr] items-center w-full"
+                  className="grid grid-cols-[1fr_40px_1fr] md:grid-cols-[1fr_80px_1fr] w-full min-h-[160px]"
                 >
-                  {/* Milestone Content */}
-                  <div className={`flex items-center py-8 md:py-12 ${isRight ? 'col-start-3 justify-start' : 'col-start-1 justify-end'}`}>
-                    <div className="w-full max-w-md">
-                      <JourneyMilestone 
-                        id={`milestone-${i}`}
-                        title={milestoneData.title}
-                        year={milestoneData.year}
-                        summary={milestoneData.summary}
-                        icon={milestoneData.icon}
-                        isRight={isRight}
-                        post={milestoneData.post}
-                      />
-                    </div>
+                  {/* Left Column */}
+                  <div className={`flex items-center justify-end pr-4 md:pr-8 h-full ${isRight ? 'opacity-0 pointer-events-none' : ''}`}>
+                    {!isRight && (
+                      <div className="w-full max-w-md">
+                        <JourneyMilestone 
+                          id={`milestone-${i}`}
+                          title={milestoneData.title}
+                          year={milestoneData.year}
+                          summary={milestoneData.summary}
+                          linkTitle={m.linkTitle || milestoneData.linkTitle}
+                          icon={milestoneData.icon}
+                          isRight={false}
+                          post={milestoneData.post}
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  {/* Path Marker */}
-                  <div className='col-start-2 relative flex justify-center items-center h-full'>
+                  {/* Center Column (Marker) */}
+                  <div className='relative flex justify-center items-center h-full'>
                     <div className='z-10 w-4 h-4 bg-background border-2 border-primary rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]' />
                     <div className='absolute w-8 h-[1px] bg-primary/20 -z-10' />
+                  </div>
+
+                  {/* Right Column */}
+                  <div className={`flex items-center justify-start pl-4 md:pl-8 h-full ${!isRight ? 'opacity-0 pointer-events-none' : ''}`}>
+                    {isRight && (
+                      <div className="w-full max-w-md">
+                        <JourneyMilestone 
+                          id={`milestone-${i}`}
+                          title={milestoneData.title}
+                          year={milestoneData.year}
+                          summary={milestoneData.summary}
+                          linkTitle={m.linkTitle || milestoneData.linkTitle}
+                          icon={milestoneData.icon}
+                          isRight={true}
+                          post={milestoneData.post}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               );
