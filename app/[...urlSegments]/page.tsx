@@ -1,8 +1,8 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import client from '@/tina/__generated__/client';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
+import client from '@/tina/__generated__/client';
+import { notFound } from 'next/navigation';
+import React from 'react';
 import ClientPage from './client-page';
 
 export const revalidate = 300;

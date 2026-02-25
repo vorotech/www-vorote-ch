@@ -1,15 +1,16 @@
-import type { Collection } from 'tinacms';
-import { heroBlockSchema } from '@/components/blocks/hero';
-import { contentBlockSchema } from '@/components/blocks/content';
-import { testimonialBlockSchema } from '@/components/blocks/testimonial';
-import { featureBlockSchema } from '@/components/blocks/features';
-import { videoBlockSchema } from '@/components/blocks/video';
-import { mermaidBlockSchema } from '@/components/blocks/mermaid';
-import { calloutBlockSchema } from '@/components/blocks/callout';
-import { statsBlockSchema } from '@/components/blocks/stats';
 import { ctaBlockSchema } from '@/components/blocks/call-to-action';
-import { recentPostsBlockSchema } from '@/components/blocks/recent-posts';
+import { calloutBlockSchema } from '@/components/blocks/callout';
+import { contentBlockSchema } from '@/components/blocks/content';
+import { featureBlockSchema } from '@/components/blocks/features';
+import { heroBlockSchema } from '@/components/blocks/hero';
+import { journeyBlockSchema } from '@/components/blocks/journey';
 import { latestPostsListBlockSchema } from '@/components/blocks/latest-posts-list';
+import { mermaidBlockSchema } from '@/components/blocks/mermaid';
+import { recentPostsBlockSchema } from '@/components/blocks/recent-posts';
+import { statsBlockSchema } from '@/components/blocks/stats';
+import { testimonialBlockSchema } from '@/components/blocks/testimonial';
+import { videoBlockSchema } from '@/components/blocks/video';
+import type { Collection } from 'tinacms';
 
 const Page: Collection = {
   label: 'Pages',
@@ -54,6 +55,7 @@ const Page: Collection = {
         mermaidBlockSchema,
         recentPostsBlockSchema,
         latestPostsListBlockSchema,
+        journeyBlockSchema,
       ],
     },
   ],

@@ -1,0 +1,19 @@
+# dependencies
+.pnpm-store/
+node_modules/
+
+# next.js
+.open-next/
+.next/
+out/
+next-env.d.ts
+.wrangler/
+
+# misc
+.DS_Store
+.env
+.env.development
+.idea
+
+# testing
+playwright-report/

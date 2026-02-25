@@ -1,38 +1,35 @@
-"use client";
-import React from "react";
-import Link from "next/link";
-import { Icon } from "../../icon";
-import { useLayout } from "../layout-context";
+'use client';
+import Link from 'next/link';
+import React from 'react';
+import { Icon } from '../../icon';
+import { useLayout } from '../layout-context';
 
 export const Footer = () => {
   const { globalSettings } = useLayout();
   const { header, footer } = globalSettings!;
 
   return (
-    <footer className="bg-white dark:bg-transparent">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="flex flex-wrap items-center gap-6 py-4 flex-col md:flex-row md:justify-between">
-
-          <div className="order-last flex justify-center md:order-first md:justify-start">
-            <Link href="/" aria-label="go home">
-              <Icon
-                parentColor={header!.color!}
-                data={header!.icon}
-              />
+    <footer className='bg-white dark:bg-transparent'>
+      <div className='mx-auto max-w-5xl px-6'>
+        <div className='flex flex-wrap items-center gap-6 py-4 flex-col md:flex-row md:justify-between'>
+          <div className='order-last flex justify-center md:order-first md:justify-start'>
+            <Link href='/' aria-label='go home'>
+              <Icon parentColor={header!.color!} data={header!.icon} />
             </Link>
-            <span className="self-center text-muted-foreground text-sm ml-2">© {new Date().getFullYear()} {header?.name}, All rights reserved</span>
+            <span className='self-center text-muted-foreground text-sm ml-2'>
+              © {new Date().getFullYear()} {header?.name}, All rights reserved
+            </span>
           </div>
 
-          <div className="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
+          <div className='order-first flex justify-center gap-6 text-sm md:order-last md:justify-end'>
             {footer?.social?.map((link, index) => (
-              <Link key={link?.url || index} href={link!.url!} target="_blank" rel="noopener noreferrer" >
-                <Icon data={{ ...link!.icon, size: 'small' }} className="text-muted-foreground hover:text-primary block" />
+              <Link key={link?.url || index} href={link!.url!} target='_blank' rel='noopener noreferrer'>
+                <Icon data={{ ...link!.icon, size: 'small' }} className='text-muted-foreground hover:text-primary block' />
               </Link>
             ))}
           </div>
-
         </div>
       </div>
     </footer>
   );
-}
+};

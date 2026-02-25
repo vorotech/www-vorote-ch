@@ -1,4 +1,4 @@
-import { sendEmail, type EmailOptions } from '@/lib/email';
+import { type EmailOptions, sendEmail } from '@/lib/email';
 import { logger } from '@/lib/logger';
 import type { NextRequest } from 'next/server';
 

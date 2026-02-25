@@ -1,10 +1,10 @@
 'use client';
+import React from 'react';
+import { AiFillInstagram } from 'react-icons/ai';
 //TODO: Fix Types in this file
 //
 import * as BoxIcons from 'react-icons/bi';
 import { FaFacebookF, FaGithub, FaLinkedin, FaXTwitter, FaYoutube } from 'react-icons/fa6';
-import { AiFillInstagram } from 'react-icons/ai';
-import React from 'react';
 import { useLayout } from './layout/layout-context';
 
 export const IconOptions = {

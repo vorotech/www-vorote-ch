@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -187,13 +187,13 @@
 
 /* Subtle gradient for horizontal scrolling indicators */
 .scroll-indicator-right::after {
-  content: '';
+  content: "";
   @apply absolute top-0 right-0 h-full w-8 pointer-events-none z-10;
   background: linear-gradient(to right, transparent, var(--background));
 }
 
 .scroll-indicator-left::before {
-  content: '';
+  content: "";
   @apply absolute top-0 left-0 h-full w-8 pointer-events-none z-10;
   background: linear-gradient(to left, transparent, var(--background));
 }

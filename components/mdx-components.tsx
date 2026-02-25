@@ -1,15 +1,15 @@
+import { PageBlocksVideo } from '@/tina/__generated__/types';
+import { PageBlocksRecent } from '@/tina/__generated__/types';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import React from 'react';
 import { Components, TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text';
-import Image from 'next/image';
-import { CodeBlock } from './ui/code-block';
-import { Video } from './blocks/video';
-import { RecentPosts } from './blocks/recent-posts';
 import { FeaturedLink } from './blocks/featured-link';
-import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Mermaid } from './blocks/mermaid';
-import { PageBlocksRecent } from '@/tina/__generated__/types';
-import { Table, THead, TBody, TR, TH, TD } from './blocks/table';
+import { RecentPosts } from './blocks/recent-posts';
+import { TBody, TD, TH, THead, TR, Table } from './blocks/table';
+import { Video } from './blocks/video';
+import { CodeBlock } from './ui/code-block';
 
 export const components: Components<{
   BlockQuote: {
@@ -43,7 +43,7 @@ export const components: Components<{
     }
 
     if (props.lang === 'mermaid') {
-      return <Mermaid value={props.value} />
+      return <Mermaid value={props.value} />;
     }
 
     return <CodeBlock lang={props.lang} value={props.value} />;
@@ -53,13 +53,11 @@ export const components: Components<{
     authorName: string;
   }) => {
     return (
-      <div className="my-10 pl-6 border-l-4 border-primary/50 bg-primary/5 dark:bg-primary/10 py-6 pr-6 rounded-r-xl italic shadow-sm">
-        <blockquote className="text-xl font-medium leading-relaxed text-foreground/90 mb-4">
+      <div className='my-10 pl-6 border-l-4 border-primary/50 bg-primary/5 dark:bg-primary/10 py-6 pr-6 rounded-r-xl italic shadow-sm'>
+        <blockquote className='text-xl font-medium leading-relaxed text-foreground/90 mb-4'>
           <TinaMarkdown content={props.children} />
         </blockquote>
-        {props.authorName && (
-          <cite className="not-italic font-bold text-sm uppercase tracking-widest text-primary/80">— {props.authorName}</cite>
-        )}
+        {props.authorName && <cite className='not-italic font-bold text-sm uppercase tracking-widest text-primary/80'>— {props.authorName}</cite>}
       </div>
     );
   },
@@ -108,9 +106,7 @@ export const components: Components<{
               </button>
             </div>
           </form>
-          <div className='mt-4 text-xs text-muted-foreground italic'>
-            {props.disclaimer && <TinaMarkdown content={props.disclaimer} />}
-          </div>
+          <div className='mt-4 text-xs text-muted-foreground italic'>{props.disclaimer && <TinaMarkdown content={props.disclaimer} />}</div>
         </div>
       </div>
     );
@@ -121,20 +117,10 @@ export const components: Components<{
     }
     return (
       <span className='flex flex-col items-center justify-center my-10 group'>
-        <span className="relative rounded-2xl overflow-hidden border border-border shadow-xl transition-transform duration-500 group-hover:scale-[1.01] block">
-          <Image 
-            src={props.url} 
-            alt={props.alt || ''} 
-            width={1200} 
-            height={800} 
-            className="w-full h-auto object-cover !m-0 block"
-          />
+        <span className='relative rounded-2xl overflow-hidden border border-border shadow-xl transition-transform duration-500 group-hover:scale-[1.01] block'>
+          <Image src={props.url} alt={props.alt || ''} width={1200} height={800} className='w-full h-auto object-cover !m-0 block' />
         </span>
-        {props.alt && (
-          <span className="mt-4 text-sm text-muted-foreground italic font-medium tracking-tight text-center max-w-xl block">
-            {props.alt}
-          </span>
-        )}
+        {props.alt && <span className='mt-4 text-sm text-muted-foreground italic font-medium tracking-tight text-center max-w-xl block'>{props.alt}</span>}
       </span>
     );
   },

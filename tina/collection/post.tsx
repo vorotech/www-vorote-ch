@@ -1,7 +1,7 @@
-import React from 'react';
-import { videoBlockSchema } from '@/components/blocks/video';
 import { mermaidBlockSchema } from '@/components/blocks/mermaid';
+import { videoBlockSchema } from '@/components/blocks/video';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import React from 'react';
 import type { Collection } from 'tinacms';
 
 const Post: Collection = {
@@ -208,7 +208,7 @@ const Post: Collection = {
               label: 'Banner Image',
               type: 'image',
               // @ts-ignore
-              uploadDir: () => "posts",
+              uploadDir: () => 'posts',
             },
             {
               name: 'backgroundColor',

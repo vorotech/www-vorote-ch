@@ -1,4 +1,4 @@
-import { generateScheduleData, Member } from './scheduler';
+import { Member, generateScheduleData } from './scheduler';
 
 export interface SimulationResult {
   iterations: number;
