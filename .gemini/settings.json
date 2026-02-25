@@ -1,5 +1,43 @@
 {
+  "context":{
+    "fileFiltering":{
+      "respectGitIgnore": false,
+      "respectGeminiIgnore": true
+    }
+  },
   "ui": {
     "showCitations": true
+  },
+  "experimental": {
+    "enableAgents": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-check-update.js"
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-context-monitor.js"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node .gemini/hooks/gsd-statusline.js"
+  },
+  "tools": {
+    "sandbox": "docker"
   }
 }

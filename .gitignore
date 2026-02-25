@@ -1,10 +1,6 @@
-
 # dependencies
-pnpm-store/
+.pnpm-store/
 node_modules/
-
-# testing
-coverage/
 
 # next.js
 .open-next/
@@ -12,9 +8,6 @@ coverage/
 out/
 next-env.d.ts
 .wrangler/
-
-# production
-build/
 
 # misc
 .DS_Store
@@ -33,11 +26,12 @@ yarn-error.log*
 # TypeScript
 tsconfig.tsbuildinfo
 
-# e2e
+# testing
+coverage/
 test-results/
 playwright-report/
 
-# gcd
+# gsd
 .gemini/
 .planning/*
 !.planning/config.json

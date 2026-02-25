@@ -15,7 +15,6 @@ export const mermaidBlockSchema: Template = {
   name: 'mermaid',
   label: 'Mermaid Diagram',
   ui: {
-    previewSrc: '/blocks/mermaid.png', // We might not have this but it's common
     defaultItem: {
       value: 'graph TD;\n  A-->B;',
     },

@@ -7,7 +7,7 @@ import { JourneyRoadmap } from '../journey/journey-roadmap';
 
 export const Journey = ({ data }: { data: any }) => {
   return (
-    <Section background={data.background}>
+    <Section background={data.background} noTopPadding>
       <div data-tina-field={tinaField(data, 'title')}>
         <JourneyRoadmap title={data.title} milestones={data.milestones} />
       </div>

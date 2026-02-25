@@ -18,24 +18,39 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
   });
 
   return (
-    <section className='relative w-full max-w-5xl mx-auto py-24 px-4' ref={containerRef}>
+    <section className='relative w-full max-w-5xl mx-auto py-8 px-4'>
       {/* Background Architectural Grid (Optional but fits theme) */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none -z-20 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#888_1px,transparent_1px),linear-gradient(to_bottom,#888_1px,transparent_1px)] bg-[size:40px_40px]" />
       </div>
 
-      <div className="max-w-4xl mx-auto mb-24 text-center">
+      <div className="max-w-4xl mx-auto mb-12 text-center">
         <h2 className='text-3xl md:text-5xl font-bold mb-4 tracking-tight'>{title}</h2>
         <div className="h-1 w-24 bg-primary mx-auto opacity-60" />
       </div>
       
-      <div className='relative'>
+      <div className='relative' ref={containerRef}>
         {/* S-curve background path with dynamic milestone count */}
-        <JourneyPath progress={scrollYProgress} milestoneCount={milestones.length} />
+        {milestones.length > 0 && (
+          <div 
+            className='absolute left-0 w-full pointer-events-none -z-10'
+            style={{ 
+              top: `${100 / (2 * milestones.length)}%`,
+              bottom: `${100 / (2 * milestones.length)}%`
+            }}
+          >
+            <JourneyPath progress={scrollYProgress} milestoneCount={milestones.length} />
+          </div>
+        )}
         
         {/* Milestones container */}
         <LayoutGroup>
-          <div className='relative flex flex-col gap-24 md:gap-36 py-12'>
+          <div 
+            className='relative grid grid-cols-1'
+            style={{ 
+              gridTemplateRows: `repeat(${milestones.length}, minmax(min-content, 1fr))` 
+            }}
+          >
             {milestones.map((m, i) => {
               const milestoneData = m?.milestone;
               if (!milestoneData) return null;
@@ -45,29 +60,28 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
               return (
                 <div 
                   key={i} 
-                  className={`flex items-center w-full ${isRight ? 'flex-row-reverse' : 'flex-row'}`}
+                  className="grid grid-cols-[1fr_40px_1fr] md:grid-cols-[1fr_80px_1fr] items-center w-full"
                 >
                   {/* Milestone Content */}
-                  <div className={`w-[45%] flex ${isRight ? 'justify-start' : 'justify-end'}`}>
-                    <JourneyMilestone 
-                      id={`milestone-${i}`}
-                      title={milestoneData.title}
-                      year={milestoneData.year}
-                      summary={milestoneData.summary}
-                      icon={milestoneData.icon}
-                      isRight={isRight}
-                      post={milestoneData.post}
-                    />
+                  <div className={`flex items-center py-8 md:py-12 ${isRight ? 'col-start-3 justify-start' : 'col-start-1 justify-end'}`}>
+                    <div className="w-full max-w-md">
+                      <JourneyMilestone 
+                        id={`milestone-${i}`}
+                        title={milestoneData.title}
+                        year={milestoneData.year}
+                        summary={milestoneData.summary}
+                        icon={milestoneData.icon}
+                        isRight={isRight}
+                        post={milestoneData.post}
+                      />
+                    </div>
                   </div>
 
                   {/* Path Marker */}
-                  <div className='w-[10%] relative flex justify-center items-center'>
+                  <div className='col-start-2 relative flex justify-center items-center h-full'>
                     <div className='z-10 w-4 h-4 bg-background border-2 border-primary rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]' />
                     <div className='absolute w-8 h-[1px] bg-primary/20 -z-10' />
                   </div>
-
-                  {/* Empty Spacer */}
-                  <div className='w-[45%]' />
                 </div>
               );
             })}

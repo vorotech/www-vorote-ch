@@ -29,20 +29,25 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
   });
 
   const pathData = useMemo(() => {
+    if (milestoneCount <= 0) return '';
+    if (milestoneCount === 1) return 'M 50 0 L 50 1000';
+    
     const height = 1000;
-    const step = height / milestoneCount;
+    const step = height / (milestoneCount - 1);
+    
     const points = [`M 50 0`];
     
-    for (let i = 0; i < milestoneCount; i++) {
-      const y = (i + 1) * step;
+    for (let i = 0; i < milestoneCount - 1; i++) {
+      const nextY = (i + 1) * step;
       const isRight = i % 2 === 0;
       const xOffset = isRight ? amplitude : -amplitude;
+      
       const cpX = 50 + xOffset;
       const prevY = i * step;
       const cpY1 = prevY + step * 0.3;
       const cpY2 = prevY + step * 0.7;
       
-      points.push(`C ${cpX} ${cpY1}, ${cpX} ${cpY2}, 50 ${y}`);
+      points.push(`C ${cpX} ${cpY1}, ${cpX} ${cpY2}, 50 ${nextY}`);
     }
     
     return points.join(' ');

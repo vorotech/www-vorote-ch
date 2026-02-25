@@ -152,7 +152,6 @@ export const latestPostsListBlockSchema: Template = {
   name: 'latestPostsList',
   label: 'Latest Posts List',
   ui: {
-    previewSrc: '/blocks/latest-posts-list.png',
     defaultItem: {
       title: 'LATEST POSTS',
       postsCount: 5,

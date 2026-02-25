@@ -8,6 +8,8 @@ interface SectionProps extends React.HTMLProps<HTMLElement> {
   children: ReactNode;
   showGrid?: boolean;
   preset?: PresetType;
+  noTopPadding?: boolean;
+  noBottomPadding?: boolean;
 }
 
 export const getBackgroundClass = (bgClass: string | undefined): string => {
@@ -38,6 +40,8 @@ export const Section: React.FC<SectionProps> = ({
   background, 
   showGrid = false,
   preset = 'fade',
+  noTopPadding = false,
+  noBottomPadding = false,
   ...props 
 }) => {
   const bgClass = getBackgroundClass(background);
@@ -56,7 +60,12 @@ export const Section: React.FC<SectionProps> = ({
         />
       )}
       <section
-        className={cn("py-12 mx-auto max-w-7xl px-6 relative z-10", className)}
+        className={cn(
+          "py-12 mx-auto max-w-7xl px-6 relative z-10", 
+          noTopPadding && "pt-0",
+          noBottomPadding && "pb-0",
+          className
+        )}
         {...props}
       >
         <AnimatedGroup preset={preset}>

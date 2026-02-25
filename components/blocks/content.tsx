@@ -47,6 +47,7 @@ export const contentBlockSchema: Template = {
       label: 'Body',
       name: 'body',
       templates: [scriptCopyBlockSchema],
+      isBody: true,
     },
   ],
 };
