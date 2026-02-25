@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useMemo, useEffect, useState } from 'react';
-import { m, useSpring, type MotionValue } from 'motion/react';
-
 import { m, useSpring, useTransform, type MotionValue } from 'motion/react';
 
 interface JourneyPathProps {
