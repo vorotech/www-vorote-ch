@@ -3,18 +3,20 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { m, useSpring, type MotionValue } from 'motion/react';
 
+import { m, useSpring, useTransform, type MotionValue } from 'motion/react';
+
 interface JourneyPathProps {
   progress: MotionValue<number>;
   milestoneCount?: number;
 }
 
 export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) => {
-  const [amplitude, setAmplitude] = useState(25);
+  const [amplitude, setAmplitude] = useState(20);
   
   useEffect(() => {
     const handleResize = () => {
       const isMobile = window.innerWidth < 768;
-      setAmplitude(isMobile ? 10 : 30);
+      setAmplitude(isMobile ? 8 : 25);
     };
     
     handleResize();
@@ -22,17 +24,26 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const pathLength = useSpring(progress, {
-    stiffness: 100,
-    damping: 30,
+  // Map progress so it starts at the first milestone and ends at the last
+  // Offset is 1/(2*N) because the path starts at the center of the first row
+  const offset = 1 / (2 * milestoneCount);
+  const transformedProgress = useTransform(
+    progress,
+    [offset, 1 - offset],
+    [0, 1]
+  );
+
+  const pathLength = useSpring(transformedProgress, {
+    stiffness: 80,
+    damping: 25,
     restDelta: 0.001,
   });
 
   const pathData = useMemo(() => {
     if (milestoneCount <= 0) return '';
-    if (milestoneCount === 1) return 'M 50 0 L 50 1000';
+    if (milestoneCount === 1) return 'M 50 0 L 50 100';
     
-    const height = 1000;
+    const height = 100; // Using 100 as base for percentage-based coordinates
     const step = height / (milestoneCount - 1);
     
     const points = [`M 50 0`];
@@ -44,8 +55,9 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
       
       const cpX = 50 + xOffset;
       const prevY = i * step;
-      const cpY1 = prevY + step * 0.3;
-      const cpY2 = prevY + step * 0.7;
+      // Using 0.4 and 0.6 for control points creates a smoother S-curve
+      const cpY1 = prevY + step * 0.4;
+      const cpY2 = prevY + step * 0.6;
       
       points.push(`C ${cpX} ${cpY1}, ${cpX} ${cpY2}, 50 ${nextY}`);
     }
@@ -55,14 +67,14 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
 
   // Generate tick marks for "Architect" aesthetic
   const ticks = useMemo(() => {
-    const count = 20;
-    return Array.from({ length: count }).map((_, i) => (i * 1000) / (count - 1));
+    const count = 10;
+    return Array.from({ length: count }).map((_, i) => (i * 100) / (count - 1));
   }, []);
 
   return (
     <div className='absolute top-0 left-0 w-full h-full pointer-events-none -z-10'>
       <svg
-        viewBox='0 0 100 1000'
+        viewBox='0 0 100 100'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
         className='w-full h-full overflow-visible'
@@ -72,11 +84,11 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
         
         {/* Architectural Grid / Ticks */}
         {ticks.map((y, i) => (
-          <g key={i} className="opacity-20">
-            <line x1="48" y1={y} x2="52" y2={y} stroke="currentColor" strokeWidth="0.2" className="text-muted-foreground" />
-            {i % 5 === 0 && (
-              <text x="54" y={y + 1} fontSize="3" className="fill-muted-foreground font-mono" textAnchor="start">
-                {Math.round((y / 1000) * 100)}%
+          <g key={i} className="opacity-10">
+            <line x1="45" y1={y} x2="55" y2={y} stroke="currentColor" strokeWidth="0.1" className="text-muted-foreground" />
+            {i % 2 === 0 && (
+              <text x="58" y={y + 0.5} fontSize="1.5" className="fill-muted-foreground font-mono" textAnchor="start">
+                {Math.round(y)}%
               </text>
             )}
           </g>
@@ -86,36 +98,31 @@ export const JourneyPath = ({ progress, milestoneCount = 6 }: JourneyPathProps) 
         <path
           d={pathData}
           stroke='currentColor'
-          strokeWidth='0.3'
-          className='text-muted/20'
-          strokeDasharray='1 2'
+          strokeWidth='0.2'
+          className='text-muted/30'
+          strokeDasharray='1 1'
         />
         
-        {/* Progress Path */}
+        {/* Progress Path (Dashed) */}
         <m.path
           d={pathData}
           stroke='currentColor'
-          strokeWidth='1.2'
-          className='text-primary/60'
+          strokeWidth='0.8'
+          className='text-primary/40'
           style={{ pathLength }}
           strokeLinecap='round'
-          strokeDasharray='3 3'
+          strokeDasharray='2 2'
         />
         
         {/* High-fidelity solid line for current position */}
         <m.path
           d={pathData}
           stroke='currentColor'
-          strokeWidth='1.2'
+          strokeWidth='0.8'
           className='text-primary'
           style={{ pathLength }}
           strokeLinecap='round'
-          // This one will be the primary visual focus
-          strokeDasharray="1000 1000"
-          strokeDashoffset={0}
         />
-
-        {/* Floating coordinates indicator at the tip of the path could be added here if needed */}
       </svg>
     </div>
   );

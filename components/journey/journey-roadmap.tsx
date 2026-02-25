@@ -12,10 +12,19 @@ interface JourneyRoadmapProps {
 
 export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Filter out invalid milestones once to ensure consistent count across all calculations
+  const validMilestones = React.useMemo(() => 
+    milestones.filter(m => m?.milestone), 
+    [milestones]
+  );
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start center', 'end center'],
   });
+
+  const milestoneCount = validMilestones.length;
 
   return (
     <section className='relative w-full max-w-5xl mx-auto py-8 px-4'>
@@ -31,15 +40,15 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
       
       <div className='relative' ref={containerRef}>
         {/* S-curve background path with dynamic milestone count */}
-        {milestones.length > 0 && (
+        {milestoneCount > 0 && (
           <div 
             className='absolute left-0 w-full pointer-events-none -z-10'
             style={{ 
-              top: `${100 / (2 * milestones.length)}%`,
-              bottom: `${100 / (2 * milestones.length)}%`
+              top: `${100 / (2 * milestoneCount)}%`,
+              bottom: `${100 / (2 * milestoneCount)}%`
             }}
           >
-            <JourneyPath progress={scrollYProgress} milestoneCount={milestones.length} />
+            <JourneyPath progress={scrollYProgress} milestoneCount={milestoneCount} />
           </div>
         )}
         
@@ -48,13 +57,11 @@ export const JourneyRoadmap = ({ title, milestones = [] }: JourneyRoadmapProps) 
           <div 
             className='relative grid grid-cols-1'
             style={{ 
-              gridTemplateRows: `repeat(${milestones.length}, minmax(min-content, 1fr))` 
+              gridTemplateRows: `repeat(${milestoneCount}, minmax(min-content, 1fr))` 
             }}
           >
-            {milestones.map((m, i) => {
-              const milestoneData = m?.milestone;
-              if (!milestoneData) return null;
-
+            {validMilestones.map((m, i) => {
+              const milestoneData = m.milestone;
               const isRight = i % 2 !== 0;
 
               return (
