@@ -10,6 +10,7 @@ interface JourneyRoadmapProps {
   milestones?: {
     __typename?: string;
     milestone?: any;
+    linkTitle?: string;
   }[];
 }
 
