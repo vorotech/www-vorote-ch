@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 03-leadership-narrative
 source: 03-01-SUMMARY.md, 03-02-SUMMARY.md, 03-03-SUMMARY.md
 started: 2026-02-25T14:45:00Z
-updated: 2026-02-25T15:30:00Z
+updated: 2026-02-25T15:45:00Z
 ---
 
 ## Current Test
@@ -55,26 +55,51 @@ skipped: 0
   reason: "User reported: THe S-curve fills dynamically on scroll, but it is mispositioned - it is not connectd to circles which relates to blocks."
   severity: major
   test: 1
-  artifacts: []
-  missing: []
+  root_cause: "Layout inconsistency between flex-col and SVG points calculation, plus hardcoded offsets."
+  artifacts:
+    - path: "components/journey/journey-roadmap.tsx"
+      issue: "SVG points calculation and hardcoded offsets"
+  missing:
+    - "Consistent layout (e.g., CSS Grid) to ensure equal row heights"
+    - "Dynamic SVG offsets based on milestone count"
+  debug_session: ".planning/debug/journey-s-curve-mispositioned.md"
+
 - truth: "Milestones appear with a smooth passive reveal animation as they enter the viewport."
   status: failed
   reason: "User reported: no, it is not completely smooth, it starts smooth, then it flickers, then for a few frames disapears, then it continues smooth again"
   severity: major
   test: 2
-  artifacts: []
-  missing: []
+  root_cause: "Conflict between Framer Motion's layoutId and whileInView transforms."
+  artifacts:
+    - path: "components/journey/journey-milestone.tsx"
+      issue: "Conflicting Framer Motion properties"
+  missing:
+    - "Separation of initial reveal animation from layout-managed container"
+  debug_session: ".planning/debug/journey-flickering-reveal.md"
+
 - truth: "Milestone card expands smoothly to reveal additional details, and only when there is more content to show (like a blog link)."
   status: failed
   reason: "User reported: Kinda, when clicked it expands even if Title and subtitle already shown, when clicked it expands by height by not adding any value, since same information is already visible. It should not expand if not link to blog."
   severity: major
   test: 3
-  artifacts: []
-  missing: []
+  root_cause: "Unconditional onClick handler and expansion logic in the UI component."
+  artifacts:
+    - path: "components/journey/journey-milestone.tsx"
+      issue: "Unconditional expansion logic"
+  missing:
+    - "Conditional expansion check (e.g., existence of postUrl)"
+    - "Conditional UI hints (cursor-pointer, icons)"
+  debug_session: ".planning/debug/milestone-unnecessary-expansion.md"
+
 - truth: "The UI elements on the cards (e.g., coordinate markers) are visually appealing and consistent with the brand aesthetic."
   status: failed
   reason: "User reported: almost all are good, I not sure I like the look of small ui elemnt in the corner of the card"
   severity: cosmetic
   test: 5
-  artifacts: []
-  missing: []
+  root_cause: "Simplistic div-based decorative elements instead of high-fidelity graphics."
+  artifacts:
+    - path: "components/journey/journey-milestone.tsx"
+      issue: "Simplistic decorative elements"
+  missing:
+    - "Refined SVG-based coordinate markers or refined graphics"
+  debug_session: ".planning/debug/card-small-ui-elements.md"
