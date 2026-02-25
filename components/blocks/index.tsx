@@ -1,17 +1,17 @@
-import { tinaField } from "tinacms/dist/react";
-import { Page, PageBlocks } from "../../tina/__generated__/types";
-import { Hero } from "./hero";
-import { Content } from "./content";
-import { Features } from "./features";
-import { Testimonial } from "./testimonial";
-import { Video } from "./video";
-import { Mermaid } from "./mermaid";
-import { Callout } from "./callout";
-import { Stats } from "./stats";
-import { CallToAction } from "./call-to-action";
-import { RecentPosts } from "./recent-posts";
-import { LatestPostsList } from "./latest-posts-list";
-import { Journey } from "./journey";
+import { tinaField } from 'tinacms/dist/react';
+import { Page, PageBlocks } from '../../tina/__generated__/types';
+import { CallToAction } from './call-to-action';
+import { Callout } from './callout';
+import { Content } from './content';
+import { Features } from './features';
+import { Hero } from './hero';
+import { Journey } from './journey';
+import { LatestPostsList } from './latest-posts-list';
+import { Mermaid } from './mermaid';
+import { RecentPosts } from './recent-posts';
+import { Stats } from './stats';
+import { Testimonial } from './testimonial';
+import { Video } from './video';
 
 export const Blocks = (props: any) => {
   if (!props.blocks) return null;
@@ -30,29 +30,29 @@ export const Blocks = (props: any) => {
 
 const Block = (block: PageBlocks) => {
   switch (block.__typename) {
-    case "PageBlocksVideo":
+    case 'PageBlocksVideo':
       return <Video data={block} />;
-    case "PageBlocksMermaid":
+    case 'PageBlocksMermaid':
       return <Mermaid {...(block as any)} />;
-    case "PageBlocksHero":
+    case 'PageBlocksHero':
       return <Hero data={block} />;
-    case "PageBlocksCallout":
+    case 'PageBlocksCallout':
       return <Callout data={block} />;
-    case "PageBlocksStats":
+    case 'PageBlocksStats':
       return <Stats data={block} />;
-    case "PageBlocksContent":
+    case 'PageBlocksContent':
       return <Content data={block} />;
-    case "PageBlocksFeatures":
+    case 'PageBlocksFeatures':
       return <Features data={block} />;
-    case "PageBlocksTestimonial":
+    case 'PageBlocksTestimonial':
       return <Testimonial data={block} />;
-    case "PageBlocksCta":
+    case 'PageBlocksCta':
       return <CallToAction data={block} />;
-    case "PageBlocksRecent":
+    case 'PageBlocksRecent':
       return <RecentPosts data={block} />;
-    case "PageBlocksLatestPostsList":
+    case 'PageBlocksLatestPostsList':
       return <LatestPostsList data={block as any} />;
-    case "PageBlocksJourney":
+    case 'PageBlocksJourney':
       return <Journey data={block} />;
     default:
       return null;

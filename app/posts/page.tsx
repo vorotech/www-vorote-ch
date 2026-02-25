@@ -6,14 +6,14 @@ export const revalidate = 300;
 
 export async function generateMetadata() {
   return {
-    title: "Blog",
+    title: 'Blog',
   };
 }
 
 export default async function PostsPage() {
   let posts = await client.queries.postConnection({
     sort: 'date',
-    last: 1
+    last: 1,
   });
   const allPosts = posts;
 

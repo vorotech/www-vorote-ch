@@ -3,7 +3,7 @@ import type { Template } from 'tinacms';
 
 const MermaidElement = dynamic(() => import('../mermaid-renderer'), {
   ssr: false,
-  loading: () => <div className="animate-pulse bg-gray-100 h-32 w-full rounded my-8 flex items-center justify-center text-gray-400">Loading diagram...</div>,
+  loading: () => <div className='animate-pulse bg-gray-100 h-32 w-full rounded my-8 flex items-center justify-center text-gray-400'>Loading diagram...</div>,
 });
 
 export function Mermaid(props: { value: string }) {

@@ -1,15 +1,15 @@
 'use client';
 import React from 'react';
 
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import type { Template } from 'tinacms';
-import { PageBlocksContent } from '../../tina/__generated__/types';
 import { tinaField } from 'tinacms/dist/react';
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { PageBlocksContent } from '../../tina/__generated__/types';
 import { Section } from '../layout/section';
-import { Mermaid } from './mermaid';
 import { sectionBlockSchemaField } from '../layout/section';
-import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
-import { Table, THead, TBody, TR, TH, TD } from './table';
+import { ScriptCopyBtn, scriptCopyBlockSchema } from '../magicui/script-copy-btn';
+import { Mermaid } from './mermaid';
+import { TBody, TD, TH, THead, TR, Table } from './table';
 
 export const Content = ({ data }: { data: PageBlocksContent }) => {
   return (

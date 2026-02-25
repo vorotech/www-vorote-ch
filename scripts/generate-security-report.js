@@ -10,11 +10,11 @@ function runCommand(command) {
     const stdout = execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
     return { success: true, stdout };
   } catch (error) {
-    return { 
-      success: false, 
-      stdout: error.stdout || '', 
+    return {
+      success: false,
+      stdout: error.stdout || '',
       stderr: error.stderr || '',
-      exitCode: error.status 
+      exitCode: error.status,
     };
   }
 }
@@ -31,10 +31,11 @@ let osvStatus = 'error';
 if (osvResult.success || osvResult.stdout) {
   try {
     osvData = JSON.parse(osvResult.stdout);
-    const vulnerabilities = osvData.results?.reduce((acc, result) => {
-      return acc + (result.packages?.reduce((pAcc, pkg) => pAcc + (pkg.vulnerabilities?.length || 0), 0) || 0);
-    }, 0) || 0;
-    
+    const vulnerabilities =
+      osvData.results?.reduce((acc, result) => {
+        return acc + (result.packages?.reduce((pAcc, pkg) => pAcc + (pkg.vulnerabilities?.length || 0), 0) || 0);
+      }, 0) || 0;
+
     osvStatus = vulnerabilities === 0 ? 'secure' : 'vulnerable';
     osvData = {
       vulnerabilities,
@@ -50,7 +51,7 @@ if (osvResult.success || osvResult.stdout) {
 // 2. Run Biome Check
 console.log('Running Biome Check...');
 const biomeResult = runCommand('pnpm biome check .');
-let biomeStatus = biomeResult.success ? 'passing' : 'failing';
+const biomeStatus = biomeResult.success ? 'passing' : 'failing';
 // Try to extract number of errors if failing
 let biomeErrors = 0;
 if (!biomeResult.success) {
@@ -68,16 +69,16 @@ const report = {
     dependencies: {
       name: 'OSV Dependency Scan',
       status: osvStatus,
-      metrics: osvData
+      metrics: osvData,
     },
     code_quality: {
       name: 'Biome Code Health',
       status: biomeStatus,
       metrics: {
-        errors: biomeErrors
-      }
-    }
-  }
+        errors: biomeErrors,
+      },
+    },
+  },
 };
 
 const outputDir = path.join(__dirname, '../app/security');
