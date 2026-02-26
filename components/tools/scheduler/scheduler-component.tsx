@@ -660,9 +660,9 @@ const OnCallScheduler: React.FC = () => {
           <div className='flex flex-col sm:flex-row gap-4'>
             <button
               onClick={() => setShowSettings(!showSettings)}
-              className='flex items-center gap-3 px-6 py-4 bg-muted/40 hover:bg-muted/60 border border-border/60 rounded-2xl transition-all whitespace-nowrap font-bold text-xs uppercase tracking-widest active:scale-95'
+              className='flex items-center justify-center gap-3 px-6 py-4 bg-muted/40 hover:bg-muted/60 border border-border/60 rounded-2xl transition-all whitespace-nowrap font-bold text-xs uppercase tracking-widest active:scale-95'
             >
-              <Settings className={cn('w-5 h-5 transition-transform duration-500', showSettings && 'rotate-180')} />
+              <Settings className={cn('hidden sm:inline w-5 h-5 transition-transform duration-500', showSettings && 'rotate-180')} />
               <span className='hidden sm:inline'>{showSettings ? 'Close' : 'Configure'} Personnel</span>
               <span className='sm:hidden'>{showSettings ? 'Close' : 'Members'}</span>
             </button>
@@ -671,7 +671,7 @@ const OnCallScheduler: React.FC = () => {
               onClick={generateSchedule}
               className='flex-1 flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-all font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-primary/20 active:scale-[0.98]'
             >
-              <RefreshCw className='w-5 h-5' />
+              <RefreshCw className='hidden sm:inline w-5 h-5' />
               <span>Generate Rotation Matrix</span>
             </button>
           </div>
