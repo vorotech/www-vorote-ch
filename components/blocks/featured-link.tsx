@@ -40,12 +40,12 @@ export const FeaturedLink = ({ title, description, url, icon, bannerImage, openI
               <div className='flex-1 p-6 flex flex-col justify-center'>
                 <div className='flex items-start justify-between gap-4'>
                   <div>
-                    <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary transition-colors flex items-center gap-2'>
+                    <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary group-hover:underline transition-colors flex items-center gap-2'>
                       {title}
-                      <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300' />
+                      <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 no-underline' />
                     </h3>
                     {description && (
-                      <div className='text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed'>
+                      <div className='text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed no-underline'>
                         <TinaMarkdown content={description} />
                       </div>
                     )}
@@ -59,12 +59,12 @@ export const FeaturedLink = ({ title, description, url, icon, bannerImage, openI
                 {IconComponent ? <IconComponent className='size-7' /> : <LucideIcons.ExternalLink className='size-7' />}
               </div>
               <div className='flex-1 min-w-0'>
-                <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary transition-colors flex items-center gap-2'>
+                <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary group-hover:underline transition-colors flex items-center gap-2'>
                   {title}
-                  <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300' />
+                  <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300 no-underline' />
                 </h3>
                 {description && (
-                  <div className='text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed'>
+                  <div className='text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed no-underline'>
                     <TinaMarkdown content={description} />
                   </div>
                 )}
