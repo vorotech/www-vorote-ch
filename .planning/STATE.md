@@ -57,7 +57,6 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- [ui]: Fix incorrect markdown rendering in Prowler blog post ([2026-02-26-fix-incorrect-markdown-rendering-in-prowler-blog-post.md](.planning/todos/pending/2026-02-26-fix-incorrect-markdown-rendering-in-prowler-blog-post.md))
 
 
 ### Roadmap Evolution
