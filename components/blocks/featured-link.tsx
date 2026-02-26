@@ -1,5 +1,7 @@
 'use client';
-import { ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import * as LucideIcons from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
@@ -10,149 +12,65 @@ interface FeaturedLinkProps {
   title: string;
   description?: TinaMarkdownContent;
   url: string;
+  icon?: string;
   bannerImage?: string;
-  backgroundColor?: 'blue' | 'teal' | 'green' | 'yellow' | 'orange' | 'red' | 'pink' | 'purple' | 'gray' | 'white';
-  textColor?: 'blue' | 'teal' | 'green' | 'yellow' | 'orange' | 'red' | 'pink' | 'purple' | 'gray' | 'white' | 'black';
   openInNewTab?: boolean;
 }
 
-export const FeaturedLink = ({
-  title,
-  description,
-  url,
-  bannerImage,
-  backgroundColor = 'gray',
-  textColor = 'white',
-  openInNewTab = true,
-}: FeaturedLinkProps) => {
+export const FeaturedLink = ({ title, description, url, icon, bannerImage, openInNewTab = true }: FeaturedLinkProps) => {
   const linkProps = {
     href: url,
     target: openInNewTab ? '_blank' : undefined,
     rel: openInNewTab ? 'noopener noreferrer' : undefined,
   };
 
-  // Color mapping for background colors
-  const bgColorClasses = {
-    blue: 'bg-blue-500',
-    teal: 'bg-teal-500',
-    green: 'bg-green-500',
-    yellow: 'bg-yellow-500',
-    orange: 'bg-orange-500',
-    red: 'bg-red-500',
-    pink: 'bg-pink-500',
-    purple: 'bg-purple-500',
-    gray: 'bg-gray-500',
-    white: 'bg-white',
-  };
-
-  // Color mapping for text colors
-  const textColorClasses = {
-    blue: 'text-blue-500',
-    teal: 'text-teal-500',
-    green: 'text-green-500',
-    yellow: 'text-yellow-500',
-    orange: 'text-orange-500',
-    red: 'text-red-500',
-    pink: 'text-pink-500',
-    purple: 'text-purple-500',
-    gray: 'text-gray-500',
-    white: 'text-white',
-    black: 'text-black',
-  };
+  // Resolve Lucide icon
+  //@ts-ignore
+  const IconComponent = icon && LucideIcons[icon] ? LucideIcons[icon] : null;
 
   return (
-    <div>
+    <div className='my-8 not-prose'>
       <Link {...linkProps} className='block group no-underline'>
-        {/* py-0 компенсує базовий py-6 клас Card компонента для усунення білих областей */}
-        <Card className='overflow-hidden hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 rounded-lg !p-0 !gap-0'>
-          <div className='relative aspect-[16/4] overflow-hidden'>
-            {' '}
-            {/* Видалено rounded-lg звідси */}
-            {/* Banner Image or Color Background */}
-            {bannerImage ? (
-              <>
-                <Image
-                  src={bannerImage}
-                  alt={title}
-                  fill
-                  sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-                  className='object-cover transition-transform duration-500 group-hover:scale-110 not-prose'
-                />
-                {/* Light overlay for better text readability with hover effect */}
-                <div className='absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300' />
-              </>
-            ) : (
-              <>
-                <div
-                  className='absolute inset-0'
-                  style={{ backgroundColor: bgColorClasses[backgroundColor] ? undefined : backgroundColor === 'white' ? 'white' : 'gray' }}
-                >
-                  {/* Tailwind classes are preferred, but direct style as fallback/for custom colors */}
-                  <div
-                    className={`${bgColorClasses[backgroundColor] || 'bg-gray-500'} absolute inset-0 group-hover:brightness-110 transition-all duration-300`}
-                  />
+        <Card className='overflow-hidden bg-card/50 hover:bg-card border-border hover:border-primary/40 transition-all duration-300 rounded-2xl shadow-sm hover:shadow-md p-0 group-hover:-translate-y-0.5'>
+          {bannerImage ? (
+            <div className='flex flex-col sm:flex-row'>
+              <div className='relative w-full sm:w-1/3 aspect-video sm:aspect-square overflow-hidden border-b sm:border-b-0 sm:border-r border-border/30'>
+                <Image src={bannerImage} alt={title} fill className='object-cover transition-transform duration-500 group-hover:scale-105' />
+              </div>
+              <div className='flex-1 p-6 flex flex-col justify-center'>
+                <div className='flex items-start justify-between gap-4'>
+                  <div>
+                    <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary transition-colors flex items-center gap-2'>
+                      {title}
+                      <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300' />
+                    </h3>
+                    {description && (
+                      <div className='text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed'>
+                        <TinaMarkdown content={description} />
+                      </div>
+                    )}
+                  </div>
                 </div>
-                {/* Enhanced gradient overlay */}
-                <div className='absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/20 group-hover:to-black/10 transition-all duration-300' />
-              </>
-            )}
-            {/* Content Overlay with improved spacing */}
-            <div className='absolute inset-0 flex flex-col justify-center p-6 md:p-8 lg:p-10'>
-              <div className='max-w-3xl'>
-                <h3
-                  className={`text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 leading-tight ${textColorClasses[textColor] || 'text-white'}`}
-                  style={{
-                    textShadow: bannerImage ? '0 1px 2px rgba(0,0,0,0.4)' : 'none',
-                  }}
-                >
-                  {title}{' '}
-                  <ArrowRight className='inline w-5 h-5 md:w-6 md:h-6 ml-2 transition-all duration-300 group-hover:translate-x-1 group-hover:scale-110' />
+              </div>
+            </div>
+          ) : (
+            <div className='p-6 flex items-center gap-6'>
+              <div className='flex-shrink-0 size-14 rounded-xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-500'>
+                {IconComponent ? <IconComponent className='size-7' /> : <LucideIcons.ExternalLink className='size-7' />}
+              </div>
+              <div className='flex-1 min-w-0'>
+                <h3 className='text-xl font-bold font-abel text-foreground group-hover:text-primary transition-colors flex items-center gap-2'>
+                  {title}
+                  <ArrowUpRight className='w-4 h-4 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300' />
                 </h3>
-
                 {description && (
-                  <div
-                    className='text-base md:text-lg lg:text-xl line-clamp-2 leading-relaxed max-w-2xl'
-                    style={{
-                      textShadow: bannerImage ? '0 1px 2px rgba(0,0,0,0.4)' : 'none',
-                    }}
-                  >
-                    <div
-                      className='prose max-w-none [&>p]:mb-0 [&>p]:leading-relaxed [&>*]:!text-inherit'
-                      style={{
-                        // Force text color for all prose elements
-                        color:
-                          textColor === 'white'
-                            ? '#ffffff'
-                            : textColor === 'black'
-                              ? '#000000'
-                              : textColor === 'blue'
-                                ? '#3b82f6'
-                                : textColor === 'teal'
-                                  ? '#14b8a6'
-                                  : textColor === 'green'
-                                    ? '#22c55e'
-                                    : textColor === 'yellow'
-                                      ? '#eab308'
-                                      : textColor === 'orange'
-                                        ? '#f97316'
-                                        : textColor === 'red'
-                                          ? '#ef4444'
-                                          : textColor === 'pink'
-                                            ? '#ec4899'
-                                            : textColor === 'purple'
-                                              ? '#a855f7'
-                                              : textColor === 'gray'
-                                                ? '#6b7280'
-                                                : '#ffffff',
-                      }}
-                    >
-                      <TinaMarkdown content={description} />
-                    </div>
+                  <div className='text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed'>
+                    <TinaMarkdown content={description} />
                   </div>
                 )}
               </div>
             </div>
-          </div>
+          )}
         </Card>
       </Link>
     </div>

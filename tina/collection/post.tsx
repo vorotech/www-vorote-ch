@@ -181,7 +181,7 @@ const Post: Collection = {
         },
         {
           name: 'FeaturedLink',
-          label: 'Featured Link',
+          label: 'Mention / Featured Link',
           fields: [
             {
               name: 'title',
@@ -204,46 +204,17 @@ const Post: Collection = {
               required: true,
             },
             {
+              name: 'icon',
+              label: 'Icon (Lucide name)',
+              type: 'string',
+              description: 'e.g. Shield, Search, Terminal, ExternalLink',
+            },
+            {
               name: 'bannerImage',
-              label: 'Banner Image',
+              label: 'Legacy: Banner Image',
               type: 'image',
               // @ts-ignore
               uploadDir: () => 'posts',
-            },
-            {
-              name: 'backgroundColor',
-              label: 'Background Color',
-              type: 'string',
-              options: [
-                { value: 'blue', label: 'Blue' },
-                { value: 'teal', label: 'Teal' },
-                { value: 'green', label: 'Green' },
-                { value: 'yellow', label: 'Yellow' },
-                { value: 'orange', label: 'Orange' },
-                { value: 'red', label: 'Red' },
-                { value: 'pink', label: 'Pink' },
-                { value: 'purple', label: 'Purple' },
-                { value: 'gray', label: 'Gray' },
-                { value: 'white', label: 'White' },
-              ],
-            },
-            {
-              name: 'textColor',
-              label: 'Text Color',
-              type: 'string',
-              options: [
-                { value: 'blue', label: 'Blue' },
-                { value: 'teal', label: 'Teal' },
-                { value: 'green', label: 'Green' },
-                { value: 'yellow', label: 'Yellow' },
-                { value: 'orange', label: 'Orange' },
-                { value: 'red', label: 'Red' },
-                { value: 'pink', label: 'Pink' },
-                { value: 'purple', label: 'Purple' },
-                { value: 'gray', label: 'Gray' },
-                { value: 'white', label: 'White' },
-                { value: 'black', label: 'Black' },
-              ],
             },
             {
               name: 'openInNewTab',
@@ -253,8 +224,9 @@ const Post: Collection = {
           ],
           ui: {
             defaultItem: {
-              backgroundColor: 'gray',
-              textColor: 'white',
+              title: 'Project Name',
+              url: 'https://github.com/',
+              icon: 'ExternalLink',
               openInNewTab: true,
             },
           },
