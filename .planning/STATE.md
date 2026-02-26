@@ -57,7 +57,6 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- [ui]: Make Content block background full width ([2026-02-26-make-content-block-background-full-width.md](.planning/todos/pending/2026-02-26-make-content-block-background-full-width.md))
 - [ui]: Refactor FeaturedLink to minimalistic Mention style ([2026-02-26-refactor-featuredlink-to-minimalistic-mention-style.md](.planning/todos/pending/2026-02-26-refactor-featuredlink-to-minimalistic-mention-style.md))
 
 ### Roadmap Evolution
