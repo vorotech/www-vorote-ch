@@ -20,6 +20,71 @@ export interface ScheduleSlot {
   member: Member | null;
 }
 
+export const MEMBER_COLORS = [
+  {
+    bg: 'bg-[#1e66f5]/10 dark:bg-[#8caaee]/10',
+    text: 'text-[#1e66f5] dark:text-[#8caaee]',
+    border: 'border-[#1e66f5]/50 dark:border-[#8caaee]/50',
+    ring: 'focus:ring-[#1e66f5] dark:focus:ring-[#8caaee]',
+  }, // Blue
+  {
+    bg: 'bg-[#40a02b]/10 dark:bg-[#a6d189]/10',
+    text: 'text-[#40a02b] dark:text-[#a6d189]',
+    border: 'border-[#40a02b]/50 dark:border-[#a6d189]/50',
+    ring: 'focus:ring-[#40a02b] dark:focus:ring-[#a6d189]',
+  }, // Green
+  {
+    bg: 'bg-[#8839ef]/10 dark:bg-[#ca9ee6]/10',
+    text: 'text-[#8839ef] dark:text-[#ca9ee6]',
+    border: 'border-[#8839ef]/50 dark:border-[#ca9ee6]/50',
+    ring: 'focus:ring-[#8839ef] dark:focus:ring-[#ca9ee6]',
+  }, // Mauve
+  {
+    bg: 'bg-[#04a5e5]/10 dark:bg-[#99d1db]/10',
+    text: 'text-[#04a5e5] dark:text-[#99d1db]',
+    border: 'border-[#04a5e5]/50 dark:border-[#99d1db]/50',
+    ring: 'focus:ring-[#04a5e5] dark:focus:ring-[#99d1db]',
+  }, // Sky
+  {
+    bg: 'bg-[#ea76cb]/10 dark:bg-[#f4b8e4]/10',
+    text: 'text-[#ea76cb] dark:text-[#f4b8e4]',
+    border: 'border-[#ea76cb]/50 dark:border-[#f4b8e4]/50',
+    ring: 'focus:ring-[#ea76cb] dark:focus:ring-[#f4b8e4]',
+  }, // Pink
+  {
+    bg: 'bg-[#df8e1d]/10 dark:bg-[#e5c890]/10',
+    text: 'text-[#df8e1d] dark:text-[#e5c890]',
+    border: 'border-[#df8e1d]/50 dark:border-[#e5c890]/50',
+    ring: 'focus:ring-[#df8e1d] dark:focus:ring-[#e5c890]',
+  }, // Yellow
+  {
+    bg: 'bg-[#179299]/10 dark:bg-[#81c8be]/10',
+    text: 'text-[#179299] dark:text-[#81c8be]',
+    border: 'border-[#179299]/50 dark:border-[#81c8be]/50',
+    ring: 'focus:ring-[#179299] dark:focus:ring-[#81c8be]',
+  }, // Teal
+  {
+    bg: 'bg-[#fe640b]/10 dark:bg-[#ef9f76]/10',
+    text: 'text-[#fe640b] dark:text-[#ef9f76]',
+    border: 'border-[#fe640b]/50 dark:border-[#ef9f76]/50',
+    ring: 'focus:ring-[#fe640b] dark:focus:ring-[#ef9f76]',
+  }, // Peach
+  {
+    bg: 'bg-[#7287fd]/10 dark:bg-[#babbf1]/10',
+    text: 'text-[#7287fd] dark:text-[#babbf1]',
+    border: 'border-[#7287fd]/50 dark:border-[#babbf1]/50',
+    ring: 'focus:ring-[#7287fd] dark:focus:ring-[#babbf1]',
+  }, // Lavender
+  {
+    bg: 'bg-[#dd7878]/10 dark:bg-[#eebebe]/10',
+    text: 'text-[#dd7878] dark:text-[#eebebe]',
+    border: 'border-[#dd7878]/50 dark:border-[#eebebe]/50',
+    ring: 'focus:ring-[#dd7878] dark:focus:ring-[#eebebe]',
+  }, // Flamingo
+];
+
+export const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_COLORS.length];
+
 // ==========================================
 // 1. HELPER FUNCTIONS
 // ==========================================
