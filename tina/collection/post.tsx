@@ -205,16 +205,18 @@ const Post: Collection = {
             },
             {
               name: 'icon',
-              label: 'Icon (Lucide name)',
+              label: 'Icon',
               type: 'string',
-              description: 'e.g. Shield, Search, Terminal, ExternalLink',
-            },
-            {
-              name: 'bannerImage',
-              label: 'Legacy: Banner Image',
-              type: 'image',
-              // @ts-ignore
-              uploadDir: () => 'posts',
+              options: [
+                { value: 'tools', label: 'Tools' },
+                { value: 'cyber', label: 'Cyber / Security' },
+                { value: 'users', label: 'Users / Community' },
+                { value: 'ai', label: 'AI / Intelligence' },
+                { value: 'gears', label: 'Gears / System' },
+                { value: 'bug', label: 'Bug / Vulnerability' },
+                { value: 'report', label: 'Report / Analysis' },
+                { value: 'external', label: 'External Link' },
+              ],
             },
             {
               name: 'openInNewTab',
@@ -226,7 +228,7 @@ const Post: Collection = {
             defaultItem: {
               title: 'Project Name',
               url: 'https://github.com/',
-              icon: 'ExternalLink',
+              icon: 'external',
               openInNewTab: true,
             },
           },
