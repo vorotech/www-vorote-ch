@@ -49,7 +49,7 @@ export const Section: React.FC<SectionProps> = ({
   return (
     <div className={cn('relative overflow-hidden', bgClass)}>
       {showGrid && (
-        <GridPattern width={40} height={40} x={-1} y={-1} className={cn('[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]')} />
+        <GridPattern width={40} height={40} x={-1} y={-1} className={cn('[mask-image:radial-gradient(100%_100%_at_top_center,white,transparent)]')} />
       )}
       <section className={cn('py-12 mx-auto max-w-7xl px-6 relative z-10', noTopPadding && 'pt-0', noBottomPadding && 'pb-0', className)} {...props}>
         <AnimatedGroup preset={preset}>{children}</AnimatedGroup>
