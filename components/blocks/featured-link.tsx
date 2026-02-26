@@ -30,7 +30,7 @@ export const FeaturedLink = ({ title, description, url, icon, bannerImage, openI
 
   return (
     <div className='my-8 not-prose'>
-      <Link {...linkProps} className='block group no-underline'>
+      <Link {...linkProps} className='block group !no-underline'>
         <Card className='overflow-hidden bg-card/50 hover:bg-card border-border hover:border-primary/40 transition-all duration-300 rounded-2xl shadow-sm hover:shadow-md p-0 group-hover:-translate-y-0.5'>
           {bannerImage ? (
             <div className='flex flex-col sm:flex-row'>
