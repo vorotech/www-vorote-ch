@@ -58,6 +58,7 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 - [ui]: Create Table of Contents block for Tina CMS ([2026-02-26-create-table-of-contents-block-for-tina-cms.md](.planning/todos/pending/2026-02-26-create-table-of-contents-block-for-tina-cms.md))
+- [testing]: Debug and Verify Deterministic Scheduler Generation ([2026-02-26-debug-and-verify-deterministic-scheduler-generation.md](.planning/todos/pending/2026-02-26-debug-and-verify-deterministic-scheduler-generation.md))
 
 
 
