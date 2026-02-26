@@ -2,12 +2,12 @@
 import type { Template } from 'tinacms';
 import { tinaField } from 'tinacms/dist/react';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { PageBlocksFeatures, PageBlocksFeaturesItems } from '../../tina/__generated__/types';
-import { iconSchema } from '../../tina/fields/icon';
-import { Icon } from '../icon';
-import { Section } from '../layout/section';
-import { sectionBlockSchemaField } from '../layout/section';
-import { Card, CardContent, CardHeader } from '../ui/card';
+import { PageBlocksFeatures, PageBlocksFeaturesItems } from '@/tina/__generated__/types';
+import { iconSchema } from '@/tina/fields/icon';
+import { Icon } from '@/components/icon';
+import { Section } from '@/components/layout/section';
+import { sectionBlockSchemaField } from '@/components/layout/section';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export const Features = ({ data }: { data: PageBlocksFeatures }) => {
   return (
@@ -63,7 +63,20 @@ export const Feature: React.FC<PageBlocksFeaturesItems> = (data) => {
 
 const defaultFeature = {
   title: "Here's Another Feature",
-  text: "This is where you might talk about the feature, if this wasn't just filler text.",
+  text: {
+    type: 'root',
+    children: [
+      {
+        type: 'p',
+        children: [
+          {
+            type: 'text',
+            text: "This is where you might talk about the feature, if this wasn't just filler text.",
+          },
+        ],
+      },
+    ],
+  },
   icon: {
     name: 'Tina',
     color: 'white',
