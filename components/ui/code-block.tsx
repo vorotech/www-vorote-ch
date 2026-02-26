@@ -29,7 +29,12 @@ interface CodeBlockProps {
 export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
   const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Map common language aliases or fallback to text
   const getLanguage = (l?: string) => {
@@ -48,6 +53,7 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
   const language = getLanguage(lang);
 
   useEffect(() => {
+    if (!hasMounted) return;
     let isMounted = true;
     async function highlight() {
       try {
@@ -67,7 +73,7 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
     return () => {
       isMounted = false;
     };
-  }, [value, language, resolvedTheme]);
+  }, [value, language, resolvedTheme, hasMounted]);
 
   const copyToClipboard = async () => {
     if (!value) return;
@@ -98,8 +104,10 @@ export const CodeBlock = ({ lang = 'text', value }: CodeBlockProps) => {
       </div>
 
       {/* Code Area */}
-      <div className='p-4 overflow-x-auto text-sm leading-relaxed'>
-        {highlightedHtml ? (
+      <div className='p-4 overflow-x-auto text-sm leading-relaxed min-h-[4rem]'>
+        {!hasMounted ? (
+          <div className='animate-pulse bg-zinc-200/20 dark:bg-zinc-800/20 h-10 w-full rounded' />
+        ) : highlightedHtml ? (
           <div
             className='[&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-0 [&_code]:!font-mono selection:bg-teal-500/20'
             dangerouslySetInnerHTML={{ __html: highlightedHtml }}

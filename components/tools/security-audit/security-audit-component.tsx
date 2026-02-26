@@ -239,7 +239,7 @@ const SecurityAuditComponent: React.FC = () => {
                 onChange={(e) => setPackageName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAudit()}
                 placeholder='Enter npm package name (e.g., lodash, express)'
-                className='w-full pl-12 pr-4 py-4 bg-background/50 backdrop-blur-sm border border-border rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono text-sm'
+                className='w-full pl-12 pr-4 py-4 bg-background/50 border border-border rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono text-sm'
               />
             </div>
             <button
@@ -298,7 +298,6 @@ const SecurityAuditComponent: React.FC = () => {
               {/* Summary Section */}
               <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4'>
                 <div className='md:col-span-2 bg-card p-6 rounded-3xl border border-border shadow-sm flex flex-col justify-between overflow-hidden relative group'>
-                  <ProgressiveBlur className='opacity-10' />
                   <div className='relative z-10 flex flex-col gap-1'>
                     <span className='text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 flex items-center gap-1.5'>
                       <Package className='w-3.5 h-3.5' />

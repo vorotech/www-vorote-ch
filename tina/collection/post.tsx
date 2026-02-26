@@ -181,7 +181,7 @@ const Post: Collection = {
         },
         {
           name: 'FeaturedLink',
-          label: 'Featured Link',
+          label: 'Mention / Featured Link',
           fields: [
             {
               name: 'title',
@@ -204,45 +204,18 @@ const Post: Collection = {
               required: true,
             },
             {
-              name: 'bannerImage',
-              label: 'Banner Image',
-              type: 'image',
-              // @ts-ignore
-              uploadDir: () => 'posts',
-            },
-            {
-              name: 'backgroundColor',
-              label: 'Background Color',
+              name: 'icon',
+              label: 'Icon',
               type: 'string',
               options: [
-                { value: 'blue', label: 'Blue' },
-                { value: 'teal', label: 'Teal' },
-                { value: 'green', label: 'Green' },
-                { value: 'yellow', label: 'Yellow' },
-                { value: 'orange', label: 'Orange' },
-                { value: 'red', label: 'Red' },
-                { value: 'pink', label: 'Pink' },
-                { value: 'purple', label: 'Purple' },
-                { value: 'gray', label: 'Gray' },
-                { value: 'white', label: 'White' },
-              ],
-            },
-            {
-              name: 'textColor',
-              label: 'Text Color',
-              type: 'string',
-              options: [
-                { value: 'blue', label: 'Blue' },
-                { value: 'teal', label: 'Teal' },
-                { value: 'green', label: 'Green' },
-                { value: 'yellow', label: 'Yellow' },
-                { value: 'orange', label: 'Orange' },
-                { value: 'red', label: 'Red' },
-                { value: 'pink', label: 'Pink' },
-                { value: 'purple', label: 'Purple' },
-                { value: 'gray', label: 'Gray' },
-                { value: 'white', label: 'White' },
-                { value: 'black', label: 'Black' },
+                { value: 'tools', label: 'Tools' },
+                { value: 'cyber', label: 'Cyber / Security' },
+                { value: 'users', label: 'Users / Community' },
+                { value: 'ai', label: 'AI / Intelligence' },
+                { value: 'gears', label: 'Gears / System' },
+                { value: 'bug', label: 'Bug / Vulnerability' },
+                { value: 'report', label: 'Report / Analysis' },
+                { value: 'external', label: 'External Link' },
               ],
             },
             {
@@ -253,8 +226,9 @@ const Post: Collection = {
           ],
           ui: {
             defaultItem: {
-              backgroundColor: 'gray',
-              textColor: 'white',
+              title: 'Project Name',
+              url: 'https://github.com/',
+              icon: 'external',
               openInNewTab: true,
             },
           },

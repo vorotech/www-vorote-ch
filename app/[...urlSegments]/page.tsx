@@ -54,9 +54,7 @@ export default async function Page({
 
   return (
     <Layout rawPageData={data}>
-      <Section>
-        <ClientPage {...data} />
-      </Section>
+      <ClientPage {...data} />
     </Layout>
   );
 }
