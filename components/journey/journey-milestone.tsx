@@ -4,13 +4,14 @@ import * as Icons from 'lucide-react';
 import { m } from 'motion/react';
 import Link from 'next/link';
 import React from 'react';
+import { TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text';
 
 interface JourneyMilestoneProps {
   id: string;
   title: string;
   year?: number;
   icon?: string;
-  summary?: string;
+  summary?: TinaMarkdownContent;
   linkTitle?: string;
   isRight?: boolean;
   post?: {
@@ -78,10 +79,10 @@ export const JourneyMilestone = ({ id, title, year, icon, summary, linkTitle, is
         <h3 className='font-bold text-xl md:text-2xl leading-tight mb-3 tracking-tight'>{title}</h3>
 
         {summary && (
-          <div className='overflow-hidden'>
-            <p className='text-muted-foreground text-sm md:text-base leading-relaxed mb-6 font-light'>{summary}</p>
+          <div className='overflow-hidden text-muted-foreground text-sm md:text-base leading-relaxed mb-6 font-light prose prose-sm dark:prose-invert max-w-none'>
+            <TinaMarkdown content={summary} />
             {postUrl && (
-              <Link href={postUrl} className='inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline group/link pr-2'>
+              <Link href={postUrl} className='inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline group/link pr-2 mt-4'>
                 {linkTitle || 'Read Professional Deep-Dive'}
                 <Icons.ArrowRight size={16} className='group-hover/link:translate-x-1 transition-transform' />
               </Link>

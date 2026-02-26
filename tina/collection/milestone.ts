@@ -20,12 +20,9 @@ const Milestone: Collection = {
       options: ['GraduationCap', 'Code2', 'Users', 'ShieldCheck'],
     },
     {
-      type: 'string',
+      type: 'rich-text',
       label: 'Summary',
       name: 'summary',
-      ui: {
-        component: 'textarea',
-      },
     },
     {
       type: 'reference',
