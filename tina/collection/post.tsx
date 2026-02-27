@@ -1,4 +1,7 @@
+import { disclosureBlockSchema } from '@/components/blocks/disclosure';
 import { mermaidBlockSchema } from '@/components/blocks/mermaid';
+import { sidebarBlockSchema } from '@/components/blocks/sidebar';
+import { tldrBlockSchema } from '@/components/blocks/tldr';
 import { videoBlockSchema } from '@/components/blocks/video';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import React from 'react';
@@ -248,10 +251,15 @@ const Post: Collection = {
         },
         videoBlockSchema,
         mermaidBlockSchema,
+        tldrBlockSchema,
+        sidebarBlockSchema,
+        disclosureBlockSchema,
       ],
       isBody: true,
     },
   ],
 };
+
+export default Post;
 
 export default Post;

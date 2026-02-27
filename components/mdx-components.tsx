@@ -9,6 +9,9 @@ import { Mermaid } from './blocks/mermaid';
 import { RecentPosts } from './blocks/recent-posts';
 import { TBody, TD, TH, THead, TR, Table } from './blocks/table';
 import { Video } from './blocks/video';
+import { Tldr } from './blocks/tldr';
+import { Sidebar } from './blocks/sidebar';
+import { DisclosureBlock } from './blocks/disclosure';
 import { CodeBlock } from './ui/code-block';
 
 export const components: Components<{
@@ -36,6 +39,20 @@ export const components: Components<{
   };
   video: PageBlocksVideo;
   recentPosts: PageBlocksRecent;
+  Tldr: {
+    title?: string;
+    children: TinaMarkdownContent;
+  };
+  Sidebar: {
+    title?: string;
+    children: TinaMarkdownContent;
+    variant?: 'citation' | 'note' | 'info';
+  };
+  Disclosure: {
+    title: string;
+    children: TinaMarkdownContent;
+    defaultOpen?: boolean;
+  };
 }> = {
   code_block: (props: any) => {
     if (!props) {
@@ -140,4 +157,7 @@ export const components: Components<{
   tr: (props: any) => <TR {...props} />,
   th: (props: any) => <TH {...props} />,
   td: (props: any) => <TD {...props} />,
+  Tldr: (props: any) => <Tldr {...props} />,
+  Sidebar: (props: any) => <Sidebar {...props} />,
+  Disclosure: (props: any) => <DisclosureBlock {...props} />,
 } as any;

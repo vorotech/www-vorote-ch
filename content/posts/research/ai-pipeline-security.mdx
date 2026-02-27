@@ -1,0 +1,43 @@
+---
+title: Securing the AI Pipeline: A Zero-Trust Approach
+theme: mocha
+heroImg: /uploads/posts/google-deepmind-_HnJfS6WhA8-unsplash.jpg
+date: 2026-02-27T00:00:00.000Z
+author: content/authors/Dmytro.md
+tags:
+  - tag: content/tags/AI-Security.mdx
+---
+
+<Tldr title="Executive Summary">
+The AI pipeline—from data collection to model deployment—is a complex chain of supply dependencies. Each stage introduces unique security risks that must be mitigated through a Zero-Trust framework.
+</Tldr>
+
+## The Supply Chain Problem
+
+AI models are rarely built from scratch. They rely on pre-trained weights, open-source libraries, and third-party datasets. This "black box" supply chain is the new frontier for supply chain attacks.
+
+<Sidebar title="Citations" variant="citation">
+Smith et al. (2025) demonstrated that 45% of popular model repositories contained at least one dependency with a critical vulnerability.
+</Sidebar>
+
+### Pipeline Stages and Risks
+
+1. **Data Ingestion**: Risk of data poisoning.
+2. **Training**: Risk of backdoor insertion.
+3. **Deployment**: Risk of inference-time attacks.
+
+<Disclosure title="Threat Model: Pipeline Poisoning" defaultOpen={true}>
+A visual representation of how an attacker can influence model behavior by injecting malicious samples into the training set.
+
+```mermaid
+graph LR
+    S1[Clean Data] --> P(Pipeline)
+    S2[Poisoned Data] -->|Attacker| P
+    P --> M(Compromised Model)
+    M -->|Targeted Misclassification| R[Exploit]
+```
+</Disclosure>
+
+## Implementation Strategy
+
+To secure the pipeline, organizations must implement cryptographic signing for all training artifacts and perform behavioral analysis on model drift.
