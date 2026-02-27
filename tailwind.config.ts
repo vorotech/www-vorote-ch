@@ -17,7 +17,17 @@ const config: Config = {
       animation: {
         meteor: 'meteor 5s linear infinite',
       },
-
+      colors: {
+        mocha: {
+          base: '#1e1e2e',
+          mantle: '#181825',
+          crust: '#11111b',
+          text: '#cdd6f4',
+          mauve: '#cba6f7',
+          blue: '#89b4fa',
+          teal: '#94e2d5',
+        },
+      },
       fontFamily: { sans: ['var(--font-sans)'], heading: ['var(--font-abel)'], mono: ['var(--font-mono)'] },
       typography: {
         DEFAULT: {
