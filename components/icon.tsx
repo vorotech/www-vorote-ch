@@ -1,13 +1,11 @@
 'use client';
 import React from 'react';
 import { AiFillInstagram } from 'react-icons/ai';
-//TODO: Fix Types in this file
-//
 import * as BoxIcons from 'react-icons/bi';
 import { FaFacebookF, FaGithub, FaLinkedin, FaXTwitter, FaYoutube } from 'react-icons/fa6';
 import { useLayout } from './layout/layout-context';
 
-export const IconOptions = {
+export const IconOptions: Record<string, React.FC<any>> = {
   Tina: (props: any) => (
     <svg {...props} viewBox='0 0 66 80' fill='none' xmlns='http://www.w3.org/2000/svg'>
       <title>Tina</title>
@@ -30,9 +28,7 @@ export const IconOptions = {
   AiFillInstagram,
 };
 
-const iconColorClass: {
-  [name: string]: { regular: string; circle: string };
-} = {
+const iconColorClass: Record<string, { regular: string; circle: string }> = {
   blue: {
     regular: 'text-blue-400',
     circle: 'bg-blue-400 dark:bg-blue-500 text-blue-50',
@@ -71,7 +67,7 @@ const iconColorClass: {
   },
 };
 
-const iconSizeClass = {
+const iconSizeClass: Record<string, string> = {
   xs: 'w-6 h-6 shrink-0',
   small: 'w-8 h-8 shrink-0',
   medium: 'w-12 h-12 shrink-0',
@@ -80,40 +76,52 @@ const iconSizeClass = {
   custom: '',
 };
 
-//@ts-ignore
-export const Icon = ({ data, parentColor = '', className = '', tinaField = '' }) => {
+interface IconProps {
+  data?: {
+    name?: string | null;
+    color?: string | null;
+    size?: string | number | null;
+    style?: string | null;
+  } | null;
+  parentColor?: string;
+  className?: string;
+  tinaField?: string;
+}
+
+export const Icon: React.FC<IconProps> = ({ data, parentColor = '', className = '', tinaField = '' }) => {
   const { theme } = useLayout();
 
-  //@ts-ignore
-  if (IconOptions[data.name] === null || IconOptions[data.name] === undefined) {
+  if (!data || !data.name || !IconOptions[data.name]) {
     return null;
   }
 
   const { name, color, size = 'medium', style = 'regular' } = data;
 
-  //@ts-ignore
   const IconSVG = IconOptions[name];
 
-  //@ts-ignore
-  const iconSizeClasses = typeof size === 'string' ? iconSizeClass[size] : iconSizeClass[Object.keys(iconSizeClass)[size]];
+  const sizeKey = size || 'medium';
+  const iconSizeClasses = typeof sizeKey === 'string' ? (iconSizeClass[sizeKey] || iconSizeClass.medium) : iconSizeClass[Object.keys(iconSizeClass)[sizeKey]] || iconSizeClass.medium;
 
-  const iconColor = color ? (color === 'primary' ? theme!.color : color) : theme!.color;
+  const themeColor = theme?.color || 'blue';
+  const iconColor = color ? (color === 'primary' ? themeColor : color) : themeColor;
+
+  const colorData = iconColorClass[iconColor] || iconColorClass[themeColor] || iconColorClass.blue;
 
   if (style == 'circle') {
     return (
       <div
-        {...(tinaField ? { 'data-tina-field': tinaField } : {})} // only render data-tina-field if it exists
-        className={`relative z-10 inline-flex items-center justify-center shrink-0 ${iconSizeClasses} rounded-full ${iconColorClass[iconColor].circle} ${className}`}
+        {...(tinaField ? { 'data-tina-field': tinaField } : {})}
+        className={`relative z-10 inline-flex items-center justify-center shrink-0 ${iconSizeClasses} rounded-full ${colorData.circle} ${className}`}
       >
         <IconSVG className='w-2/3 h-2/3' />
       </div>
     );
   } else {
     const iconColorClasses =
-      iconColorClass[parentColor === 'primary' && (iconColor === theme!.color || iconColor === 'primary') ? 'white' : iconColor!].regular;
+      iconColorClass[parentColor === 'primary' && (iconColor === themeColor || iconColor === 'primary') ? 'white' : iconColor]?.regular || colorData.regular;
     return (
       <IconSVG
-        {...(tinaField ? { 'data-tina-field': tinaField } : {})} // only render data-tina-field if it exists
+        {...(tinaField ? { 'data-tina-field': tinaField } : {})}
         className={`${iconSizeClasses} ${iconColorClasses} ${className}`}
       />
     );

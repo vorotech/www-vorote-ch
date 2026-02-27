@@ -1,5 +1,6 @@
 import { type EmailOptions, sendEmail } from '@/lib/email';
 import { logger } from '@/lib/logger';
+import { escapeHtml } from '@/lib/sanitization';
 import type { NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -21,14 +22,17 @@ function createFeedbackEmail(options: {
   subject: string;
   message: string;
 }): EmailOptions {
+  const sanitizedFrom = escapeHtml(options.from);
+  const sanitizedMessage = escapeHtml(options.message);
+
   const htmlContent = `
     <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #333;">New Feedback Received</h2>
       <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${options.from}</p>
+        <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${sanitizedFrom}</p>
         <div style="margin-top: 20px;">
           <strong>Message:</strong>
-          <p style="white-space: pre-wrap; margin: 10px 0 0 0;">${options.message}</p>
+          <p style="white-space: pre-wrap; margin: 10px 0 0 0;">${sanitizedMessage}</p>
         </div>
       </div>
     </div>

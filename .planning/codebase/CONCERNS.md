@@ -3,20 +3,20 @@
 ## Technical Debt
 
 ### Component Complexity
-- **Scheduler Tool:** `OnCallScheduler` (`components/tools/scheduler/scheduler-component.tsx`) is over 800 lines with complex state and logic mixed with UI. Uses `@ts-nocheck`.
-- **Prop Types:** Multiple components (`raw-renderer.tsx`, `icon.tsx`) use `@ts-ignore` or `any` for props.
+- [x] **Scheduler Tool:** `OnCallScheduler` refactored into `useScheduler` hook and modular sub-components. Removed `@ts-nocheck`.
+- [x] **Prop Types:** `RawRenderer` and `Icon` components now have proper TypeScript interfaces. Removed `@ts-ignore` and unnecessary `any` usages.
 
 ## Security Risks
 
 ### Input Validation
-- **Audit Tool:** `app/api/security-audit/route.ts` fetches from external registries based on user input. While validated with regex, it remains a high-surface area for SSRF or injection.
-- **Feedback Email:** `app/api/feedback/route.ts` injects user messages into HTML templates without explicit sanitization.
+- [x] **Audit Tool:** `app/api/security-audit/route.ts` now validates `advisoryId` using regex to prevent SSRF or unexpected API calls.
+- [x] **Feedback Email:** `app/api/feedback/route.ts` now uses `escapeHtml` to sanitize user messages before injecting into HTML templates.
 
 ## Architectural Fragility
 
 ### CMS Coupling
 - **Tina CMS:** Tight coupling between Tina schema definitions and UI blocks. Schema changes can be risky.
-- **Solution:** Lean more on generated types from `tina/__generated__/types.ts`.
+- **Status:** Ongoing. Improved by using more explicit typing in components consuming Tina data.
 
 ## Testing Gaps
 - **Granularity:** Lack of unit tests for `components/blocks/*.tsx` and `components/ui/*.tsx`. UI regressions are mostly caught in E2E.

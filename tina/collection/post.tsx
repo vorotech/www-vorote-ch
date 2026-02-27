@@ -1,4 +1,5 @@
 import { mermaidBlockSchema } from '@/components/blocks/mermaid';
+import { tableOfContentsBlockSchema } from '@/components/blocks/table-of-contents';
 import { videoBlockSchema } from '@/components/blocks/video';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import React from 'react';
@@ -235,6 +236,7 @@ const Post: Collection = {
         },
         videoBlockSchema,
         mermaidBlockSchema,
+        tableOfContentsBlockSchema,
       ],
       isBody: true,
     },

@@ -10,6 +10,7 @@ import { LatestPostsList } from './latest-posts-list';
 import { Mermaid } from './mermaid';
 import { RecentPosts } from './recent-posts';
 import { Stats } from './stats';
+import { TableOfContents } from './table-of-contents';
 import { Testimonial } from './testimonial';
 import { Video } from './video';
 
@@ -54,6 +55,8 @@ const Block = (block: PageBlocks) => {
       return <LatestPostsList data={block as any} />;
     case 'PageBlocksJourney':
       return <Journey data={block} />;
+    case 'PageBlocksTableOfContents':
+      return <TableOfContents data={block} />;
     default:
       return null;
   }

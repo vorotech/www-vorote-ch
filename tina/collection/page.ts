@@ -8,6 +8,7 @@ import { latestPostsListBlockSchema } from '@/components/blocks/latest-posts-lis
 import { mermaidBlockSchema } from '@/components/blocks/mermaid';
 import { recentPostsBlockSchema } from '@/components/blocks/recent-posts';
 import { statsBlockSchema } from '@/components/blocks/stats';
+import { tableOfContentsBlockSchema } from '@/components/blocks/table-of-contents';
 import { testimonialBlockSchema } from '@/components/blocks/testimonial';
 import { videoBlockSchema } from '@/components/blocks/video';
 import type { Collection } from 'tinacms';
@@ -56,6 +57,7 @@ const Page: Collection = {
         recentPostsBlockSchema,
         latestPostsListBlockSchema,
         journeyBlockSchema,
+        tableOfContentsBlockSchema,
       ],
     },
   ],
