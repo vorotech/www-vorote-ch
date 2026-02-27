@@ -7,6 +7,7 @@ import { journeyBlockSchema } from '@/components/blocks/journey';
 import { latestPostsListBlockSchema } from '@/components/blocks/latest-posts-list';
 import { mermaidBlockSchema } from '@/components/blocks/mermaid';
 import { recentPostsBlockSchema } from '@/components/blocks/recent-posts';
+import { researchHubBlockSchema } from '@/components/blocks/research-hub';
 import { statsBlockSchema } from '@/components/blocks/stats';
 import { testimonialBlockSchema } from '@/components/blocks/testimonial';
 import { videoBlockSchema } from '@/components/blocks/video';
@@ -69,6 +70,7 @@ const Page: Collection = {
         recentPostsBlockSchema,
         latestPostsListBlockSchema,
         journeyBlockSchema,
+        researchHubBlockSchema,
       ],
     },
   ],

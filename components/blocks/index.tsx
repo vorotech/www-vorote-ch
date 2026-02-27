@@ -9,6 +9,7 @@ import { Journey } from './journey';
 import { LatestPostsList } from './latest-posts-list';
 import { Mermaid } from './mermaid';
 import { RecentPosts } from './recent-posts';
+import { ResearchHub } from './research-hub';
 import { Stats } from './stats';
 import { Testimonial } from './testimonial';
 import { Video } from './video';
@@ -54,6 +55,8 @@ const Block = (block: PageBlocks) => {
       return <LatestPostsList data={block as any} />;
     case 'PageBlocksJourney':
       return <Journey data={block} />;
+    case 'PageBlocksResearchHub':
+      return <ResearchHub data={block as any} />;
     default:
       return null;
   }

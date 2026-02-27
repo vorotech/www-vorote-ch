@@ -1,24 +1,34 @@
 ---
 title: Research Hub
 theme: mocha
+blocks:
+  - headline: The Library
+    tagline: >-
+      Exploring the intersection of cybersecurity, AI, and strategic
+      engineering. High-fidelity deep dives into the systems that shape our
+      digital landscape.
+    actions:
+      - label: Explore Research
+        type: button
+        icon:
+          name: BiAlignLeft
+          color: teal
+          style: float
+        link: '#research-content'
+      - label: Security Audits
+        type: link
+        link: /tools/security-audit
+    image:
+      src: /uploads/media/NBP_8378.jpg
+      alt: The Library - Research Hub
+    _template: hero
+  - background: bg-default
+    title: Technical Excellence
+    tagline: >-
+      This space is dedicated to technical excellence and thought leadership.
+      Here you will find research papers, architectural deep-dives, and
+      strategic analyses of emerging technologies.
+    selectionMethod: tag
+    tag: AI Security
+    _template: researchHub
 ---
-
-<Hero
-  title="The Library"
-  subtitle="Technical Research & Leadership Insights"
-  text="Exploring the intersection of cybersecurity, AI, and strategic engineering. High-fidelity deep dives into the systems that shape our digital landscape."
-  actions={[
-    { label: 'Explore Research', type: 'primary', href: '#research-content' },
-    { label: 'Security Audits', type: 'secondary', href: '/tools/security-audit' }
-  ]}
-/>
-
-<Section>
-  <Content>
-    # Welcome to the Library
-
-    This space is dedicated to technical excellence and thought leadership. Here you will find research papers, architectural deep-dives, and strategic analyses of emerging technologies.
-
-    The content here is designed for those who build, secure, and lead complex engineering organizations.
-  </Content>
-</Section>
