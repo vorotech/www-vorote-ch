@@ -10,12 +10,14 @@ interface ShiftParametersProps {
   numMembers: number | '';
   startOfWeek: number;
   shiftStartHour: number;
+  temperature: number;
   MAX_MEMBERS: number;
   setMonth: (m: number) => void;
   setYear: (y: number) => void;
   updateNumMembers: (num: string) => void;
   setStartOfWeek: (s: number) => void;
   setShiftStartHour: (h: number) => void;
+  setTemperature: (t: number) => void;
 }
 
 export const ShiftParameters: React.FC<ShiftParametersProps> = ({
@@ -24,12 +26,14 @@ export const ShiftParameters: React.FC<ShiftParametersProps> = ({
   numMembers,
   startOfWeek,
   shiftStartHour,
+  temperature,
   MAX_MEMBERS,
   setMonth,
   setYear,
   updateNumMembers,
   setStartOfWeek,
   setShiftStartHour,
+  setTemperature,
 }) => {
   return (
     <div className='bg-card rounded-3xl border border-border p-8 mb-8 shadow-xl overflow-hidden group relative'>
@@ -125,9 +129,18 @@ export const ShiftParameters: React.FC<ShiftParametersProps> = ({
             />
           </div>
           <div className='flex flex-col gap-2'>
-            <label className='block text-xs font-bold uppercase tracking-widest text-muted-foreground'>Shift Duration</label>
-            <div className='w-full px-5 py-3.5 bg-muted/40 border border-border/40 rounded-xl text-muted-foreground/60 text-sm font-mono flex items-center h-[52px] select-none'>
-              24 HOURS
+            <label className='block text-xs font-bold uppercase tracking-widest text-muted-foreground'>Randomization (Temp)</label>
+            <div className='flex items-center gap-4 h-[52px] px-2'>
+              <input
+                type='range'
+                min='0'
+                max='1'
+                step='0.05'
+                value={temperature}
+                onChange={(e) => setTemperature(parseFloat(e.target.value))}
+                className='flex-1 h-2 bg-muted/40 rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none'
+              />
+              <span className='text-xs font-mono w-10 text-right font-bold text-primary'>{(temperature * 100).toFixed(0)}%</span>
             </div>
           </div>
         </div>
