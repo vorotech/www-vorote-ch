@@ -261,5 +261,3 @@ const Post: Collection = {
 };
 
 export default Post;
-
-export default Post;
