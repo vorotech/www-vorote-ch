@@ -23,6 +23,10 @@ interface RotationScheduleProps {
   generateSchedule: () => void;
   downloadResults: () => void;
   copyResults: () => void;
+  hoveredMemberId: number | null;
+  onMemberHover: (id: number) => void;
+  onMemberLeave: () => void;
+  onMoveMember: (sourceDate: Date, targetDate: Date) => void;
 }
 
 export const RotationSchedule: React.FC<RotationScheduleProps> = ({
@@ -40,7 +44,12 @@ export const RotationSchedule: React.FC<RotationScheduleProps> = ({
   generateSchedule,
   downloadResults,
   copyResults,
+  hoveredMemberId,
+  onMemberHover,
+  onMemberLeave,
+  onMoveMember,
 }) => {
+
   return (
     <m.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} className='bg-card rounded-3xl border border-border p-8 shadow-2xl relative overflow-hidden'>
       <div className='absolute top-0 right-0 p-8 pointer-events-none opacity-[0.02] -z-10 group-hover:opacity-5 transition-opacity'>
@@ -122,7 +131,15 @@ export const RotationSchedule: React.FC<RotationScheduleProps> = ({
 
       <AnimatePresence mode='wait'>
         {viewMode === 'list' ? (
-          <ListView key='list' schedule={schedule} shiftStartHour={shiftStartHour} />
+          <ListView
+            key='list'
+            schedule={schedule}
+            shiftStartHour={shiftStartHour}
+            hoveredMemberId={hoveredMemberId}
+            onMemberHover={onMemberHover}
+            onMemberLeave={onMemberLeave}
+            onMoveMember={onMoveMember}
+          />
         ) : (
           <CalendarView
             key='calendar'
@@ -133,6 +150,10 @@ export const RotationSchedule: React.FC<RotationScheduleProps> = ({
             startOfWeek={startOfWeek}
             shiftStartHour={shiftStartHour}
             showTimeOff={showTimeOff}
+            hoveredMemberId={hoveredMemberId}
+            onMemberHover={onMemberHover}
+            onMemberLeave={onMemberLeave}
+            onMoveMember={onMoveMember}
           />
         )}
       </AnimatePresence>

@@ -10,9 +10,18 @@ import { AnimatedGroup } from '../../motion-primitives/animated-group';
 interface LoadDistributionAnalysisProps {
   members: Member[];
   stats: Record<number, { total: number; weekday: number; weekend: number }>;
+  hoveredMemberId: number | null;
+  onMemberHover: (id: number) => void;
+  onMemberLeave: () => void;
 }
 
-export const LoadDistributionAnalysis: React.FC<LoadDistributionAnalysisProps> = ({ members, stats }) => {
+export const LoadDistributionAnalysis: React.FC<LoadDistributionAnalysisProps> = ({
+  members,
+  stats,
+  hoveredMemberId,
+  onMemberHover,
+  onMemberLeave,
+}) => {
   return (
     <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className='bg-card/50 backdrop-blur-md rounded-3xl border border-border p-8 mb-8 shadow-sm relative overflow-hidden'>
       <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent' />
@@ -25,15 +34,22 @@ export const LoadDistributionAnalysis: React.FC<LoadDistributionAnalysisProps> =
       <AnimatedGroup className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' preset='blur-slide'>
         {members.map((member) => {
           const color = getMemberColor(member.id);
+          const isHighlighted = hoveredMemberId === member.id;
+          const isDimmed = hoveredMemberId !== null && hoveredMemberId !== member.id;
+
           return (
             <m.div
               key={member.id}
               whileHover={{ y: -5 }}
+              onMouseEnter={() => onMemberHover(member.id)}
+              onMouseLeave={onMemberLeave}
               className={cn(
-                'p-6 rounded-2xl border transition-all duration-300 relative group/stat overflow-hidden',
+                'p-6 rounded-2xl border transition-all duration-300 relative group/stat overflow-hidden cursor-pointer',
                 color.bg,
                 color.border,
-                'hover:shadow-xl hover:shadow-current/5'
+                'hover:shadow-xl hover:shadow-current/5',
+                isHighlighted && 'ring-2 ring-primary/50 scale-[1.02] z-10 shadow-lg',
+                isDimmed && 'opacity-30 grayscale-[0.5] scale-[0.98]'
               )}
             >
               <div className='absolute -right-2 -bottom-2 opacity-[0.05] group-hover/stat:opacity-[0.1] transition-opacity'>

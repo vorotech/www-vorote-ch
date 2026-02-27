@@ -7,7 +7,7 @@ import { FeedbackForm } from '../../feedback-form';
 import { Section } from '../../layout/section';
 import { TextEffect } from '../../motion-primitives/text-effect';
 import { AnimatePresence, m } from 'motion/react';
-import { Member, ScheduleSlot, generateScheduleData } from './scheduler';
+import { Member, ScheduleSlot, calculateStats, generateScheduleData } from './scheduler';
 
 import { ShiftParameters } from './ShiftParameters';
 import { MemberProfileEditor } from './MemberProfileEditor';
@@ -31,11 +31,13 @@ const OnCallScheduler: React.FC = () => {
   ]);
   const [startOfWeek, setStartOfWeek] = useState<number>(1); // 0 = Sunday, 1 = Monday, etc.
   const [shiftStartHour, setShiftStartHour] = useState<number>(8); // 0-23
+  const [temperature, setTemperature] = useState<number>(0.1); // 0 = Strict rotation, 1 = Pure random
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [showTimeOff, setShowTimeOff] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [hoveredMemberId, setHoveredMemberId] = useState<number | null>(null);
 
   const loadSettings = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -96,9 +98,35 @@ const OnCallScheduler: React.FC = () => {
   };
 
   const generateSchedule = () => {
-    const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members, shiftStartHour);
+    const randomSeed = Math.floor(Math.random() * 10000);
+    const { schedule: newSchedule, stats: memberSlots } = generateScheduleData(month, year, members, shiftStartHour, randomSeed, temperature);
     setSchedule(newSchedule);
     setStats(memberSlots);
+  };
+
+  const moveMember = (sourceDate: Date, targetDate: Date) => {
+    if (!schedule) return;
+
+    const isSameDay = (d1: Date, d2: Date) => {
+      return d1.getFullYear() === d2.getFullYear() && 
+             d1.getMonth() === d2.getMonth() && 
+             d1.getDate() === d2.getDate();
+    };
+
+    const newSchedule = [...schedule];
+    const sourceIdx = newSchedule.findIndex((s) => isSameDay(s.date, sourceDate));
+    const targetIdx = newSchedule.findIndex((s) => isSameDay(s.date, targetDate));
+
+    if (sourceIdx !== -1 && targetIdx !== -1) {
+      const sourceMember = newSchedule[sourceIdx].member;
+      const targetMember = newSchedule[targetIdx].member;
+
+      newSchedule[sourceIdx] = { ...newSchedule[sourceIdx], member: targetMember };
+      newSchedule[targetIdx] = { ...newSchedule[targetIdx], member: sourceMember };
+
+      setSchedule(newSchedule);
+      setStats(calculateStats(newSchedule, members));
+    }
   };
 
   const getConfiguration = () => {
@@ -290,12 +318,14 @@ const OnCallScheduler: React.FC = () => {
           numMembers={numMembers}
           startOfWeek={startOfWeek}
           shiftStartHour={shiftStartHour}
+          temperature={temperature}
           MAX_MEMBERS={MAX_MEMBERS}
           setMonth={setMonth}
           setYear={setYear}
           updateNumMembers={updateNumMembers}
           setStartOfWeek={setStartOfWeek}
           setShiftStartHour={setShiftStartHour}
+          setTemperature={setTemperature}
         />
 
         <div className='relative'>
@@ -352,7 +382,13 @@ const OnCallScheduler: React.FC = () => {
         <AnimatePresence>
           {stats && (
             <div className='mt-8'>
-              <LoadDistributionAnalysis members={members} stats={stats} />
+              <LoadDistributionAnalysis
+                members={members}
+                stats={stats}
+                hoveredMemberId={hoveredMemberId}
+                onMemberHover={setHoveredMemberId}
+                onMemberLeave={() => setHoveredMemberId(null)}
+              />
             </div>
           )}
         </AnimatePresence>
@@ -375,6 +411,10 @@ const OnCallScheduler: React.FC = () => {
                 generateSchedule={generateSchedule}
                 downloadResults={downloadResults}
                 copyResults={copyResults}
+                hoveredMemberId={hoveredMemberId}
+                onMemberHover={setHoveredMemberId}
+                onMemberLeave={() => setHoveredMemberId(null)}
+                onMoveMember={moveMember}
               />
             </div>
           )}

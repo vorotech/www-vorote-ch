@@ -91,6 +91,30 @@ export const getMemberColor = (id: number) => MEMBER_COLORS[(id - 1) % MEMBER_CO
 
 export const getDaysInMonth = (m: number, y: number) => new Date(y, m + 1, 0).getDate();
 
+function shuffle<T>(array: T[], seed: number): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    // Deterministic pseudo-random swap
+    const j = Math.floor(Math.abs(Math.sin(seed + i * 1.5) * 10000)) % (i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function getRotationScore(memberIndex: number, dayIndex: number, totalMembers: number) {
+  // Add a small shift every week to prevent same-day-of-week locking (especially for teams of 7)
+  const weekShift = Math.floor((dayIndex - 1) / 7);
+  const idealIndex = (dayIndex - 1 + weekShift) % totalMembers;
+  
+  // Circular distance: how far is this member from their "ideal" turn?
+  const dist = Math.min(
+    Math.abs(memberIndex - idealIndex),
+    totalMembers - Math.abs(memberIndex - idealIndex)
+  );
+  // Higher score for members closer to their turn (max score if it is their turn)
+  return totalMembers - dist;
+}
+
 export const isWeekend = (date: Date) => {
   const day = date.getDay();
   return day === 0 || day === 6;
@@ -218,17 +242,21 @@ interface SolverOptions {
   disableFairnessMax?: boolean; // If true, ignores fairness max caps (failsafe for unbalanced availability)
 }
 
-function solveWithOpts(solverParams: any, opts: SolverOptions) {
+function solveWithOpts(solverParams: any, opts: SolverOptions, seed: number = 0, temperature: number = 0.1) {
   const { members: untypedMembers, totalDays, blockedSet, periodStart } = solverParams;
   const members = untypedMembers as Member[];
 
   const model: any = {
-    optimize: 'fairness',
+    optimize: 'rotation',
     opType: 'max',
     constraints: {},
     variables: {},
     ints: {},
   };
+
+  // Rotation setup: Shuffle based on seed to get a sequence
+  const shuffledMembers = shuffle(members, seed);
+  const memberToIndex = new Map(shuffledMembers.map((m, i) => [m.id, i]));
 
   // Day coverage constraints (Always required)
   for (let d = 1; d <= totalDays; d++) {
@@ -238,53 +266,117 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
   const memberIds = members.map((m: Member) => m.id);
   const availabilityMap = getAvailabilityMap(totalDays, members, blockedSet);
 
-  // Calculate per-member available days for fairer distribution
+  // First pass: Calculate caps (availability + maxWeekendSlots) AND Presence (days NOT on time-off)
+  const memberCaps: Record<number, number> = {};
   const memberAvailability: Record<number, number> = {};
+  const memberPresence: Record<number, number> = {};
+  
   members.forEach((member: Member) => {
-    let availableDays = 0;
+    let availableWeekdays = 0;
+    let availableWeekends = 0;
+    let presenceInMonth = 0;
+
     for (let d = 1; d <= totalDays; d++) {
+      const currentDate = addDays(periodStart, d - 1);
+      
+      // Presence: Are you available for the rotation at all (NOT on time off)?
+      if (!isOnTimeOff(member, currentDate)) {
+        presenceInMonth++;
+      }
+
+      // Available: Are you technically allowed to work this specific day (NOT on time off AND matches role)?
       if (!blockedSet.has(`${member.id}_${d}`)) {
-        availableDays++;
+        if (isWeekend(currentDate)) {
+          availableWeekends++;
+        } else {
+          availableWeekdays++;
+        }
       }
     }
-    memberAvailability[member.id] = availableDays;
-  });
-
-  // Calculate fair distribution with constraint redistribution
-  // Goal: Everyone gets the same number of shifts, but if someone can't due to constraints,
-  // redistribute their shortfall to others
-  const memberTargets: Record<number, { min: number; max: number }> = {};
-  let remainingDays = totalDays;
-  let remainingMembers = members.length;
-
-  // First pass: Calculate caps (availability + maxWeekendSlots)
-  const memberCaps: Record<number, number> = {};
-  members.forEach((member: Member) => {
-    let cap = memberAvailability[member.id];
-    // maxWeekendSlots is a hard cap for weekend-only members
-    if (member.maxWeekendSlots) {
-      cap = Math.min(cap, member.maxWeekendSlots);
+    
+    // Correctly calculate cap: weekdays + restricted weekends
+    let cap = availableWeekdays + availableWeekends;
+    if (member.maxWeekendSlots !== null && member.maxWeekendSlots !== undefined) {
+      cap = availableWeekdays + Math.min(availableWeekends, member.maxWeekendSlots);
     }
+    
     memberCaps[member.id] = cap;
+    memberAvailability[member.id] = availableWeekdays + availableWeekends;
+    memberPresence[member.id] = presenceInMonth;
   });
 
-  // Iteratively redistribute: give everyone equal shifts, but respect caps
-  // Process members with lowest caps first to redistribute their shortfall
-  const sorted = [...members].sort((a, b) => memberCaps[a.id] - memberCaps[b.id]);
+  // Calculate fair distribution targets based on proportional presence
+  // Goal: Share is proportional to presence (days NOT on time-off)
+  // Step 1: Calculate raw proportional targets and handle hard caps (availability/maxWeekend)
+  const memberTargets: Record<number, { min: number; max: number }> = {};
+  const rawShares: Record<number, number> = {};
+  
+  const totalPresence = Object.values(memberPresence).reduce((sum, val) => sum + val, 0);
 
-  sorted.forEach((member) => {
-    const idealShare = remainingDays / Math.max(1, remainingMembers);
-    const cap = memberCaps[member.id];
-    const allocated = Math.min(Math.ceil(idealShare), cap);
+  if (totalPresence > 0) {
+    // Pass 1: Initial targets
+    members.forEach(m => {
+      rawShares[m.id] = (memberPresence[m.id] / totalPresence) * totalDays;
+    });
 
-    memberTargets[member.id] = {
-      min: Math.floor(Math.min(idealShare, cap)),
-      max: allocated,
-    };
+    // Pass 2: Iterative redistribution for members whose share exceeds their cap
+    let redistributedDays = totalDays;
+    let poolPresence = totalPresence;
+    const finalized = new Set<number>();
+    const finalTargets: Record<number, number> = {};
 
-    remainingDays -= allocated;
-    remainingMembers -= 1;
-  });
+    // Sort by cap ascending to handle most constrained members first
+    const sortedByCap = [...members].sort((a, b) => memberCaps[a.id] - memberCaps[b.id]);
+
+    for (let i = 0; i < members.length; i++) {
+      let changed = false;
+      for (const m of sortedByCap) {
+        if (finalized.has(m.id)) continue;
+        
+        const idealShare = (memberPresence[m.id] / poolPresence) * redistributedDays;
+        if (idealShare > memberCaps[m.id]) {
+          // Cap reached, finalize this member and redistribute their "lost" presence
+          finalTargets[m.id] = memberCaps[m.id];
+          redistributedDays -= memberCaps[m.id];
+          poolPresence -= memberPresence[m.id];
+          finalized.add(m.id);
+          changed = true;
+          break; // Recalculate for others
+        }
+      }
+      if (!changed) break;
+    }
+
+    // Final pass for remaining members
+    members.forEach(m => {
+      if (!finalized.has(m.id)) {
+        finalTargets[m.id] = poolPresence > 0 
+          ? (memberPresence[m.id] / poolPresence) * redistributedDays
+          : 0;
+      }
+    });
+
+    // Step 2: Set strict min/max constraints (floor/ceil of finalTargets)
+    // We add a tiny bit of seed-based noise to the "floor" and "ceil" decisions
+    // to allow the +/- 1 shift to vary on reroll, but NEVER exceed 1 shift away from ideal.
+    members.forEach(m => {
+      const target = finalTargets[m.id];
+      
+      // If target is 4.0, we want exactly 4. 
+      // If target is 4.16, we allow 4 or 5.
+      memberTargets[m.id] = {
+        min: Math.floor(target),
+        max: Math.ceil(target)
+      };
+      
+      // Failsafe: Ensure min/max never exceeds individual cap
+      memberTargets[m.id].max = Math.min(memberTargets[m.id].max, memberCaps[m.id]);
+      memberTargets[m.id].min = Math.min(memberTargets[m.id].min, memberTargets[m.id].max);
+    });
+  } else {
+    // Fallback for safety (should not happen if solver is called with valid data)
+    members.forEach(m => { memberTargets[m.id] = { min: 0, max: totalDays }; });
+  }
 
   // Dynamic Spacing Constraints
   members.forEach((member: Member) => {
@@ -365,9 +457,17 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
       const currentDate = addDays(periodStart, d - 1);
       const isWknd = isWeekend(currentDate);
 
+      // Rotation Weighting blended with Temperature
+      const mIndex = memberToIndex.get(member.id) ?? 0;
+      const rotScore = getRotationScore(mIndex, d, members.length);
+      const randomScore = Math.abs(Math.sin(seed + member.id * 13 + d * 37)) * members.length;
+      
+      const combinedScore = (1 - temperature) * rotScore + temperature * randomScore;
+
       model.variables[varName] = {
         [`day_${d}_covered`]: 1,
-        fairness: 1 + Math.random() * 0.5,
+        // Preference for the member whose turn it is, influenced by randomness (temperature)
+        rotation: combinedScore,
       };
 
       // Spacing Contribution
@@ -410,56 +510,45 @@ function solveWithOpts(solverParams: any, opts: SolverOptions) {
   return solver.Solve(model) as SolverResult;
 }
 
-function solveSchedule(solverParams: any): SolverResult {
+function solveSchedule(solverParams: any, seed: number = 0, temperature: number = 0.1): SolverResult {
   // Strategy: Prioritize fairness (everyone gets their redistributed target) AND weekly distribution
   // Try with weekly distribution constraints first, then relax if needed
 
-  // 1. Ideal: Strict Fairness + Full Spacing + Weekly Distribution
-  let result: SolverResult = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 1.0, enforceWeeklyDistribution: true });
+  // 1. Ideal: Strict Fairness + Relaxed Spacing (0.75) + Weekly Distribution
+  // Spacing 0.75 allows switching between tracks (e.g. Sat -> next week Sun)
+  let result: SolverResult = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.75, enforceWeeklyDistribution: true }, seed, temperature);
   if (result.feasible) return result;
 
-  // 2. Strict Fairness + Moderate Spacing + Weekly Distribution
-  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.66, enforceWeeklyDistribution: true });
+  // 2. Strict Fairness + Moderate Spacing (0.5) + Weekly Distribution
+  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.5, enforceWeeklyDistribution: true }, seed, temperature);
   if (result.feasible) return result;
 
-  // 3. Strict Fairness + Low Spacing + Weekly Distribution
-  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.33, enforceWeeklyDistribution: true });
+  // 3. Strict Fairness + Low Spacing (0.25) + Weekly Distribution
+  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.25, enforceWeeklyDistribution: true }, seed, temperature);
   if (result.feasible) return result;
 
-  // 4. Strict Fairness + Minimal Spacing + Weekly Distribution
-  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.0, enforceWeeklyDistribution: true });
+  // 4. Strict Fairness + No Spacing (0.0) + Weekly Distribution
+  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.0, enforceWeeklyDistribution: true }, seed, temperature);
   if (result.feasible) return result;
 
   // 5. Relax weekly distribution, keep strict fairness
-  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.0, enforceWeeklyDistribution: false });
+  result = solveWithOpts(solverParams, { strictFairness: true, spacingStrength: 0.0, enforceWeeklyDistribution: false }, seed, temperature);
   if (result.feasible) return result;
 
-  // 6. Fallback: Relaxed Fairness + Full Spacing (no weekly constraints)
-  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 1.0, enforceWeeklyDistribution: false });
+  // 6. Fallback: Relaxed Fairness + Moderate Spacing (0.5)
+  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.5, enforceWeeklyDistribution: false }, seed, temperature);
   if (result.feasible) return result;
 
-  // 7. Fallback: Relaxed Fairness + Moderate Spacing
-  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.66, enforceWeeklyDistribution: false });
+  // 7. Fallback: Relaxed Fairness + No Spacing (0.0)
+  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false }, seed, temperature);
   if (result.feasible) return result;
 
-  // 8. Minimal: Relaxed Fairness + No Consecutive (Wait, strength 0 now allows consecutive if < 0.01)
-  result = solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false });
-  if (result.feasible) return result;
-
-  // 9. Absolute Fallback: No Fairness Caps + No Spacing (Just Cover Days)
+  // 8. Absolute Fallback: No Fairness Caps + No Spacing (Just Cover Days)
   // This is the "Nuclear Option" to ensure output is generated even for very skewed/tight inputs
-  return solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false, disableFairnessMax: true });
+  return solveWithOpts(solverParams, { strictFairness: false, spacingStrength: 0.0, enforceWeeklyDistribution: false, disableFairnessMax: true }, seed, temperature);
 }
 
-// ==========================================
-// 4. GENERATOR (Main Entry Point)
-// ==========================================
-
-export const generateScheduleData = (month: number, year: number, members: Member[], shiftStartHour: number = 8) => {
-  const solverParams = adaptDomainToSolver(month, year, members, shiftStartHour);
-  const result: SolverResult = solveSchedule(solverParams);
-
-  const schedule: ScheduleSlot[] = [];
+export const calculateStats = (schedule: ScheduleSlot[], members: Member[]) => {
   const memberSlots: Record<number, { total: number; weekday: number; weekend: number }> = {};
 
   // Initialize stats
@@ -467,6 +556,29 @@ export const generateScheduleData = (month: number, year: number, members: Membe
     memberSlots[m.id] = { total: 0, weekday: 0, weekend: 0 };
   });
 
+  schedule.forEach((slot) => {
+    if (slot.member && memberSlots[slot.member.id]) {
+      memberSlots[slot.member.id].total++;
+      if (isWeekend(slot.date)) {
+        memberSlots[slot.member.id].weekend++;
+      } else {
+        memberSlots[slot.member.id].weekday++;
+      }
+    }
+  });
+
+  return memberSlots;
+};
+
+// ==========================================
+// 4. GENERATOR (Main Entry Point)
+// ==========================================
+
+export const generateScheduleData = (month: number, year: number, members: Member[], shiftStartHour: number = 8, seed: number = 0, temperature: number = 0.1) => {
+  const solverParams = adaptDomainToSolver(month, year, members, shiftStartHour);
+  const result: SolverResult = solveSchedule(solverParams, seed, temperature);
+
+  const schedule: ScheduleSlot[] = [];
   const { totalDays, periodStart } = solverParams;
 
   // Retrieve results
@@ -486,15 +598,6 @@ export const generateScheduleData = (month: number, year: number, members: Membe
             date: realDate,
             member: member,
           });
-
-          if (memberSlots[member.id]) {
-            memberSlots[member.id].total++;
-            if (isWeekend(realDate)) {
-              memberSlots[member.id].weekend++;
-            } else {
-              memberSlots[member.id].weekday++;
-            }
-          }
         }
       }
     });
@@ -517,5 +620,7 @@ export const generateScheduleData = (month: number, year: number, members: Membe
     }
   }
 
-  return { schedule: fullSchedule, stats: memberSlots };
+  const stats = calculateStats(fullSchedule, members);
+
+  return { schedule: fullSchedule, stats };
 };

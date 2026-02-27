@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-26T16:51:52.330Z",
+  "generated_at": "2026-02-27T15:45:57.759Z",
   "checks": {
     "dependencies": {
       "name": "OSV Dependency Scan",
@@ -10,9 +10,9 @@
     },
     "code_quality": {
       "name": "Biome Code Health",
-      "status": "passing",
+      "status": "failing",
       "metrics": {
-        "errors": 0
+        "errors": 21
       }
     }
   }

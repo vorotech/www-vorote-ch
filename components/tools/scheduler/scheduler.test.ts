@@ -29,7 +29,7 @@ export const runSimulation = (month: number, year: number, members: Member[], it
   });
 
   for (let i = 0; i < iterations; i++) {
-    const { stats } = generateScheduleData(month, year, members);
+    const { stats } = generateScheduleData(month, year, members, 8, i, 0.1);
 
     let runMin = Infinity;
     let runMax = -Infinity;
@@ -297,6 +297,22 @@ const testCases: TestCase[] = [
           allowedWeekdays: [],
           timeOffs: [],
         },
+      ],
+    },
+  },
+  {
+    name: 'User reported imbalance - Feb 2026',
+    config: {
+      month: 1,
+      year: 2026,
+      members: [
+        { id: 1, name: 'Dmytro', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 2, name: 'Yaroslav', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 3, name: 'Lev', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 4, name: 'Vadym', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
+        { id: 5, name: 'Serhii', timeOffs: [], weekendOnly: false, maxWeekendSlots: 3, allowedWeekdays: [] },
+        { id: 6, name: 'Oleksandr', timeOffs: [], weekendOnly: true, maxWeekendSlots: 3, allowedWeekdays: [] },
+        { id: 7, name: 'Oleksii', timeOffs: [], weekendOnly: false, maxWeekendSlots: null, allowedWeekdays: [] },
       ],
     },
   },
