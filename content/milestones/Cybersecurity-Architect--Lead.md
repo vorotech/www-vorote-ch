@@ -1,7 +1,8 @@
 ---
 title: Cybersecurity Architect & Lead
 icon: Users
-summary: Directed security engineering for high-assurance systems. Successfully navigated ISO 27001/27701 audits and achieved formal recognition for NIST-based system certification.
+summary: |
+  Managed high-assurance engineering and ISO 27001/27701 audits. Secured a NIST 800-53 certification for Ukraine’s government – from architecture to execution.
 post: ''
 year: 2024
 ---
