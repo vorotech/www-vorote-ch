@@ -1,0 +1,76 @@
+# Project State
+
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-02-23)
+
+**Core value:** To build professional trust and demonstrate deep technical/leadership expertise through a "security-first" codebase and high-fidelity, diagram-rich technical storytelling.
+**Current focus:** Phase 1: Brand & Credibility
+
+## Current Position
+
+Phase: 4 of 4 (Thought Leadership)
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-02-27 — Completed the Research Hub: implemented specialized MDX components (TLDR, Sidebar, Disclosure) and published the initial "AI Security" research series with interactive threat models.
+
+Progress: [▓▓▓▓▓▓▓▓▓░] 87%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 13
+- Average duration: 4h
+- Total execution time: 52h
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| 1. Brand & Credibility | 4 | 16h | 4h |
+| 2. Content Architecture | 3 | 12h | 4h |
+| 3. Leadership Narrative | 4 | 16h | 4h |
+| 4. Thought Leadership | 2 | 8h | 4h |
+
+**Recent Trend:**
+- Last 5 plans: Stable
+- Trend: Stable
+
+*Updated after each plan completion*
+| Phase 03 P05 | 4h | 2 tasks | 2 files |
+
+## Accumulated Context
+
+### Decisions
+
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- [02-01]: Use `shiki` (v3.22.0) for high-fidelity syntax highlighting.
+- [02-01]: Dynamic highlighter loading to optimize client-side bundle size.
+- [02-01]: "Architect" aesthetic for code blocks (zinc-950 background, zinc-800 borders).
+- [03-04-01]: Used percentage-based vertical offsets for the SVG container to ensure it stays perfectly centered on markers.
+- [03-04-02]: Implemented `LayoutGroup` from `motion/react` for smooth layout transitions.
+- [Phase 03]: Decoupled scroll reveal from layout animations by wrapping the card in an outer container.
+- [Phase 03]: Implemented conditional expansion logic to prevent empty/unnecessary card states.
+- [Phase 03]: Refined card decorations with high-fidelity SVG markers to match the 'Architect' theme.
+
+### Pending Todos
+
+None.
+
+
+
+### Roadmap Evolution
+
+- Phase 03.1 inserted after Phase 03: Urgent UI & CMS Fixes (URGENT)
+
+### Blockers/Concerns
+
+None yet.
+
+## Session Continuity
+
+Last session: 2026-02-23 15:00
+Stopped at: Roadmap created, files written.
+Resume file: None
