@@ -23,6 +23,19 @@ const Post: Collection = {
       required: true,
     },
     {
+      type: 'string',
+      label: 'Theme',
+      name: 'theme',
+      options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Mocha', value: 'mocha' },
+      ],
+      description: 'The overall theme/aesthetic of the post.',
+      ui: {
+        defaultValue: 'default',
+      },
+    },
+    {
       type: 'image',
       name: 'heroImg',
       label: 'Hero Image',

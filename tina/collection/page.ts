@@ -36,6 +36,19 @@ const Page: Collection = {
       required: true,
     },
     {
+      type: 'string',
+      label: 'Theme',
+      name: 'theme',
+      options: [
+        { label: 'Default', value: 'default' },
+        { label: 'Mocha', value: 'mocha' },
+      ],
+      description: 'The overall theme/aesthetic of the page.',
+      ui: {
+        defaultValue: 'default',
+      },
+    },
+    {
       type: 'object',
       list: true,
       name: 'blocks',
