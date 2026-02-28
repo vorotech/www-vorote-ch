@@ -7,6 +7,7 @@ import { Components, TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich
 import { FeaturedLink } from './blocks/featured-link';
 import { Mermaid } from './blocks/mermaid';
 import { RecentPosts } from './blocks/recent-posts';
+import { TableOfContents } from './blocks/table-of-contents';
 import { TBody, TD, TH, THead, TR, Table } from './blocks/table';
 import { Video } from './blocks/video';
 import { CodeBlock } from './ui/code-block';
@@ -127,6 +128,7 @@ export const components: Components<{
   FeaturedLink: (props: any) => {
     return <FeaturedLink {...props} />;
   },
+  tableOfContents: (props: any) => <TableOfContents data={props} />,
   mermaid: (props: any) => <Mermaid {...props} />,
   video: (props: any) => {
     return <Video data={props} />;

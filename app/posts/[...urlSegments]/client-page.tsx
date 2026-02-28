@@ -3,8 +3,10 @@ import ErrorBoundary from '@/components/error-boundary';
 import { useLayout } from '@/components/layout/layout-context';
 import { Section } from '@/components/layout/section';
 import { components } from '@/components/mdx-components';
+import { calculateReadingTime } from '@/lib/utils';
 import { PostQuery } from '@/tina/__generated__/types';
 import { format } from 'date-fns';
+import { BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 import { tinaField, useTina } from 'tinacms/dist/react';
@@ -41,6 +43,10 @@ export default function PostClientPage(props: ClientPostProps) {
   }
 
   const titleColour = titleColorClasses[theme!.color! as keyof typeof titleColorClasses];
+
+  const readingTime = React.useMemo(() => {
+    return calculateReadingTime(post._body);
+  }, [post._body]);
 
   return (
     <ErrorBoundary>
@@ -116,6 +122,19 @@ export default function PostClientPage(props: ClientPostProps) {
                 {formattedDate}
               </p>
             </div>
+
+            {readingTime > 0 && (
+              <>
+                <div className='h-10 w-[1px] bg-border/50' />
+                <div className='flex flex-col'>
+                  <span className='text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold mb-1'>Read Time</span>
+                  <p className='text-sm font-bold text-foreground flex items-center gap-2'>
+                    <BookOpen className='w-3.5 h-3.5 text-primary/60' />
+                    {readingTime} min
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

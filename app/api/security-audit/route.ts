@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isValidGhsaId } from '@/lib/sanitization';
 
 function isValidPackageName(name: string): boolean {
   // Approximate npm package name validation, including scoped packages.
@@ -96,7 +97,7 @@ export async function GET(request: Request) {
         const advisoryId = vuln.url ? vuln.url.split('/').pop() : `ID-${vuln.id}`;
 
         try {
-          if (advisoryId?.startsWith('GHSA')) {
+          if (advisoryId && isValidGhsaId(advisoryId)) {
             const osvResponse = await fetch(`https://api.osv.dev/v1/vulns/${advisoryId}`);
             if (osvResponse.ok) {
               const osvData = (await osvResponse.json()) as any;
