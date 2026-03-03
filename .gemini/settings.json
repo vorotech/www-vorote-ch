@@ -1,6 +1,6 @@
 {
-  "context":{
-    "fileFiltering":{
+  "context": {
+    "fileFiltering": {
       "respectGitIgnore": false,
       "respectGeminiIgnore": true
     }
@@ -23,6 +23,16 @@
       }
     ],
     "AfterTool": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-context-monitor.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
       {
         "hooks": [
           {
