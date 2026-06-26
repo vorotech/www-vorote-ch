@@ -1,6 +1,23 @@
+packages:
+  - .
+
+ignoredBuiltDependencies:
+  - better-sqlite3
+
 onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - core-js
   - esbuild
   - sharp
   - workerd
-packages:
-  - '.'
+
+overrides:
+  '@opennextjs/aws>esbuild': 0.25.0
+  '@smithy/config-resolver': ~4.4.0
+  esbuild: 0.25.2
+  fast-xml-parser: ~5.3.6
+  jsonpath-plus: 10.3.0
+  lodash-es: ~4.17.23
+  markdown-it: ~14.1.1
+  mermaid: 11.10.0
+  qs: ~6.14.2
