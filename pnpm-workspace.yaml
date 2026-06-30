@@ -12,9 +12,7 @@ onlyBuiltDependencies:
   - workerd
 
 overrides:
-  '@opennextjs/aws>esbuild': 0.25.0
   '@smithy/config-resolver': ~4.4.0
-  esbuild: 0.25.2
   fast-xml-parser: ~5.3.6
   jsonpath-plus: 10.3.0
   lodash-es: ~4.17.23
