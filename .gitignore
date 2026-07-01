@@ -42,5 +42,6 @@ osv-stdout.txt
 osv-stderr.txt
 
 # graphify
+graphify-out/cache/
 graphify-out/manifest.json
 graphify-out/cost.json
