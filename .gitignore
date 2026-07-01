@@ -36,12 +36,11 @@ playwright-report/
 .gemini/*
 !.gemini/settings.json
 
-# gsd
-.planning/*
-!.planning/config.json
-!.planning/codebase
-
 # osv-scanner
 osv-test.json
 osv-stdout.txt
 osv-stderr.txt
+
+# graphify
+graphify-out/manifest.json
+graphify-out/cost.json
