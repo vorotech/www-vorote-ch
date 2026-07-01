@@ -20,17 +20,20 @@ const pages = defineCollection({
 });
 
 const milestones = defineCollection({
-  type: 'data',
+  type: 'content',
   schema: z.object({
     title: z.string(),
-    year: z.string(),
-    description: z.string(),
+    year: z.string().or(z.number()),
+    icon: z.string().optional(),
+    summary: z.string().optional(),
+    post: z.string().optional(),
+    description: z.string().optional(),
     position: z.number().optional(),
   }),
 });
 
 const authors = defineCollection({
-  type: 'data',
+  type: 'content',
   schema: z.object({
     name: z.string(),
     avatar: z.string().optional(),

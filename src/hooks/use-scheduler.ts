@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Member, ScheduleSlot, calculateStats, generateScheduleData } from '@/components/tools/scheduler/scheduler';
+import { Member, ScheduleSlot, calculateStats, generateScheduleData } from '../components/tools/scheduler/scheduler';
 
 const MAX_MEMBERS = 10;
 const STORAGE_KEY = 'vorotech-scheduler-settings';

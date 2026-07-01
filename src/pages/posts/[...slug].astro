@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import FeaturedLink from '../../components/blocks/FeaturedLink.tsx';
+import FeaturedLink from '../../components/blocks/FeaturedLink';
+import BlockQuote from '../../components/blocks/BlockQuote.astro';
 import { format } from 'date-fns';
 
 export async function getStaticPaths() {
@@ -40,7 +41,7 @@ const formattedDate = format(post.data.date, 'MMMM dd, yyyy');
       </div>
     )}
     <div class="prose max-w-none">
-      <Content components={{ FeaturedLink }} />
+      <Content components={{ FeaturedLink, BlockQuote }} />
     </div>
   </article>
 </BaseLayout>

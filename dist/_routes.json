@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "include": [
+    "/_server-islands/*"
+  ],
+  "exclude": [
+    "/",
+    "/_astro/*",
+    "/apple-touch-icon-precomposed.png",
+    "/apple-touch-icon.png",
+    "/favicon.ico",
+    "/tina.svg",
+    "/admin/*",
+    "/blocks/*",
+    "/.well-known/*",
+    "/uploads/*",
+    "/api/*",
+    "/404",
+    "/about",
+    "/posts/*",
+    "/tools/*"
+  ]
+}

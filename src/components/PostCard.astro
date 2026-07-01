@@ -1,7 +1,4 @@
 ---
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.tsx';
-import { Card } from '../ui/card.tsx';
-import { ArrowRight, UserRound } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Props {
@@ -24,7 +21,7 @@ const url = `/posts/${post.slug}`;
 const formattedDate = format(data.date, 'MMM dd, yyyy');
 ---
 
-<Card className="order-last border-0 bg-transparent shadow-none py-0 sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2">
+<div class="order-last border-0 bg-transparent shadow-none py-0 sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2">
   <div class="grid gap-y-6 sm:grid-cols-10 sm:gap-x-5 sm:gap-y-0 md:items-center md:gap-x-8 lg:gap-x-12">
     <div class="sm:col-span-5">
       <div class="mb-4 md:mb-6">
@@ -41,18 +38,21 @@ const formattedDate = format(data.date, 'MMM dd, yyyy');
         <div class="mt-4 text-muted-foreground md:mt-5">{data.excerpt}</div>
       )}
       <div class="mt-6 flex items-center space-x-4 text-sm md:mt-8">
-        <Avatar>
-          <AvatarFallback>
-            <UserRound size={16} strokeWidth={2} className="opacity-60" aria-hidden="true" />
-          </AvatarFallback>
-        </Avatar>
+        <div class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted">
+          <svg class="opacity-60 m-auto size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+        </div>
         <span class="text-muted-foreground">{data.author}</span>
         <span class="text-muted-foreground">&bull;</span>
         <span class="text-muted-foreground">{formattedDate}</span>
       </div>
       <div class="mt-6 flex items-center space-x-2 md:mt-8">
         <a href={url} class="group inline-flex items-center text-sm font-medium text-primary hover:underline">
-          Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+          Read more
+          <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
         </a>
       </div>
     </div>
@@ -72,4 +72,4 @@ const formattedDate = format(data.date, 'MMM dd, yyyy');
       </div>
     )}
   </div>
-</Card>
+</div>

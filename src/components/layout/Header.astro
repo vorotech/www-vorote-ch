@@ -1,7 +1,7 @@
 ---
 import { siteConfig } from '../../config/site';
-import ThemeToggle from '../../components/ThemeToggle.tsx';
-import { Icon } from '../../components/Icon.tsx';
+import ThemeToggle from '../../components/ThemeToggle';
+import { Icon } from '../../components/Icon';
 
 const { header } = siteConfig;
 const navItems = header.nav || [];
@@ -13,14 +13,7 @@ const navItems = header.nav || [];
       <div class="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
         <div class="flex w-full items-center justify-between gap-12 lg:w-auto">
           <a href="/" aria-label="home" class="flex items-center space-x-2">
-            <Icon
-              parentColor={header.icon.color || 'teal'}
-              data={{
-                name: header.icon.name,
-                color: header.icon.color,
-                style: header.icon.style,
-              }}
-            />
+            <Icon parentColor={header.icon.color || 'teal'} data={{ name: header.icon.name, color: header.icon.color, style: header.icon.style }} client:load />
             <span>{header.name}</span>
           </a>
 

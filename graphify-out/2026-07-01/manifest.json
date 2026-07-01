@@ -998,5 +998,245 @@
     "mtime": 1782916092.5284872,
     "ast_hash": "31f9ec743602b3198e52bd97be076709",
     "semantic_hash": ""
+  },
+  "astro.config.mjs": {
+    "mtime": 1782917017.3013232,
+    "ast_hash": "bb759d1af6c9fea65967f3f362cb2816",
+    "semantic_hash": ""
+  },
+  "src/components/Icon.tsx": {
+    "mtime": 1782917159.4683537,
+    "ast_hash": "6909762d6c70e0406e9831bd5cb8f4e6",
+    "semantic_hash": ""
+  },
+  "src/components/ThemeToggle.tsx": {
+    "mtime": 1782917192.8533711,
+    "ast_hash": "d651d60887f9819260709774956021d9",
+    "semantic_hash": ""
+  },
+  "src/components/layout/Footer.astro": {
+    "mtime": 1782917127.0427501,
+    "ast_hash": "6a5b46baa22f5d291a39c939e291e9e0",
+    "semantic_hash": ""
+  },
+  "src/components/layout/Header.astro": {
+    "mtime": 1782917112.6950862,
+    "ast_hash": "4242619ca1505ce46fb74d12fcc55bc8",
+    "semantic_hash": ""
+  },
+  "src/components/magicui/GridPattern.astro": {
+    "mtime": 1782917135.5144882,
+    "ast_hash": "28b27060186fbd5a5a1fb2420ce4a9c7",
+    "semantic_hash": ""
+  },
+  "src/config/site.ts": {
+    "mtime": 1782917050.542967,
+    "ast_hash": "d70a350c24d178a990c7e0b4ab2bc9b1",
+    "semantic_hash": ""
+  },
+  "src/content/config.ts": {
+    "mtime": 1782917204.2695694,
+    "ast_hash": "2e0d08e924ee0a908e578969fef95cc4",
+    "semantic_hash": ""
+  },
+  "src/layouts/BaseLayout.astro": {
+    "mtime": 1782917086.7517576,
+    "ast_hash": "6201e54af5ff64f12397c4e22b246f7b",
+    "semantic_hash": ""
+  },
+  "src/lib/logger.ts": {
+    "mtime": 1782917039.896839,
+    "ast_hash": "342d78b11369551eecdc257af40cda09",
+    "semantic_hash": ""
+  },
+  "src/lib/sanitization.ts": {
+    "mtime": 1782917039.8958955,
+    "ast_hash": "6f796da48797cfeb8becf55432eede2f",
+    "semantic_hash": ""
+  },
+  "src/lib/utils.ts": {
+    "mtime": 1782917039.8949468,
+    "ast_hash": "b3cb53454ff2d770a2e6ae1796c39bbc",
+    "semantic_hash": ""
+  },
+  "tailwind.config.astro.ts": {
+    "mtime": 1782917063.2565958,
+    "ast_hash": "82e840d133431766e5e944bc7481f867",
+    "semantic_hash": ""
+  },
+  "tsconfig.astro.json": {
+    "mtime": 1782917016.2352705,
+    "ast_hash": "956d1ede53453cbece76f1e9134760e9",
+    "semantic_hash": ""
+  },
+  "src/content/authors/Dmytro.md": {
+    "mtime": 1782917411.9428256,
+    "ast_hash": "ebe29a925b1edc293ecc9ad1b15d82a7",
+    "semantic_hash": ""
+  },
+  "src/content/milestones/Academic-Specialization.md": {
+    "mtime": 1782917411.9415438,
+    "ast_hash": "16d48f92126516745c4f6b3977ef1791",
+    "semantic_hash": ""
+  },
+  "src/content/milestones/Cybersecurity-Architect--Lead.md": {
+    "mtime": 1782917411.94171,
+    "ast_hash": "b0a20875d1eb09c78fc8c54deac3cd0c",
+    "semantic_hash": ""
+  },
+  "src/content/milestones/DevSecOps-at-Global-Scale.md": {
+    "mtime": 1782917411.9418726,
+    "ast_hash": "6cd9098295f6f33b3ac1e92353ff83cf",
+    "semantic_hash": ""
+  },
+  "src/content/milestones/The-CISO-Path--CISSP.md": {
+    "mtime": 1782917411.9420373,
+    "ast_hash": "8ec14048db6aeab4a79d64742252cbb2",
+    "semantic_hash": ""
+  },
+  "src/content/milestones/The-Engineering-Foundation.md": {
+    "mtime": 1782917411.9421997,
+    "ast_hash": "349e390b3164b6e9ef252dcd605674b4",
+    "semantic_hash": ""
+  },
+  "src/content/pages/about.mdx": {
+    "mtime": 1782917475.1609538,
+    "ast_hash": "2dac510f28148b00cd27824d4556dee2",
+    "semantic_hash": ""
+  },
+  "src/content/pages/home.mdx": {
+    "mtime": 1782917482.0144,
+    "ast_hash": "5b0fd5795ae415adba8f726c667dfca3",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/CISO-Assistant-Your-Open-Source-GRC-Powerhouse.mdx": {
+    "mtime": 1782917450.9745193,
+    "ast_hash": "5fd6f83105f0ceacb18946b7989a872a",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/CISSP-Ethics-Dont-Let-Sleeping-Dogs-Lie.mdx": {
+    "mtime": 1782917450.9738271,
+    "ast_hash": "d47111d4a66d941e93d264ee227454d5",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/DefectDojo-Unified-DevSecOps-Security.mdx": {
+    "mtime": 1782917450.9743915,
+    "ast_hash": "fa0b742c9fd1338f1053070789bdda80",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/How-to-Measure-Cybersecurity-with-KPIs.mdx": {
+    "mtime": 1782917450.9746664,
+    "ast_hash": "3aa09faea6b45b84ea821661d12ed515",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/Living-Off-The-Land-LOTL-Attacks-The-Stealthy-Threat-Within.mdx": {
+    "mtime": 1782917450.9740953,
+    "ast_hash": "d940cf332a65dc3766a0dd8023128cba",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/Prowler-The-Essential-Cloud-Security-Tool.mdx": {
+    "mtime": 1782917450.973217,
+    "ast_hash": "9e492f180c65e6bd97ec0786f2070ec6",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/RSAC-2025-Key-Trends-and-Emerging-Niches.mdx": {
+    "mtime": 1782917450.973718,
+    "ast_hash": "34f0e267cd7937d632033897742b4836",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/The-Modern-CISO-From-Doer-to-Enabler.mdx": {
+    "mtime": 1782917450.974245,
+    "ast_hash": "a95ad4e6bcd671fbdc0f1d72207f99ee",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2025/Top-Open-Source-SIEM-Tools-in-2025.mdx": {
+    "mtime": 1782917450.9735851,
+    "ast_hash": "77b3bc7d658fb4dc4c08ade66964d069",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2026/Automating-Proxmox-LXC-Management-with-Ansible-and-Semaphore.md": {
+    "mtime": 1782917450.975029,
+    "ast_hash": "1e98b41c999debf7661276ef94ef5230",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2026/The-Semantic-Attack-Surface-Defending-LLMs-Against-Prompt-Injection.mdx": {
+    "mtime": 1782917450.9747758,
+    "ast_hash": "a1a46f05c2d9d5731ad5d0f8db7354c9",
+    "semantic_hash": ""
+  },
+  "src/content/posts/2026/Why-You-Need-Implement-OWASP-SAMM-and-DSOMM.mdx": {
+    "mtime": 1782917450.9748921,
+    "ast_hash": "b89f27c93d924e88e00d4b199e353f78",
+    "semantic_hash": ""
+  },
+  "src/content/tags/AI.mdx": {
+    "mtime": 1782917411.9447675,
+    "ast_hash": "9dd88ff7a02131ab1ce47b56a36001ea",
+    "semantic_hash": ""
+  },
+  "src/content/tags/ASPM.mdx": {
+    "mtime": 1782917411.9451017,
+    "ast_hash": "0c897f85576ac1c6be79d22c9dd74c53",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Ansible.mdx": {
+    "mtime": 1782917411.9449396,
+    "ast_hash": "1800a6cb7a32712311ed692b550efbb5",
+    "semantic_hash": ""
+  },
+  "src/content/tags/CISO.mdx": {
+    "mtime": 1782917411.9452608,
+    "ast_hash": "cf01a9a709e3ee30a6a644ada10fc48f",
+    "semantic_hash": ""
+  },
+  "src/content/tags/CSPM.mdx": {
+    "mtime": 1782917411.9454198,
+    "ast_hash": "4698e7bef152b508628f9cc68bab488b",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Cybersecurity.mdx": {
+    "mtime": 1782917411.945592,
+    "ast_hash": "71dbd07cbe6dbeb63f189b39a52074e1",
+    "semantic_hash": ""
+  },
+  "src/content/tags/DevSecOps.mdx": {
+    "mtime": 1782917411.9457572,
+    "ast_hash": "762995fefc0441c393de9513602ba2bf",
+    "semantic_hash": ""
+  },
+  "src/content/tags/OWASP.mdx": {
+    "mtime": 1782917411.9459233,
+    "ast_hash": "abb2445033a73d0edb5e518b84a4bf02",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Open-Source.mdx": {
+    "mtime": 1782917411.9458547,
+    "ast_hash": "a056e45cddffee99f10fca4a0a578fb2",
+    "semantic_hash": ""
+  },
+  "src/content/tags/SIEM.mdx": {
+    "mtime": 1782917411.9462364,
+    "ast_hash": "04f3eb1feef0e449b4260f0869c69c10",
+    "semantic_hash": ""
+  },
+  "src/content/tags/SOAR.mdx": {
+    "mtime": 1782917411.9463947,
+    "ast_hash": "174966aaaca7708fe0706caa756c61b3",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Security-Metrics.mdx": {
+    "mtime": 1782917411.9459858,
+    "ast_hash": "91da1204d2de65f9cfab79d0875846c3",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Trends.mdx": {
+    "mtime": 1782917411.9465544,
+    "ast_hash": "48fbecd01c223bdc26ead3ce7b949fc6",
+    "semantic_hash": ""
+  },
+  "src/content/tags/Vulnerability-Management.mdx": {
+    "mtime": 1782917411.946735,
+    "ast_hash": "ec44293d8d7a1d6fda21e63deb167ca6",
+    "semantic_hash": ""
   }
 }
