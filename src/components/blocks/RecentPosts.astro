@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import { Card } from '../ui/card.tsx';
+import { ArrowRight } from 'lucide-react';
+import { format } from 'date-fns';
+
+interface Props {
+  count?: number;
+}
+
+const { count = 4 } = Astro.props;
+const allPosts = (await getCollection('posts'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const posts = allPosts.slice(0, count);
+const [featuredPost, ...otherPosts] = posts;
+const formattedFeaturedDate = format(featuredPost.data.date, 'MMM dd, yyyy');
+---
+
+<section class="mt-8">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="text-center mb-12 lg:mb-16">
+      <h2 class="text-3xl font-semibold md:text-4xl lg:text-5xl mb-4">Latest Blog Posts</h2>
+      <p class="text-muted-foreground md:text-lg max-w-2xl mx-auto">Discover recent insights and updates</p>
+    </div>
+
+    <!-- Featured Post -->
+    <div class="mb-12 lg:mb-16">
+      <Card className="overflow-hidden border-0 bg-transparent shadow-none py-0">
+        <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
+          {featuredPost.data.heroImg && (
+            <div class="lg:order-first">
+              <a href={`/posts/${featuredPost.slug}`} class="block">
+                <div class="aspect-[16/10] overflow-clip rounded-lg border border-border">
+                  <img width={600} height={375} src={featuredPost.data.heroImg} alt={featuredPost.data.title} class="h-full w-full object-cover transition-opacity duration-200 hover:opacity-90" />
+                </div>
+              </a>
+            </div>
+          )}
+          <div class="flex flex-col justify-center">
+            {featuredPost.data.tags && featuredPost.data.tags.length > 0 && (
+              <div class="mb-4">
+                <div class="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground">
+                  {featuredPost.data.tags.map((tag) => <span>{tag}</span>)}
+                </div>
+              </div>
+            )}
+            <h3 class="text-2xl font-semibold md:text-3xl lg:text-4xl mb-4">
+              <a href={`/posts/${featuredPost.slug}`} class="hover:underline">{featuredPost.data.title}</a>
+            </h3>
+            {featuredPost.data.excerpt && (
+              <div class="text-muted-foreground mb-6 text-lg">{featuredPost.data.excerpt}</div>
+            )}
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-muted-foreground">{formattedFeaturedDate}</div>
+              <a href={`/posts/${featuredPost.slug}`} class="group inline-flex items-center text-sm font-medium text-primary hover:underline">
+                Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+
+    <!-- Other Posts Grid -->
+    {otherPosts.length > 0 && (
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {otherPosts.map((post) => {
+          const formattedDate = format(post.data.date, 'MMM dd, yyyy');
+          return (
+            <Card className="group overflow-hidden border-0 bg-transparent shadow-none py-0">
+              {post.data.heroImg && (
+                <div class="mb-4">
+                  <a href={`/posts/${post.slug}`} class="block">
+                    <div class="aspect-[16/10] overflow-clip rounded-lg border border-border">
+                      <img width={400} height={250} src={post.data.heroImg} alt={post.data.title} class="h-full w-full object-cover transition-opacity duration-200 group-hover:opacity-90" />
+                    </div>
+                  </a>
+                </div>
+              )}
+              <div>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="mb-3">
+                    <div class="flex flex-wrap gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                      {post.data.tags.slice(0, 2).map((tag) => <span>{tag}</span>)}
+                    </div>
+                  </div>
+                )}
+                <h4 class="text-lg font-semibold md:text-xl mb-3">
+                  <a href={`/posts/${post.slug}`} class="hover:underline">{post.data.title}</a>
+                </h4>
+                {post.data.excerpt && (
+                  <div class="text-muted-foreground text-sm mb-4 line-clamp-3">{post.data.excerpt}</div>
+                )}
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-muted-foreground">{formattedDate}</span>
+                  <a href={`/posts/${post.slug}`} class="group inline-flex items-center text-sm font-medium text-primary hover:underline">
+                    Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+                  </a>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</section>

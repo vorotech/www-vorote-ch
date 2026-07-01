@@ -585,7 +585,7 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1782907777.0601559,
+    "mtime": 1782915542.1033723,
     "ast_hash": "6a47d64fcc136324ca395065a707ef76",
     "semantic_hash": ""
   },
@@ -690,7 +690,7 @@
     "semantic_hash": ""
   },
   "content/posts/2026/Automating-Proxmox-LXC-Management-with-Ansible-and-Semaphore.md": {
-    "mtime": 1782857775.7566187,
+    "mtime": 1782915542.1033723,
     "ast_hash": "39524f048b08e4bf22ed65d988b252d1",
     "semantic_hash": ""
   },
@@ -715,7 +715,7 @@
     "semantic_hash": ""
   },
   "content/tags/Ansible.mdx": {
-    "mtime": 1782857775.7566187,
+    "mtime": 1782915542.1033723,
     "ast_hash": "1800a6cb7a32712311ed692b550efbb5",
     "semantic_hash": ""
   },
@@ -992,6 +992,11 @@
   "public/uploads/posts/yue-ma-mQEjK67BCTA-unsplash.jpg": {
     "mtime": 1782856909.3679361,
     "ast_hash": "23ebac76a6de208856365af8bfd71d0c",
+    "semantic_hash": ""
+  },
+  ".hermes/plans/2026-07-01_174500-astro-migration.md": {
+    "mtime": 1782916092.5284872,
+    "ast_hash": "31f9ec743602b3198e52bd97be076709",
     "semantic_hash": ""
   }
 }

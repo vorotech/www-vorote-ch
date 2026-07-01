@@ -1,0 +1,75 @@
+---
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.tsx';
+import { Card } from '../ui/card.tsx';
+import { ArrowRight, UserRound } from 'lucide-react';
+import { format } from 'date-fns';
+
+interface Props {
+  post: {
+    slug: string;
+    data: {
+      title: string;
+      heroImg?: string;
+      excerpt?: string;
+      date: Date;
+      tags?: string[];
+      author: string;
+    };
+  };
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const url = `/posts/${post.slug}`;
+const formattedDate = format(data.date, 'MMM dd, yyyy');
+---
+
+<Card className="order-last border-0 bg-transparent shadow-none py-0 sm:order-first sm:col-span-12 lg:col-span-10 lg:col-start-2">
+  <div class="grid gap-y-6 sm:grid-cols-10 sm:gap-x-5 sm:gap-y-0 md:items-center md:gap-x-8 lg:gap-x-12">
+    <div class="sm:col-span-5">
+      <div class="mb-4 md:mb-6">
+        <div class="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground md:gap-5 lg:gap-6">
+          {data.tags?.map((tag) => (
+            <span>{tag}</span>
+          ))}
+        </div>
+      </div>
+      <h3 class="text-xl font-semibold md:text-2xl lg:text-3xl">
+        <a href={url} class="hover:underline">{data.title}</a>
+      </h3>
+      {data.excerpt && (
+        <div class="mt-4 text-muted-foreground md:mt-5">{data.excerpt}</div>
+      )}
+      <div class="mt-6 flex items-center space-x-4 text-sm md:mt-8">
+        <Avatar>
+          <AvatarFallback>
+            <UserRound size={16} strokeWidth={2} className="opacity-60" aria-hidden="true" />
+          </AvatarFallback>
+        </Avatar>
+        <span class="text-muted-foreground">{data.author}</span>
+        <span class="text-muted-foreground">&bull;</span>
+        <span class="text-muted-foreground">{formattedDate}</span>
+      </div>
+      <div class="mt-6 flex items-center space-x-2 md:mt-8">
+        <a href={url} class="group inline-flex items-center text-sm font-medium text-primary hover:underline">
+          Read more <ArrowRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+    </div>
+    {data.heroImg && (
+      <div class="order-first sm:order-last sm:col-span-5">
+        <a href={url} class="block">
+          <div class="aspect-[16/9] overflow-clip rounded-lg border border-border">
+            <img
+              src={data.heroImg}
+              alt={data.title}
+              width={533}
+              height={300}
+              class="h-full w-full object-cover transition-opacity duration-200 fade-in hover:opacity-70"
+            />
+          </div>
+        </a>
+      </div>
+    )}
+  </div>
+</Card>

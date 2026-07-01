@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../config/site';
+---
+
+<BaseLayout title="Tools">
+  <section class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-semibold md:text-4xl mb-4">Tools</h2>
+      <p class="text-muted-foreground md:text-lg max-w-2xl mx-auto">
+        Interactive tools for security professionals.
+      </p>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+      <a href="/tools/scheduler" class="group block rounded-2xl border border-border p-8 hover:border-primary/40 hover:shadow-md transition-all duration-300">
+        <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">On-Call Scheduler</h3>
+        <p class="text-muted-foreground">Constraint-based linear optimization for fair on-call rotation schedules.</p>
+      </a>
+      <a href="/tools/security-audit" class="group block rounded-2xl border border-border p-8 hover:border-primary/40 hover:shadow-md transition-all duration-300">
+        <h3 class="text-xl font-bold mb-2 group-hover:text-primary transition-colors">Security Audit</h3>
+        <p class="text-muted-foreground">Comprehensive security assessment tool.</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

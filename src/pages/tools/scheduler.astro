@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchedulerComponent from '../../components/tools/scheduler/scheduler-component.tsx';
+---
+
+<BaseLayout title="On-Call Scheduler">
+  <section class="container mx-auto px-4 py-12">
+    <SchedulerComponent client:load />
+  </section>
+</BaseLayout>

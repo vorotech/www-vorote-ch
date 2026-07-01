@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import { format } from 'date-fns';
+
+interface Props {
+  count?: number;
+  skip?: number;
+  title?: string;
+}
+
+const { count = 20, skip = 4, title = 'OTHER POSTS' } = Astro.props;
+const allPosts = (await getCollection('posts'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const posts = allPosts.slice(skip, skip + count);
+---
+
+<section class="pt-4 md:pt-6">
+  <div class="mx-auto max-w-4xl px-6">
+    <h2 class="text-xl font-semibold uppercase tracking-wider text-foreground mb-8">{title}</h2>
+    <div class="space-y-8">
+      {posts.map((post) => {
+        const dayOfMonth = format(post.data.date, 'dd');
+        const monthYear = format(post.data.date, 'MMM yyyy');
+        const description = post.data.excerpt || '';
+        return (
+          <a href={`/posts/${post.slug}`} class="group flex gap-6 hover:opacity-80 transition-opacity">
+            <div class="flex-shrink-0 w-20 text-center">
+              <div class="text-4xl md:text-5xl font-bold text-foreground leading-none">{dayOfMonth}</div>
+              <div class="text-xs md:text-sm text-muted-foreground mt-1">{monthYear}</div>
+            </div>
+            <div class="flex-1 min-w-0 pt-1">
+              <h3 class="text-lg md:text-xl font-semibold text-foreground mb-2 group-hover:underline">{post.data.title}</h3>
+              {description && <p class="text-sm md:text-base text-muted-foreground line-clamp-2">{description}</p>}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
