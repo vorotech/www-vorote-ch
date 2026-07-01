@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import GridPattern from '../components/magicui/GridPattern.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = "Dmytro's Radar - Personal Blog & Portfolio" } = Astro.props;
+const pageTitle = title ? `${title} | Dmytro's Radar` : "Dmytro's Radar";
+---
+
+<!DOCTYPE html>
+<html lang="en" suppressHydrationWarning>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <!-- Fonts: Abel for headings, Source Code Pro for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Abel&family=Source+Code+Pro:wght@300&display=swap" rel="stylesheet" />
+    <style is:global>
+      :root {
+        --font-abel: 'Abel', system-ui, sans-serif;
+        --font-source-code-pro: 'Source Code Pro', ui-monospace, monospace;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-background font-sans antialiased relative">
+    <GridPattern />
+    <div class="relative z-10 flex flex-col min-h-screen">
+      <Header />
+      <main class="overflow-x-hidden flex-1 pt-[73px] lg:pt-[81px]">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

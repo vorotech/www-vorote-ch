@@ -1,0 +1,17 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "strictNullChecks": true,
+    "types": ["node"]
+  },
+  "include": [".astro/types.d.ts", "**/*.{ts,tsx,astro}"],
+  "exclude": ["node_modules", "dist", "app", "tina", "tests"]
+}

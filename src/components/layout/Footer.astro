@@ -1,0 +1,30 @@
+---
+import { siteConfig } from '../../config/site';
+import { Icon } from '../../components/Icon.tsx';
+
+const { header, footer } = siteConfig;
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-white dark:bg-transparent">
+  <div class="mx-auto max-w-5xl px-6">
+    <div class="flex flex-wrap items-center gap-6 py-4 flex-col md:flex-row md:justify-between">
+      <div class="order-last flex justify-center md:order-first md:justify-start">
+        <a href="/" aria-label="go home">
+          <Icon parentColor={header.icon.color || 'teal'} data={{ name: header.icon.name, color: header.icon.color, style: header.icon.style }} />
+        </a>
+        <span class="self-center text-muted-foreground text-sm ml-2">
+          &copy; {year} {header.name}, All rights reserved
+        </span>
+      </div>
+
+      <div class="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
+        {footer.social.map((link) => (
+          <a href={link.url} target="_blank" rel="noopener noreferrer">
+            <Icon data={{ name: link.icon, size: 'small' }} className="text-muted-foreground hover:text-primary block" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</footer>

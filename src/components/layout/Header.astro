@@ -1,0 +1,99 @@
+---
+import { siteConfig } from '../../config/site';
+import ThemeToggle from '../../components/ThemeToggle.tsx';
+import { Icon } from '../../components/Icon.tsx';
+
+const { header } = siteConfig;
+const navItems = header.nav || [];
+---
+
+<header>
+  <nav class="bg-background/50 fixed z-20 w-full border-b backdrop-blur-3xl">
+    <div class="mx-auto max-w-6xl px-6 transition-all duration-300">
+      <div class="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+        <div class="flex w-full items-center justify-between gap-12 lg:w-auto">
+          <a href="/" aria-label="home" class="flex items-center space-x-2">
+            <Icon
+              parentColor={header.icon.color || 'teal'}
+              data={{
+                name: header.icon.name,
+                color: header.icon.color,
+                style: header.icon.style,
+              }}
+            />
+            <span>{header.name}</span>
+          </a>
+
+          <div class="flex items-center gap-2 lg:hidden">
+            <ThemeToggle client:load className="transition-colors" />
+            <button
+              id="mobile-menu-toggle"
+              aria-label="Open Menu"
+              class="relative z-20 -m-2.5 block cursor-pointer p-2.5"
+            >
+              <svg class="m-auto size-6 duration-200" id="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              <svg class="m-auto size-6 hidden" id="close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-background mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent" id="mobile-nav">
+          <div class="hidden lg:block">
+            <ul class="flex gap-8 text-sm">
+              {navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target={item.href.startsWith('http') ? '_blank' : '_self'}
+                    class="text-muted-foreground hover:text-accent block duration-150"
+                  >
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="lg:hidden">
+            <ul class="space-y-6 text-base">
+              {navItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target={item.href.startsWith('http') ? '_blank' : '_self'}
+                    class="text-muted-foreground hover:text-accent block duration-150"
+                  >
+                    <span>{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  toggle?.addEventListener('click', () => {
+    const isActive = mobileNav?.classList.toggle('hidden');
+    if (!isActive) {
+      mobileNav?.classList.add('block');
+      menuIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('hidden');
+    } else {
+      mobileNav?.classList.remove('block');
+      menuIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('hidden');
+    }
+  });
+</script>
