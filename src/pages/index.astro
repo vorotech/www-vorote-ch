@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Callout from '../components/blocks/Callout.astro';
+import Hero from '../components/blocks/Hero.astro';
+import RecentPosts from '../components/blocks/RecentPosts.astro';
+import LatestPostsList from '../components/blocks/LatestPostsList.astro';
+---
+
+<BaseLayout>
+  <Callout
+    text="🇺🇦 Help Ukraine Now"
+    url="https://stand-with-ukraine.pp.ua/"
+  />
+  <Hero />
+  <RecentPosts count={4} />
+  <LatestPostsList count={20} skip={4} title="OTHER POSTS" />
+</BaseLayout>

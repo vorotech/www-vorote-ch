@@ -1,0 +1,24 @@
+---
+interface Props {
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+  className?: string;
+}
+
+const {
+  width = 40,
+  height = 40,
+  x = -1,
+  y = -1,
+  className = '',
+} = Astro.props;
+---
+
+<div
+  class={`pointer-events-none absolute inset-0 ${className}`}
+  style={`background-image: linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px); background-size: ${width}px ${height}px; background-position: ${x}px ${y}px;`}
+  aria-hidden="true"
+>
+</div>

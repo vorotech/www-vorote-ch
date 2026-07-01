@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeaturedLink from '../../components/blocks/FeaturedLink';
+import BlockQuote from '../../components/blocks/BlockQuote.astro';
+import { format } from 'date-fns';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const formattedDate = format(post.data.date, 'MMMM dd, yyyy');
+---
+
+<BaseLayout title={post.data.title} description={post.data.excerpt}>
+  <article class="container mx-auto px-4 py-12 max-w-3xl">
+    {post.data.heroImg && (
+      <div class="aspect-[16/9] overflow-clip rounded-lg border border-border mb-8">
+        <img
+          src={post.data.heroImg}
+          alt={post.data.title}
+          class="h-full w-full object-cover"
+        />
+      </div>
+    )}
+    <h1 class="text-4xl font-bold mb-4 font-abel">{post.data.title}</h1>
+    <div class="flex items-center space-x-4 text-sm text-muted-foreground mb-8">
+      <span>{post.data.author}</span>
+      <span>&bull;</span>
+      <time>{formattedDate}</time>
+    </div>
+    {post.data.tags && post.data.tags.length > 0 && (
+      <div class="flex flex-wrap gap-3 text-xs uppercase tracking-wider text-muted-foreground mb-8">
+        {post.data.tags.map((tag) => <span>{tag}</span>)}
+      </div>
+    )}
+    <div class="prose max-w-none">
+      <Content components={{ FeaturedLink, BlockQuote }} />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,52 @@
+---
+const imageSrc = '/uploads/media/NBP_8378.jpg';
+const altText = 'Dmytro - Cybersecurity Architect';
+---
+
+<section class="relative overflow-hidden">
+  <div class="relative overflow-hidden flex flex-col lg:block mx-auto max-w-7xl">
+    <!-- Content Container -->
+    <div class="relative z-30 px-6 pt-12 pb-12 lg:py-32 grid lg:grid-cols-2 gap-12 items-center order-2 lg:order-none">
+      <div class="flex flex-col gap-6 text-left max-w-2xl lg:max-w-none mx-auto lg:mx-0">
+        <h1 class="text-balance text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
+          Trust is the Foundation
+        </h1>
+        <p class="text-lg md:text-xl text-muted-foreground leading-relaxed">
+          I'm Dmytro, a cybersecurity architect who believes that while technology is the tool, trust is the foundation. I spend my days securing digital landscapes – and my mission is to make the complex world of security accessible and manageable for everyone.
+        </p>
+        <div class="flex flex-wrap gap-4 mt-4">
+          <div class="bg-background/50 backdrop-blur-sm rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5 shadow-sm">
+            <a href="/posts" class="inline-flex items-center justify-center rounded-xl px-6 text-base h-12 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+              <span class="text-nowrap">Read Blog</span>
+            </a>
+          </div>
+          <div class="bg-background/50 backdrop-blur-sm rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5 shadow-sm">
+            <a href="/about" class="inline-flex items-center justify-center rounded-xl px-6 text-base h-12 hover:bg-muted transition-colors">
+              <span class="text-nowrap">About Me</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="hidden lg:block"></div>
+    </div>
+
+    <!-- Background Image -->
+    <div class="relative w-full h-[50vh] min-h-[300px] lg:absolute lg:inset-y-0 lg:right-0 lg:h-full lg:w-[55%] order-1 lg:order-none overflow-hidden">
+      <!-- Mobile/Tablet -->
+      <div class="block lg:hidden w-full h-full relative">
+        <img class="object-cover object-top h-full w-full" alt={altText} src={imageSrc} />
+        <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
+      </div>
+      <!-- Desktop -->
+      <div class="hidden lg:block w-full h-full relative">
+        <div class="absolute inset-0 z-0">
+          <img class="object-cover object-left-top h-full w-full blur-sm scale-110" alt={`${altText} Background`} src={imageSrc} aria-hidden="true" />
+        </div>
+        <div class="absolute inset-0 z-10" style="mask-image: linear-gradient(to right, transparent 0%, black 10%, black 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 100%);">
+          <img class="object-cover object-left-top h-full w-full" alt={altText} src={imageSrc} />
+        </div>
+        <div class="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-background to-transparent z-20"></div>
+      </div>
+    </div>
+  </div>
+</section>

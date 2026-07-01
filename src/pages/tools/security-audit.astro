@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SecurityAuditComponent from '../../components/tools/security-audit/security-audit-component';
+---
+
+<BaseLayout title="Security Audit">
+  <section class="container mx-auto px-4 py-12">
+    <SecurityAuditComponent client:load />
+  </section>
+</BaseLayout>

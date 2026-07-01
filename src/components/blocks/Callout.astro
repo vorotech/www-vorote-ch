@@ -1,0 +1,37 @@
+---
+interface Props {
+  text: string;
+  url: string;
+  background?: string;
+}
+
+const { text, url, background = 'bg-emerald-50/80' } = Astro.props;
+---
+
+<section class={`py-5 ${background}`}>
+  <div class="mx-auto max-w-7xl px-6">
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
+    >
+      <span class="text-foreground text-sm">{text}</span>
+      <span class="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700"></span>
+      <div class="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
+        <div class="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
+          <span class="flex size-6">
+            <svg class="m-auto size-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </span>
+          <span class="flex size-6">
+            <svg class="m-auto size-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
